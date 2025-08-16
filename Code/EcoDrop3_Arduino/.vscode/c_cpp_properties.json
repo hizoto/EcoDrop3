@@ -10,13 +10,16 @@
             "includePath": [
                 "C:/Users/larsh/OneDrive/Projekte/EcoDrop3/Code/EcoDrop3_Arduino/include",
                 "C:/Users/larsh/OneDrive/Projekte/EcoDrop3/Code/EcoDrop3_Arduino/src",
+                "C:/Users/larsh/OneDrive/Projekte/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/SD/src",
+                "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                "C:/Users/larsh/OneDrive/Projekte/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/LiquidCrystal_I2C",
+                "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                "C:/Users/larsh/OneDrive/Projekte/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Servo/src",
                 "C:/Users/larsh/.platformio/packages/framework-arduino-avr/cores/arduino",
                 "C:/Users/larsh/.platformio/packages/framework-arduino-avr/variants/mega",
                 "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                 "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/HID/src",
-                "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
                 "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
-                "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
                 ""
             ],
             "browse": {
@@ -24,13 +27,16 @@
                 "path": [
                     "C:/Users/larsh/OneDrive/Projekte/EcoDrop3/Code/EcoDrop3_Arduino/include",
                     "C:/Users/larsh/OneDrive/Projekte/EcoDrop3/Code/EcoDrop3_Arduino/src",
+                    "C:/Users/larsh/OneDrive/Projekte/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/SD/src",
+                    "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                    "C:/Users/larsh/OneDrive/Projekte/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/LiquidCrystal_I2C",
+                    "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                    "C:/Users/larsh/OneDrive/Projekte/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Servo/src",
                     "C:/Users/larsh/.platformio/packages/framework-arduino-avr/cores/arduino",
                     "C:/Users/larsh/.platformio/packages/framework-arduino-avr/variants/mega",
                     "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                     "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/HID/src",
-                    "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
                     "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
-                    "C:/Users/larsh/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
                     ""
                 ]
             },
