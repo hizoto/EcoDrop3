@@ -7,6 +7,10 @@ const int speedSlow = 127;
 
 int currentSpeed1 = 0;
 int currentSpeed2 = 0;
+int runtimeforward = 1000;
+int runtimeleft = 500;
+int runtimeright = 500;
+int braketime = 1000;
 
 
 /* Pindefinitionen Motorentreiber:
@@ -50,19 +54,75 @@ const int B2_ENB=15;
 
 class DC_Motor;
 
+
+// Funktionsdefinitionen
+void schlange();
+void driveforward();
+void driveleft();
+void driveright();
+
+DC_Motor M1(B1_IN1, B1_IN2, B1_ENA); //Motor rechts
+DC_Motor M2(B1_IN3, B1_IN4, B1_ENB); //Motor links
+DC_Motor M3(B2_IN1, B2_IN2, B2_ENA);
+DC_Motor M4(B2_IN3, B2_IN4, B2_ENB);
+
+
 void setup() {
-  DC_Motor M1(B1_IN1, B1_IN2, B1_ENA);
-  DC_Motor M2(B1_IN3, B1_IN4, B1_ENB);
-  DC_Motor M3(B2_IN1, B2_IN2, B2_ENA);
-  DC_Motor M4(B2_IN3, B2_IN4, B2_ENB);
 }
 
 
 
 void loop() {
   // put your main code here, to run repeatedly:
+  schlange();
+
+
+
+
 }
 
+void schlange(){
+
+  driveleft();
+  driveforward();
+  driveright();
+  driveforward();
+  driveright();
+  driveforward();
+  driveleft();
+
+}
+
+void driveforward(){
+
+  M1.forward(speedFast);
+  M2.forward(speedFast);
+  delay(runtimeforward);
+  M1.brake();
+  M2.brake();
+  delay(braketime);
+}
+
+void driveleft(){
+
+  M1.forward(speedSlow);
+  M2.backward(speedSlow);
+  delay(runtimeleft);
+  M1.brake();
+  M2.brake();
+  delay(braketime);
+
+}
+
+void driveright(){
+
+  M1.backward(speedSlow);
+  M2.forward(speedSlow);
+  delay(runtimeright);
+  M1.brake();
+  M2.brake();
+  delay(braketime);
+}
 
 
 class DC_Motor{
