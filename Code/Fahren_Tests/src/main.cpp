@@ -14,8 +14,8 @@ int braketime = 1000;
 unsigned long timeToTurn360MecanumMilliseconds = 25000;       //TODO Ausmessen wie lange eine Umdrehung dauert 
 unsigned long timeToMove1000mmSidewaysMilliseconds = 25000;   //TODO Ausmessen wie lange eine Umdrehung dauert
 unsigned long timeToTurn3602WheelMilliseconds = 25000;        //TODO Ausmessen wie lange eine Umdrehung dauert
-float distancePerSecond2Wheel = 15.0;                   //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
-float distancePerSecondMecanum = 15.0;
+float distancePerSecond2Wheel = 15.0;                         //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
+float distancePerSecondMecanum = 15.0;                        //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
 
 
 const int incrementDistance = 1;
