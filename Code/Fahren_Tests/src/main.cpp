@@ -14,9 +14,12 @@ int braketime = 1000;
 unsigned long timeToTurn360MecanumMilliseconds = 25000;       //TODO Ausmessen wie lange eine Umdrehung dauert 
 unsigned long timeToMove1000mmSidewaysMilliseconds = 25000;   //TODO Ausmessen wie lange eine Umdrehung dauert
 unsigned long timeToTurn3602WheelMilliseconds = 25000;        //TODO Ausmessen wie lange eine Umdrehung dauert
-unsigned long distancePerSecond2Wheel = 15;                   //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
-unsigned long distancePerSecondMecanum = 15;
+float distancePerSecond2Wheel = 15.0;                   //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
+float distancePerSecondMecanum = 15.0;
 
+
+const int inkrementDistanz = 1;
+const int inkrementGrad = 1;
 
 
 /* Pindefinitionen Motorentreiber:
@@ -95,6 +98,10 @@ void turnSlowRight2Wheel(int distancemm);
 void turnSlowLeft(int distancemm);
 void turnSlowLeftMecanum(int distancemm);
 void turnSlowLeft2Wheel(int distancemm);
+void moveToWall(int distanceToWall);
+void moveToWallMecanum(int distanceToWall);
+void moveToWall2Wheel(int distanceToWall);
+void goParallel();
 
 
 DC_Motor M1(B1_IN1, B1_IN2, B1_ENA); //Motor rechts
@@ -135,7 +142,7 @@ void moveForward(int distancemm){
 }
 
 void moveForward2Wheel(int distancemm){
-  unsigned long timeToDrive = (distancemm / distancePerSecond2Wheel);
+  unsigned long timeToDrive = (distancemm / distancePerSecond2Wheel) * 1000;
   M1.forward(speedFast);
   M2.forward(speedFast);
   delay(timeToDrive);
@@ -145,7 +152,7 @@ void moveForward2Wheel(int distancemm){
 }
 
 void moveForwardMecanum(int distancemm){ 
-  unsigned long timeToDrive = (distancemm / distancePerSecondMecanum);
+  unsigned long timeToDrive = (distancemm / distancePerSecondMecanum) * 1000;
   M1.forward(speedFast);
   M2.forward(speedFast);
   M3.forward(speedFast);
@@ -309,27 +316,24 @@ void turnSlowLeft2Wheel(int distancemm){  //TODO
 
 }
 
+void moveToWall(int distanceToWall){  
+  long distanceFront = U1.getDistance();
+  long distanceBack = U2.getDistance();
 
-void moveForwardParallelUntilContainer(int distanceToWall){
-  // abstandserfassung
-  unsigned long distanceFront = U1.getDistance();
-  unsigned long distanceBack = U2.getDistance();
-  // INITIAL PARALLELIZATION
-  if (distanceFront > distanceBack){
-    while (distanceFront > distanceBack){
-      turnRight(1);
-      distanceFront = U1.getDistance();
-      distanceBack = U2.getDistance();
-    }
+  if (isMecanumWheel){
+    moveToWallMecanum(distanceToWall);
   }
-  else{
-    while (distanceFront < distanceBack){
-      turnLeft(1);
-      distanceFront = U1.getDistance();
-      distanceBack = U2.getDistance();
-    }
+
+  else {
+    moveToWall2Wheel(distanceToWall);
   }
-  // Move to wall distance
+
+}
+
+void moveToWallMecanum(int distanceToWall){
+  long distanceFront = U1.getDistance();
+  long distanceBack = U2.getDistance();
+
   if (distanceFront > distanceToWall){
     while (distanceFront > distanceToWall){
       moveRight(1);
@@ -345,26 +349,65 @@ void moveForwardParallelUntilContainer(int distanceToWall){
       distanceBack = U2.getDistance();
     }
   }
-  // Main Logic of the function
-  while (distanceBack - distanceFront < containerDepth){
-    if(distanceFront - distanceBack < toleranceWheelsmm && distanceBack - distanceFront < toleranceWheelsmm){
-      moveForward(1);
-      distanceFront = U1.getDistance();
-      distanceBack = U2.getDistance();
-    }
-    else if (distanceFront - distanceBack > toleranceWheelsmm){
-      turnSlowLeft(1);
-      distanceFront = U1.getDistance();
-      distanceBack = U2.getDistance();
-    }
+}
 
-    else {
-      turnSlowRight(1);
+void moveToWall2Wheel(int distanceToWall){
+  // TODO
+}
+
+void goParallel(){
+  long distanceFront = U1.getDistance();
+  long distanceBack = U2.getDistance();
+
+  if (distanceFront > distanceBack){
+    while (distanceFront > distanceBack){
+      turnRight(inkrementGrad);
+      distanceFront = U1.getDistance();
+      distanceBack = U2.getDistance();
+    }
+  }
+
+  else if (distanceFront < distanceBack){
+    while (distanceFront < distanceBack){
+      turnLeft(inkrementGrad);
       distanceFront = U1.getDistance();
       distanceBack = U2.getDistance();
     }
   }
 }
 
+void moveForwardParallelUntilContainer(int distanceToWall){
+  // abstandserfassung
+  long distanceFront = U1.getDistance();
+  long distanceBack = U2.getDistance();
+  // INITIAL PARALLELIZATION
+  goParallel();
+  // Move to wall distance
+  moveToWall(distanceToWall);
+
+  // Main Logic of the function
+  while (distanceBack - distanceFront < containerDepth){
+    if (distanceFront > distanceBack){
+      if(distanceFront - distanceBack < toleranceWheelsmm && distanceBack - distanceFront < toleranceWheelsmm){
+        moveForward(inkrementDistanz);
+        distanceFront = U1.getDistance();
+        distanceBack = U2.getDistance();
+      }
+    }
+    else if (distanceBack > distanceFront){
+      if (distanceBack - distanceFront > toleranceWheelsmm){
+        turnSlowLeft(inkrementDistanz);
+        distanceFront = U1.getDistance();
+        distanceBack = U2.getDistance();
+      }
+    }
+
+    else {
+      turnSlowRight(inkrementDistanz);
+      distanceFront = U1.getDistance();
+      distanceBack = U2.getDistance();
+    }
+  }
+}
 
 
