@@ -5,11 +5,9 @@ const int speedFast = 255;
 const int speedSlow = 127;
 
 
-int currentSpeed1 = 0;
-int currentSpeed2 = 0;
-int runtimeforward = 1000;
-int runtimeleft = 500;
-int runtimeright = 500;
+int runtimeForward = 1000;
+int runtimeLeft = 500;
+int runtimeRight = 500;
 int braketime = 1000;
 
 
@@ -57,9 +55,15 @@ class DC_Motor;
 
 // Funktionsdefinitionen
 void schlange();
-void driveforward();
-void driveleft();
-void driveright();
+void driveForward(int distancemm);
+void driveForwardMecanum(int distancemm);
+void driveForward2Wheel(int distancemm);
+void turnLeft(int deg);
+void turnLeftMecanum(int deg);
+void turnLeft2Wheel(int deg);
+void turnRight(int deg);
+void turnRightMecanum(int deg);
+void turnRight2Wheel(int deg);
 
 DC_Motor M1(B1_IN1, B1_IN2, B1_ENA); //Motor rechts
 DC_Motor M2(B1_IN3, B1_IN4, B1_ENB); //Motor links
@@ -68,6 +72,7 @@ DC_Motor M4(B2_IN3, B2_IN4, B2_ENB);
 
 
 void setup() {
+        
 }
 
 
@@ -75,55 +80,83 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   schlange();
-
-
-
-
 }
 
 void schlange(){
-
-  driveleft();
-  driveforward();
-  driveright();
-  driveforward();
-  driveright();
-  driveforward();
-  driveleft();
-
+  turnLeft();
+  driveForward();
+  turnRight();
+  driveForward();
+  turnRight();
+  driveForward();
+  turnLeft();
 }
 
-void driveforward(){
+void driveForward(int distancemm){
+    if(isMecanumWheel){
+        driveForwardMecanum(distancemm);
+    }
+    else{
+        driveForward2Wheel(distancemm);
+    }
+}
 
+void driveForward2Wheel(int distancemm){
   M1.forward(speedFast);
   M2.forward(speedFast);
-  delay(runtimeforward);
+  delay(runtimeForward);
   M1.brake();
   M2.brake();
   delay(braketime);
 }
 
-void driveleft(){
+void driveForwardMecanum(int distancemm){
 
+}
+
+void turnLeft(int deg){
+    if(isMecanumWheels){
+        turnLeftMecanum(deg);
+    }
+    else{
+        turnLeft2Wheel(deg);
+    }
+}
+
+void turnLeft2Wheel(int deg){
   M1.forward(speedSlow);
   M2.backward(speedSlow);
-  delay(runtimeleft);
+  delay(runtimeLeft);
   M1.brake();
   M2.brake();
   delay(braketime);
+}
+
+void turnLeftMecanum(int deg){
 
 }
 
-void driveright(){
+void turnRight(int deg){
+    if(isMecanumWheels){
+        turnRightMecanum(deg);
+    }
+    else{
+        turnRight2Wheel(deg);
+    }
+}
 
+void turnRight2Wheel(int deg){
   M1.backward(speedSlow);
   M2.forward(speedSlow);
-  delay(runtimeright);
+  delay(runtimeRight);
   M1.brake();
   M2.brake();
   delay(braketime);
 }
 
+void turnRightMecanum(int deg){
+
+}
 
 class DC_Motor{
   private:
