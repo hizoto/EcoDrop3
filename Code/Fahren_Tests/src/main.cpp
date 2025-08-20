@@ -10,7 +10,7 @@ int braketime = 1000;
 unsigned long timeToTurn360MecanumMilliseconds = 25000;       //Ausmessen wie lange eine Umdrehung dauert 
 unsigned long timeToMove1000mmSidewaysMilliseconds = 25000;   //Ausmessen wie lange eine Umdrehung dauert
 unsigned long timeToTurn3602WheelMilliseconds = 25000;        //Ausmessen wie lange eine Umdrehung dauert
-unsigned long distancePerSecond2Wheel = 15                    //Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
+unsigned long distancePerSecond2Wheel = 15;                    //Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
 
 
 
