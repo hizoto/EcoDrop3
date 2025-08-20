@@ -9,6 +9,8 @@ int runtimeForward = 1000;
 int runtimeLeft = 500;
 int runtimeRight = 500;
 int braketime = 1000;
+unsigned long timeToTurn360MecanumMilliseconds = 25000;
+unsigned long timeToMove1000mmSidewaysMilliseconds = 25000;
 
 
 /* Pindefinitionen Motorentreiber:
@@ -27,6 +29,15 @@ int braketime = 1000;
         IN4 	Motor2 control signal
         +5V 	Voltage Reference Input, +5V OR 3.3V
 
+*/
+
+
+/*  Definition der Motoren Mecanum Räder:
+
+  [M1]------[M2] 
+
+
+  [M3]------[M4]
 */
 
 
@@ -65,12 +76,18 @@ void turnLeft2Wheel(int deg);
 void turnRight(int deg);
 void turnRightMecanum(int deg);
 void turnRight2Wheel(int deg);
+void moveLeft(int distancemm);
+void moveRight(int distancemm);
+void moveForwardParallelUntilContainer(int distanceToWall);
+void moveForwardParallelUntilContainerMecanum(int distanceToWall);
+void moveForwardParallelUntilContainer2Wheel(int distanceToWall);
 
 DC_Motor M1(B1_IN1, B1_IN2, B1_ENA); //Motor rechts
 DC_Motor M2(B1_IN3, B1_IN4, B1_ENB); //Motor links
 DC_Motor M3(B2_IN1, B2_IN2, B2_ENA);
 DC_Motor M4(B2_IN3, B2_IN4, B2_ENB);
-
+ultraschallsensor U1();
+ultraschallsensor U2();
 
 void setup() {
         
@@ -156,8 +173,84 @@ void turnRight2Wheel(int deg){
 }
 
 void turnRightMecanum(int deg){
+  unsigned long timeToTurn = (deg / 360.0) * timeToTurn360MecanumMilliseconds;
+  M2.backward(speedFast);
+  M4.backward(speedFast);
+  M1.forward(speedFast);
+  M3.forward(speedFast);
+  delay(timeToTurn);
+  M1.brake();
+  M2.brake();
+  M3.brake();
+  M4.brake();
+}
+
+void turnLeftMecanum(int deg){
+  unsigned long timeToTurn = (deg / 360.0) * timeToTurn360MecanumMilliseconds;
+  M1.backward(speedFast);
+  M3.backward(speedFast);
+  M2.forward(speedFast);
+  M4.forward(speedFast);
+  delay(timeToTurn);
+  M1.brake();
+  M2.brake();
+  M3.brake();
+  M4.brake();
+}
+
+
+void moveLeft(int distancemm){
+  if (!isMecanumWheel){
+    return;
+  }
+  unsigned long timeToMove = (distancemm / 10000) * timeToMove1000mmSidewaysMilliseconds;
+  M1.backward(speedFast);
+  M2.forward(speedFast);
+  M3.forward(speedFast);
+  M4.backward(speedFast);
+  delay(timeToMove);
+  M1.brake();
+  M2.brake();
+  M3.brake();
+  M4.brake();
+}
+
+
+void moveRight(int distancemm){
+  if (!isMecanumWheel){
+    return;
+  }
+  unsigned long timeToMove = (distancemm / 10000) * timeToMove1000mmSidewaysMilliseconds;
+  M1.forward(speedFast);
+  M2.backward(speedFast);
+  M3.backward(speedFast);
+  M4.forward(speedFast);
+  delay(timeToMove);
+  M1.brake();
+  M2.brake();
+  M3.brake();
+  M4.brake();
+}
+
+
+void moveForwardParallelUntilContainer(int distanceToWall){
+  if (isMecanumWheel){
+    moveForwardParallelUntilContainerMecanum(distanceToWall);
+  }
+  else {
+    moveForwardParallelUntilContainer2Wheel(distanceToWall);
+  }
+}
+
+
+void moveForwardParallelUntilContainerMecanum(int distanceToWall){
 
 }
+
+void moveForwardParallelUntilContainer2Wheel(int distanceToWall){
+  
+}
+
 
 class DC_Motor{
   private:
