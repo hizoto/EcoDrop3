@@ -18,8 +18,9 @@ float distancePerSecond2Wheel = 15.0;                   //TODO Ausmessen welche 
 float distancePerSecondMecanum = 15.0;
 
 
-const int inkrementDistanz = 1;
+const int incrementDistance = 1;
 const int inkrementGrad = 1;
+const int minMoveTimeMs = 20;
 
 
 /* Pindefinitionen Motorentreiber:
@@ -112,14 +113,13 @@ ultraschallsensor U1(U1_echo, U1_trig);
 ultraschallsensor U2(U2_echo, U2_trig);
 
 void setup() {
-        
+        // TODO
 }
 
 
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  schlange();
+  // TODO
 }
 
 void schlange(){
@@ -145,10 +145,12 @@ void moveForward2Wheel(int distancemm){
   unsigned long timeToDrive = (distancemm / distancePerSecond2Wheel) * 1000;
   M1.forward(speedFast);
   M2.forward(speedFast);
+  if (timeToDrive < minMoveTimeMs){
+    delay(minMoveTimeMs - timeToDrive);
+  }
   delay(timeToDrive);
   M1.brake();
   M2.brake();
-  delay(braketime);
 }
 
 void moveForwardMecanum(int distancemm){ 
@@ -157,6 +159,9 @@ void moveForwardMecanum(int distancemm){
   M2.forward(speedFast);
   M3.forward(speedFast);
   M4.forward(speedFast);
+  if (timeToDrive < minMoveTimeMs){
+    delay(minMoveTimeMs - timeToDrive);
+  }
   delay(timeToDrive);
   M1.brake();
   M2.brake();
@@ -173,14 +178,32 @@ void turnLeft(int deg){
     }
 }
 
-void turnLeft2Wheel(int deg){
-  unsigned long timeToTurn2Wheel = (deg / 360.0) * timeToTurn3602WheelMilliseconds;
-  M1.forward(speedSlow);
-  M2.backward(speedSlow);
-  delay(timeToTurn2Wheel);
+void turnLeftMecanum(int deg){
+  unsigned long timeToTurn = (deg / 360.0) * timeToTurn360MecanumMilliseconds;
+  M1.backward(speedFast);
+  M3.backward(speedFast);
+  M2.forward(speedFast);
+  M4.forward(speedFast);
+  if (timeToTurn < minMoveTimeMs){
+    delay(minMoveTimeMs - timeToTurn);
+  }
+  delay(timeToTurn);
   M1.brake();
   M2.brake();
-  delay(braketime);
+  M3.brake();
+  M4.brake();
+}
+
+void turnLeft2Wheel(int deg){
+  unsigned long timeToTurn = (deg / 360.0) * timeToTurn3602WheelMilliseconds;
+  M1.forward(speedSlow);
+  M2.backward(speedSlow);
+  if (timeToTurn < minMoveTimeMs){
+    delay(minMoveTimeMs - timeToTurn);
+  }
+  delay(timeToTurn);
+  M1.brake();
+  M2.brake();
 }
 
 void turnRight(int deg){
@@ -193,10 +216,13 @@ void turnRight(int deg){
 }
 
 void turnRight2Wheel(int deg){
-  unsigned long timeToTurn2Wheel = (deg / 360.0) * timeToTurn3602WheelMilliseconds;
+  unsigned long timeToTurn = (deg / 360.0) * timeToTurn3602WheelMilliseconds;
   M1.backward(speedSlow);
   M2.forward(speedSlow);
-  delay(timeToTurn2Wheel);
+  if (timeToTurn < minMoveTimeMs){
+    delay(minMoveTimeMs - timeToTurn);
+  }
+  delay(timeToTurn);
   M1.brake();
   M2.brake();
   delay(braketime);
@@ -208,26 +234,15 @@ void turnRightMecanum(int deg){
   M4.backward(speedFast);
   M1.forward(speedFast);
   M3.forward(speedFast);
+  if (timeToTurn < minMoveTimeMs){
+    delay(minMoveTimeMs - timeToTurn);
+  }
   delay(timeToTurn);
   M1.brake();
   M2.brake();
   M3.brake();
   M4.brake();
 }
-
-void turnLeftMecanum(int deg){
-  unsigned long timeToTurn = (deg / 360.0) * timeToTurn360MecanumMilliseconds;
-  M1.backward(speedFast);
-  M3.backward(speedFast);
-  M2.forward(speedFast);
-  M4.forward(speedFast);
-  delay(timeToTurn);
-  M1.brake();
-  M2.brake();
-  M3.brake();
-  M4.brake();
-}
-
 
 void moveLeft(int distancemm){
   if (!isMecanumWheel){
@@ -238,6 +253,9 @@ void moveLeft(int distancemm){
   M2.forward(speedFast);
   M3.forward(speedFast);
   M4.backward(speedFast);
+  if (timeToMove < minMoveTimeMs){
+    delay(minMoveTimeMs - timeToMove);
+  }
   delay(timeToMove);
   M1.brake();
   M2.brake();
@@ -255,6 +273,9 @@ void moveRight(int distancemm){
   M2.backward(speedFast);
   M3.backward(speedFast);
   M4.forward(speedFast);
+  if (timeToMove < minMoveTimeMs){
+    delay(minMoveTimeMs - timeToMove);
+  }
   delay(timeToMove);
   M1.brake();
   M2.brake();
@@ -278,6 +299,9 @@ void turnSlowRightMecanum(int distancemm){
   M2.forward(speedSlow);
   M3.forward(speedFast);
   M4.forward(speedSlow);
+  if (moveTime < minMoveTimeMs){
+    delay(minMoveTimeMs - moveTime);
+  }
   delay(moveTime);
   M1.brake();
   M2.brake();
@@ -305,6 +329,9 @@ void turnSlowLeftMecanum(int distancemm){
   M2.forward(speedFast);
   M3.forward(speedSlow);
   M4.forward(speedFast);
+  if (moveTime < minMoveTimeMs){
+    delay(minMoveTimeMs - moveTime);
+  }
   delay(moveTime);
   M1.brake();
   M2.brake();
@@ -316,7 +343,7 @@ void turnSlowLeft2Wheel(int distancemm){  //TODO
 
 }
 
-void moveToWall(int distanceToWall){  
+void moveToWall(int distanceToWall){   // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   long distanceFront = U1.getDistance();
   long distanceBack = U2.getDistance();
 
@@ -330,7 +357,7 @@ void moveToWall(int distanceToWall){
 
 }
 
-void moveToWallMecanum(int distanceToWall){
+void moveToWallMecanum(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   long distanceFront = U1.getDistance();
   long distanceBack = U2.getDistance();
 
@@ -351,7 +378,7 @@ void moveToWallMecanum(int distanceToWall){
   }
 }
 
-void moveToWall2Wheel(int distanceToWall){
+void moveToWall2Wheel(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   // TODO
 }
 
@@ -389,21 +416,21 @@ void moveForwardParallelUntilContainer(int distanceToWall){
   while (distanceBack - distanceFront < containerDepth){
     if (distanceFront > distanceBack){
       if(distanceFront - distanceBack < toleranceWheelsmm && distanceBack - distanceFront < toleranceWheelsmm){
-        moveForward(inkrementDistanz);
+        moveForward(incrementDistance);
         distanceFront = U1.getDistance();
         distanceBack = U2.getDistance();
       }
     }
     else if (distanceBack > distanceFront){
       if (distanceBack - distanceFront > toleranceWheelsmm){
-        turnSlowLeft(inkrementDistanz);
+        turnSlowLeft(incrementDistance);
         distanceFront = U1.getDistance();
         distanceBack = U2.getDistance();
       }
     }
 
     else {
-      turnSlowRight(inkrementDistanz);
+      turnSlowRight(incrementDistance);
       distanceFront = U1.getDistance();
       distanceBack = U2.getDistance();
     }
