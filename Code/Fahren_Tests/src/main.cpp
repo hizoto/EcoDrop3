@@ -8,11 +8,12 @@ const int speedSlow = 127;
 
 
 int runtimeForward = 1000;
-int runtimeLeft = 500;
-int runtimeRight = 500;
 int braketime = 1000;
-unsigned long timeToTurn360MecanumMilliseconds = 25000;
-unsigned long timeToMove1000mmSidewaysMilliseconds = 25000;
+unsigned long timeToTurn360MecanumMilliseconds = 25000;       //Ausmessen wie lange eine Umdrehung dauert 
+unsigned long timeToMove1000mmSidewaysMilliseconds = 25000;   //Ausmessen wie lange eine Umdrehung dauert
+unsigned long timeToTurn3602WheelMilliseconds = 25000;        //Ausmessen wie lange eine Umdrehung dauert
+unsigned long distancePerSecond2Wheel = 15                    //Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
+
 
 
 /* Pindefinitionen Motorentreiber:
@@ -31,6 +32,15 @@ unsigned long timeToMove1000mmSidewaysMilliseconds = 25000;
         IN4 	Motor2 control signal
         +5V 	Voltage Reference Input, +5V OR 3.3V
 
+*/
+
+
+/*  Definition der Motoren Mecanum Räder:
+
+  [M1]------[M2] 
+
+
+  [M3]------[M4]
 */
 
 
@@ -53,6 +63,9 @@ const int B2_ENA=12;
 const int B2_IN3=13;
 const int B2_IN4=14;
 const int B2_ENB=15;
+
+class DC_Motor;
+class ultraschallsensor;
 
 
 // Funktionsdefinitionen
@@ -120,9 +133,10 @@ void driveForward(int distancemm){
 }
 
 void driveForward2Wheel(int distancemm){
+  unsigned long timeToDrive = (distancemm / distancePerSecond2Wheel);
   M1.forward(speedFast);
   M2.forward(speedFast);
-  delay(runtimeForward);
+  delay(timeToDrive);
   M1.brake();
   M2.brake();
   delay(braketime);
@@ -142,9 +156,10 @@ void turnLeft(int deg){
 }
 
 void turnLeft2Wheel(int deg){
+  unsigned long timeToTurn2Wheel = (deg / 360.0) * timeToTurn3602WheelMilliseconds;
   M1.forward(speedSlow);
   M2.backward(speedSlow);
-  delay(runtimeLeft);
+  delay(timeToTurn2Wheel);
   M1.brake();
   M2.brake();
   delay(braketime);
@@ -160,9 +175,10 @@ void turnRight(int deg){
 }
 
 void turnRight2Wheel(int deg){
+  unsigned long timeToTurn2Wheel = (deg / 360.0) * timeToTurn3602WheelMilliseconds;
   M1.backward(speedSlow);
   M2.forward(speedSlow);
-  delay(runtimeRight);
+  delay(timeToTurn2Wheel);
   M1.brake();
   M2.brake();
   delay(braketime);
@@ -216,7 +232,7 @@ void moveRight(int distancemm){
   if (!isMecanumWheel){
     return;
   }
-  unsigned long timeToMove = (distancemm / 10000) * timeToMove1000mmSidewaysMilliseconds;
+  unsigned long timeToMove = (distancemm / 1000.0) * timeToMove1000mmSidewaysMilliseconds;
   M1.forward(speedFast);
   M2.backward(speedFast);
   M3.backward(speedFast);
