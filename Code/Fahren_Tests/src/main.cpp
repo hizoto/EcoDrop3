@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include "dc_motor.h"
+#include "ultraschall.h"
 
 const bool isMecanumWheel = false;
 const int speedFast = 255;
@@ -70,60 +72,6 @@ void moveForwardParallelUntilContainer(int distanceToWall);
 void moveForwardParallelUntilContainerMecanum(int distanceToWall);
 void moveForwardParallelUntilContainer2Wheel(int distanceToWall);
 
-
-// Klassendefinitionen
-
-class DC_Motor{
-  private:
-    int IN1;
-    int IN2;
-    int ENA;
-  public:
-    DC_Motor(int _IN1, int _IN2, int _ENA){
-      IN1 = _IN1;
-      IN2 = _IN2;
-      ENA = _ENA;
-      pinMode(IN1, OUTPUT);
-      pinMode(IN2, OUTPUT);
-      pinMode(ENA, OUTPUT);
-    }
-
-    void brake(){
-      digitalWrite(IN1, LOW);
-      digitalWrite(IN2, LOW);
-    }
-
-    void forward(int speed){
-      digitalWrite(IN1, HIGH);
-      digitalWrite(IN2, LOW);
-      analogWrite(ENA, speed);
-
-    }
-
-    void backward(int speed){
-      digitalWrite(IN1, LOW);
-      digitalWrite(IN2, HIGH);
-      analogWrite(ENA, speed);
-    }
-};
-
-
-
-class ultraschallsensor{
-  private:
-    int echo;
-    int trig;
-
-  public:
-    ultraschallsensor(int _echo, int _trig){
-      echo = _echo;
-      trig = _trig;  
-    }
-
-    unsigned long getDistance(){
-
-    }
-};
 
 
 /*  Definition der Motoren Mecanum Räder:
