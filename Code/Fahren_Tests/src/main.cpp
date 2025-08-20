@@ -10,7 +10,6 @@ const int toleranceWheelsmm = 1;
 const int containerDepth = 20;
 
 int runtimeForward = 1000;
-int braketime = 1000;
 unsigned long timeToTurn360MecanumMilliseconds = 25000;       //TODO Ausmessen wie lange eine Umdrehung dauert 
 unsigned long timeToMove1000mmSidewaysMilliseconds = 25000;   //TODO Ausmessen wie lange eine Umdrehung dauert
 unsigned long timeToTurn3602WheelMilliseconds = 25000;        //TODO Ausmessen wie lange eine Umdrehung dauert
@@ -99,9 +98,9 @@ void turnSlowRight2Wheel(int distancemm);
 void turnSlowLeft(int distancemm);
 void turnSlowLeftMecanum(int distancemm);
 void turnSlowLeft2Wheel(int distancemm);
-void moveToWall(int distanceToWall);
-void moveToWallMecanum(int distanceToWall);
-void moveToWall2Wheel(int distanceToWall);
+void moveToRightWall(int distanceToWall);
+void moveToRightWallMecanum(int distanceToWall);
+void moveToRightWall2Wheel(int distanceToWall);
 void goParallel();
 
 
@@ -225,7 +224,6 @@ void turnRight2Wheel(int deg){
   delay(timeToTurn);
   M1.brake();
   M2.brake();
-  delay(braketime);
 }
 
 void turnRightMecanum(int deg){
@@ -343,21 +341,21 @@ void turnSlowLeft2Wheel(int distancemm){  //TODO
 
 }
 
-void moveToWall(int distanceToWall){   // nach rechts bewegen bis in gewünschtem Abstand zur Wand
+void moveToRightWall(int distanceToWall){   // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   long distanceFront = U1.getDistance();
   long distanceBack = U2.getDistance();
 
   if (isMecanumWheel){
-    moveToWallMecanum(distanceToWall);
+    moveToRightWallMecanum(distanceToWall);
   }
 
   else {
-    moveToWall2Wheel(distanceToWall);
+    moveToRightWall2Wheel(distanceToWall);
   }
 
 }
 
-void moveToWallMecanum(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
+void moveToRightWallMecanum(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   long distanceFront = U1.getDistance();
   long distanceBack = U2.getDistance();
 
@@ -378,7 +376,7 @@ void moveToWallMecanum(int distanceToWall){  // nach rechts bewegen bis in gewü
   }
 }
 
-void moveToWall2Wheel(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
+void moveToRightWall2Wheel(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   // TODO
 }
 
@@ -407,10 +405,16 @@ void moveForwardParallelUntilContainer(int distanceToWall){
   // abstandserfassung
   long distanceFront = U1.getDistance();
   long distanceBack = U2.getDistance();
+  
   // INITIAL PARALLELIZATION
   goParallel();
+
   // Move to wall distance
-  moveToWall(distanceToWall);
+  moveToRightWall(distanceToWall);
+
+  goParallel();
+  distanceFront = U1.getDistance();
+  distanceBack = U2.getDistance();
 
   // Main Logic of the function
   while (distanceBack - distanceFront < containerDepth){
