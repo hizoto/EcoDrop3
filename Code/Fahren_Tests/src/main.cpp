@@ -83,13 +83,13 @@ void loop() {
 }
 
 void schlange(){
-  turnLeft();
-  driveForward();
-  turnRight();
-  driveForward();
-  turnRight();
-  driveForward();
-  turnLeft();
+  turnLeft(90);
+  driveForward(50);
+  turnRight(90);
+  driveForward(50);
+  turnRight(90);
+  driveForward(50);
+  turnLeft(90);
 }
 
 void driveForward(int distancemm){
@@ -115,7 +115,7 @@ void driveForwardMecanum(int distancemm){
 }
 
 void turnLeft(int deg){
-    if(isMecanumWheels){
+    if(isMecanumWheel){
         turnLeftMecanum(deg);
     }
     else{
@@ -137,7 +137,7 @@ void turnLeftMecanum(int deg){
 }
 
 void turnRight(int deg){
-    if(isMecanumWheels){
+    if(isMecanumWheel){
         turnRightMecanum(deg);
     }
     else{
