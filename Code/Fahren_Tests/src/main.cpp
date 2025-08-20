@@ -32,15 +32,6 @@ unsigned long timeToMove1000mmSidewaysMilliseconds = 25000;
 */
 
 
-/*  Definition der Motoren Mecanum Räder:
-
-  [M1]------[M2] 
-
-
-  [M3]------[M4]
-*/
-
-
 // Motor 1
 const int B1_IN1=5;
 const int B1_IN2=4;
@@ -61,9 +52,6 @@ const int B2_IN3=13;
 const int B2_IN4=14;
 const int B2_ENB=15;
 
-class DC_Motor;
-class ultraschallsensor;
-
 
 // Funktionsdefinitionen
 void schlange();
@@ -81,6 +69,70 @@ void moveRight(int distancemm);
 void moveForwardParallelUntilContainer(int distanceToWall);
 void moveForwardParallelUntilContainerMecanum(int distanceToWall);
 void moveForwardParallelUntilContainer2Wheel(int distanceToWall);
+
+
+// Klassendefinitionen
+
+class DC_Motor{
+  private:
+    int IN1;
+    int IN2;
+    int ENA;
+  public:
+    DC_Motor(int _IN1, int _IN2, int _ENA){
+      IN1 = _IN1;
+      IN2 = _IN2;
+      ENA = _ENA;
+      pinMode(IN1, OUTPUT);
+      pinMode(IN2, OUTPUT);
+      pinMode(ENA, OUTPUT);
+    }
+
+    void brake(){
+      digitalWrite(IN1, LOW);
+      digitalWrite(IN2, LOW);
+    }
+
+    void forward(int speed){
+      digitalWrite(IN1, HIGH);
+      digitalWrite(IN2, LOW);
+      analogWrite(ENA, speed);
+
+    }
+
+    void backward(int speed){
+      digitalWrite(IN1, LOW);
+      digitalWrite(IN2, HIGH);
+      analogWrite(ENA, speed);
+    }
+};
+
+
+
+class ultraschallsensor{
+  private:
+    int echo;
+    int trig;
+
+  public:
+    ultraschallsensor(int _echo, int _trig){
+      echo = _echo;
+      trig = _trig;  
+    }
+
+    unsigned long getDistance(){
+
+    }
+};
+
+
+/*  Definition der Motoren Mecanum Räder:
+
+  [M1]------[M2] 
+
+
+  [M3]------[M4]
+*/
 
 DC_Motor M1(B1_IN1, B1_IN2, B1_ENA); //Motor rechts
 DC_Motor M2(B1_IN3, B1_IN4, B1_ENB); //Motor links
@@ -150,10 +202,6 @@ void turnLeft2Wheel(int deg){
   delay(braketime);
 }
 
-void turnLeftMecanum(int deg){
-
-}
-
 void turnRight(int deg){
     if(isMecanumWheel){
         turnRightMecanum(deg);
@@ -203,7 +251,7 @@ void moveLeft(int distancemm){
   if (!isMecanumWheel){
     return;
   }
-  unsigned long timeToMove = (distancemm / 10000) * timeToMove1000mmSidewaysMilliseconds;
+  unsigned long timeToMove = (distancemm / 1000.0) * timeToMove1000mmSidewaysMilliseconds;
   M1.backward(speedFast);
   M2.forward(speedFast);
   M3.forward(speedFast);
@@ -252,54 +300,3 @@ void moveForwardParallelUntilContainer2Wheel(int distanceToWall){
 }
 
 
-class DC_Motor{
-  private:
-    int IN1;
-    int IN2;
-    int ENA;
-  public:
-    DC_Motor(int _IN1, int _IN2, int _ENA){
-      IN1 = _IN1;
-      IN2 = _IN2;
-      ENA = _ENA;
-      pinMode(IN1, OUTPUT);
-      pinMode(IN2, OUTPUT);
-      pinMode(ENA, OUTPUT);
-    }
-
-    void brake(){
-      digitalWrite(IN1, LOW);
-      digitalWrite(IN2, LOW);
-    }
-
-    void forward(int speed){
-      digitalWrite(IN1, HIGH);
-      digitalWrite(IN2, LOW);
-      analogWrite(ENA, speed);
-
-    }
-
-    void backward(int speed){
-      digitalWrite(IN1, LOW);
-      digitalWrite(IN2, HIGH);
-      analogWrite(ENA, speed);
-    }
-};
-
-
-
-class ultraschallsensor{
-  private:
-    int echo;
-    int trig;
-
-  public:
-    ultraschallsensor(int _echo, int _trig){
-      echo = _echo;
-      trig = _trig;  
-    }
-
-    unsigned long getDistance(){
-
-    }
-};
