@@ -97,14 +97,6 @@ void turnSlowLeftMecanum(int distancemm);
 void turnSlowLeft2Wheel(int distancemm);
 
 
-/*  Definition der Motoren Mecanum Räder:
-
-  [M1]------[M2] 
-
-
-  [M3]------[M4]
-*/
-
 DC_Motor M1(B1_IN1, B1_IN2, B1_ENA); //Motor rechts
 DC_Motor M2(B1_IN3, B1_IN4, B1_ENB); //Motor links
 DC_Motor M3(B2_IN1, B2_IN2, B2_ENA);
