@@ -64,9 +64,6 @@ const int B2_IN3=13;
 const int B2_IN4=14;
 const int B2_ENB=15;
 
-class DC_Motor;
-class ultraschallsensor;
-
 
 // Funktionsdefinitionen
 void schlange();
@@ -86,14 +83,6 @@ void moveForwardParallelUntilContainerMecanum(int distanceToWall);
 void moveForwardParallelUntilContainer2Wheel(int distanceToWall);
 
 
-
-/*  Definition der Motoren Mecanum Räder:
-
-  [M1]------[M2] 
-
-
-  [M3]------[M4]
-*/
 
 DC_Motor M1(B1_IN1, B1_IN2, B1_ENA); //Motor rechts
 DC_Motor M2(B1_IN3, B1_IN4, B1_ENB); //Motor links
