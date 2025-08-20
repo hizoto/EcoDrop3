@@ -6,6 +6,6 @@ ultraschallsensor::ultraschallsensor(int _echo, int _trig){
 }
 
 unsigned long ultraschallsensor::getDistance(){
-    unsigned long distance = 5555;
-    return distance;
+    unsigned long distancemm = 5555;
+    return distancemm;
 }
