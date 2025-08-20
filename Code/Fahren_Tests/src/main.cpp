@@ -51,6 +51,7 @@ const int B2_IN4=14;
 const int B2_ENB=15;
 
 class DC_Motor;
+class ultraschallsensor;
 
 
 // Funktionsdefinitionen
@@ -189,5 +190,23 @@ class DC_Motor{
       digitalWrite(IN1, LOW);
       digitalWrite(IN2, HIGH);
       analogWrite(ENA, speed);
+    }
+};
+
+
+
+class ultraschallsensor{
+  private:
+    int echo;
+    int trig;
+
+  public:
+    ultraschallsensor(int _echo, int _trig){
+      echo = _echo;
+      trig = _trig;  
+    }
+
+    unsigned long getDistance(){
+
     }
 };
