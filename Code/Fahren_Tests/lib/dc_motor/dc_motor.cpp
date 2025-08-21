@@ -13,6 +13,7 @@ DC_Motor::DC_Motor(int _IN1, int _IN2, int _ENA){
 void DC_Motor::brake(){
     digitalWrite(IN1, LOW);
     digitalWrite(IN2, LOW);
+    analogWrite(ENA, 0);
 }
 
 void DC_Motor::forward(int speed){
