@@ -9,15 +9,15 @@ const int toleranceToWallmm = 15;
 const int toleranceWheelsmm = 1;
 const int containerDepth = 20;
 
-unsigned long timeToTurn360MecanumMilliseconds = 25000;       //TODO Ausmessen wie lange eine Umdrehung dauert 
-unsigned long timeToMove1000mmSidewaysMilliseconds = 25000;   //TODO Ausmessen wie lange eine Umdrehung dauert
-unsigned long timeToTurn3602WheelMilliseconds = 25000;        //TODO Ausmessen wie lange eine Umdrehung dauert
-unsigned long timeToMove1000mmMecanum = 25000;
-unsigned long timeToMove1000mm2Wheel = 25000;
+unsigned long timeToTurn360MecanumMilliseconds = 5700;       
+unsigned long timeToMove1000mmSidewaysMilliseconds = 10000;   //TODO Ausmessen wie lange eine Umdrehung dauert
+unsigned long timeToTurn3602WheelMilliseconds = 5700;        //TODO Ausmessen wie lange eine Umdrehung dauert
+unsigned long timeToMove1000mmMecanum = 5720;
+unsigned long timeToMove1000mm2Wheel = 5720;                  //TODO
 
 
-float distancePerSecond2Wheel = 1000 / (timeToMove1000mm2Wheel * 1000.0);                         //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
-float distancePerSecondMecanum = 1000 / (timeToMove1000mmMecanum * 1000.0);                       //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
+float distancePerSecond2Wheel = 1000 / (timeToMove1000mm2Wheel / 1000.0);                         //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
+float distancePerSecondMecanum = 1000 / (timeToMove1000mmMecanum / 1000.0);                       //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
 
 
 const int incrementDistance = 1;
@@ -117,23 +117,37 @@ ultraschallsensor U2(U2_echo, U2_trig);
 
 void setup() {
         // TODO
+  delay(2000);
 }
 
 
 
 void loop() {
   // TODO
-  moveForward(1000);
+  schlange();
 }
 
 void schlange(){
+  // hinweg
   turnLeft(90);
-  moveForward(50);
+  moveForward(200);
   turnRight(90);
-  moveForward(50);
+  moveForward(200);
   turnRight(90);
-  moveForward(50);
+  moveForward(200);
   turnLeft(90);
+  turnLeft(180);
+
+  // rückweg
+  
+  turnLeft(90);
+  moveForward(200);
+  turnRight(90);
+  moveForward(200);
+  turnRight(90);
+  moveForward(200);
+  turnLeft(90);
+  turnRight(180);
 }
 
 // Fährt vorwärts, Distanz in mm
