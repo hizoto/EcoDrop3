@@ -9,6 +9,14 @@ ultraschallsensor::ultraschallsensor(int _echo, int _trig){
 }
 
 unsigned long ultraschallsensor::getDistance(){
-    unsigned long distancemm = 5555;
+    long distancemm, duration;
+    digitalWrite(trig, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trig, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trig, LOW);
+    duration = pulseIn(echo, HIGH);
+    distancemm = (duration / 2) / 291;
+
     return distancemm;
 }
