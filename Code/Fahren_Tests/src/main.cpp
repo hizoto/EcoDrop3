@@ -2,19 +2,22 @@
 #include "dc_motor.h"
 #include "ultraschall.h"
 
-const bool isMecanumWheel = false;
+const bool isMecanumWheel = true;
 const int speedFast = 255;
 const int speedSlow = 127;
 const int toleranceToWallmm = 15;
 const int toleranceWheelsmm = 1;
 const int containerDepth = 20;
 
-int runtimeForward = 1000;
 unsigned long timeToTurn360MecanumMilliseconds = 25000;       //TODO Ausmessen wie lange eine Umdrehung dauert 
 unsigned long timeToMove1000mmSidewaysMilliseconds = 25000;   //TODO Ausmessen wie lange eine Umdrehung dauert
 unsigned long timeToTurn3602WheelMilliseconds = 25000;        //TODO Ausmessen wie lange eine Umdrehung dauert
-float distancePerSecond2Wheel = 15.0;                         //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
-float distancePerSecondMecanum = 15.0;                        //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
+unsigned long timeToMove1000mmMecanum = 25000;
+unsigned long timeToMove1000mm2Wheel = 25000;
+
+
+float distancePerSecond2Wheel = 1000 / (timeToMove1000mm2Wheel * 1000.0);                         //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
+float distancePerSecondMecanum = 1000 / (timeToMove1000mmMecanum * 1000.0);                       //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
 
 
 const int incrementDistance = 1;
@@ -52,32 +55,32 @@ const int minMoveTimeMs = 20;
 
 
 // Motor 1
-const int B1_IN1 = 5;
-const int B1_IN2 = 4;
-const int B1_ENA = 6;
+const int B1_IN1 = 6;
+const int B1_IN2 = 7;
+const int B1_ENA = 2;
 
 // Motor 2
 const int B1_IN3 = 8;
-const int B1_IN4 = 7;
-const int B1_ENB = 9;
+const int B1_IN4 = 9;
+const int B1_ENB = 3;
 
 // Motor 3
 const int B2_IN1 = 10;
 const int B2_IN2 = 11;
-const int B2_ENA = 12;
+const int B2_ENA = 4;
 
 // Motor 4
-const int B2_IN3 = 13;
-const int B2_IN4 = 14;
-const int B2_ENB = 15;
+const int B2_IN3 = 12;
+const int B2_IN4 = 13;
+const int B2_ENB = 5;
 
-// Ultraschallsensor 1
-const int U1_trig = 16;
-const int U1_echo = 17;
+// Ultraschallsensor 1 Vorn
+const int U1_trig = 23;
+const int U1_echo = 25;
 
-// Ultraschallsensor 2
-const int U2_trig = 18;
-const int U2_echo = 19;
+// Ultraschallsensor 2 Hinten
+const int U2_trig = 22;
+const int U2_echo = 24;
 
 // Funktionsdefinitionen
 void schlange();
@@ -120,6 +123,7 @@ void setup() {
 
 void loop() {
   // TODO
+  moveForward(1000);
 }
 
 void schlange(){
