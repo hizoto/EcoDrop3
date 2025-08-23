@@ -8,6 +8,7 @@ ultraschallsensor::ultraschallsensor(int _echo, int _trig){
     pinMode(trig, OUTPUT);
 }
 
+// Distanz in mm
 unsigned long ultraschallsensor::getDistance(){
     long distancemm, duration;
     digitalWrite(trig, LOW);

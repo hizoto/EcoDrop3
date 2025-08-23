@@ -132,6 +132,7 @@ void schlange(){
   turnLeft(90);
 }
 
+// Fährt vorwärts, Distanz in mm
 void moveForward(int distancemm){
     if(isMecanumWheel){
         moveForwardMecanum(distancemm);
