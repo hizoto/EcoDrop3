@@ -9,15 +9,22 @@ ultraschallsensor::ultraschallsensor(int _echo, int _trig){
 }
 
 // Distanz in mm
-unsigned long ultraschallsensor::getDistance(){
-    long distancemm, duration;
+unsigned long ultraschallsensor::getDistance() {
+    unsigned long duration;
+    unsigned long distancemm;
+
+    // Trigger-Puls
     digitalWrite(trig, LOW);
     delayMicroseconds(2);
     digitalWrite(trig, HIGH);
     delayMicroseconds(10);
     digitalWrite(trig, LOW);
+
+    // Echo-Zeit messen (µs)
     duration = pulseIn(echo, HIGH);
-    distancemm = (duration / 2) / 291;
+
+    // Umrechnen: 1 µs ≈ 0.343 mm Hin- und Rückweg, daher /2
+    distancemm = (duration * 343) / 2000;  // = duration * 0.343 / 2
 
     return distancemm;
 }

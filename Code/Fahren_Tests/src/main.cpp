@@ -5,8 +5,10 @@
 const bool isMecanumWheel = true;
 const int speedFast = 255;
 const int speedSlow = 127;
+// Toleranz Wandabstand
 const int toleranceToWallmm = 15;
-const int toleranceWheelsmm = 1;
+// Toleranz für parallelität
+const int toleranceWheelsmm = 5;
 const int containerDepth = 20;
 
 unsigned long timeToTurn360MecanumMilliseconds = 5700;       
@@ -22,7 +24,7 @@ float distancePerSecondMecanum = 1000 / (timeToMove1000mmMecanum / 1000.0);     
 
 const int incrementDistance = 1;
 const int inkrementGrad = 1;
-const int minMoveTimeMs = 20;
+const int minMoveTimeMs = 10;
 
 // testest
 
@@ -117,6 +119,7 @@ ultraschallsensor U2(U2_echo, U2_trig);
 
 void setup() {
         // TODO
+  Serial.begin(9600);
   delay(2000);
 }
 
@@ -124,7 +127,16 @@ void setup() {
 
 void loop() {
   // TODO
-  schlange();
+  moveForwardParallelUntilContainer(100);
+  //schlange();
+  /*
+  Serial.print("Distanz vorne: ");
+  Serial.println(U1.getDistance());
+  delay(1000);
+  Serial.print("Distanz hinten: ");
+  Serial.println(U2.getDistance());
+  delay(1000);
+  */
 }
 
 void schlange(){
@@ -379,9 +391,6 @@ void turnSlowLeft2Wheel(int distancemm){
 
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
 void moveToRightWall(int distanceToWall){   // nach rechts bewegen bis in gewünschtem Abstand zur Wand
-  long distanceFront = U1.getDistance();
-  long distanceBack = U2.getDistance();
-
   if (isMecanumWheel){
     moveToRightWallMecanum(distanceToWall);
   }
@@ -395,13 +404,11 @@ void moveToRightWall(int distanceToWall){   // nach rechts bewegen bis in gewün
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
 void moveToRightWallMecanum(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   long distanceFront = U1.getDistance();
-  long distanceBack = U2.getDistance();
 
   if (distanceFront > distanceToWall){
     while (distanceFront > distanceToWall){
       moveRight(1);
       distanceFront = U1.getDistance();
-      distanceBack = U2.getDistance();
     }
   }
 
@@ -409,7 +416,6 @@ void moveToRightWallMecanum(int distanceToWall){  // nach rechts bewegen bis in 
     while (distanceFront < distanceToWall){
       moveLeft(1);
       distanceFront = U1.getDistance();
-      distanceBack = U2.getDistance();
     }
   }
 }
