@@ -308,8 +308,16 @@ void turnSlowRightMecanum(int distancemm){
   M4.brake();
 }
 
-void turnSlowRight2Wheel(int distancemm){ //TODO
-
+void turnSlowRight2Wheel(int distancemm){ 
+  unsigned long moveTime = (distancemm * 1000) / distancePerSecondMecanum; 
+  M1.forward(speedFast);
+  M2.forward(speedSlow);
+  if (moveTime < minMoveTimeMs){
+    delay(minMoveTimeMs - moveTime);
+  }
+  delay(moveTime);
+  M1.brake();
+  M2.brake();
 }
 
 void turnSlowLeft(int distancemm){ 
@@ -338,10 +346,19 @@ void turnSlowLeftMecanum(int distancemm){
   M4.brake();
 }
 
-void turnSlowLeft2Wheel(int distancemm){  //TODO
-
+void turnSlowLeft2Wheel(int distancemm){  
+  unsigned long moveTime = (distancemm * 1000) / distancePerSecondMecanum; 
+  M1.forward(speedSlow);
+  M2.forward(speedFast);
+  if (moveTime < minMoveTimeMs){
+    delay(minMoveTimeMs - moveTime);
+  }
+  delay(moveTime);
+  M1.brake();
+  M2.brake();
 }
 
+// nach rechts bewegen bis in gewünschtem Abstand zur Wand
 void moveToRightWall(int distanceToWall){   // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   long distanceFront = U1.getDistance();
   long distanceBack = U2.getDistance();
@@ -356,6 +373,7 @@ void moveToRightWall(int distanceToWall){   // nach rechts bewegen bis in gewün
 
 }
 
+// nach rechts bewegen bis in gewünschtem Abstand zur Wand
 void moveToRightWallMecanum(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   long distanceFront = U1.getDistance();
   long distanceBack = U2.getDistance();
@@ -377,8 +395,20 @@ void moveToRightWallMecanum(int distanceToWall){  // nach rechts bewegen bis in 
   }
 }
 
-void moveToRightWall2Wheel(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
-  // TODO
+// nach rechts bewegen bis in gewünschtem Abstand zur Wand
+void moveToRightWall2Wheel(int distanceToWall){  
+  long distanceToMove = U1.getDistance() - distanceToWall;
+  if (distanceToMove > 0){
+    turnRight(90);
+    moveForward(distanceToMove);
+    turnLeft(90);
+  }
+  else if (distanceToMove < 0){
+    distanceToMove *= -1;
+    turnLeft(90);
+    moveForward(distanceToMove);
+    turnRight(90);
+  }
 }
 
 void goParallel(){
