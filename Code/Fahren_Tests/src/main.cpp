@@ -24,7 +24,7 @@ float distancePerSecondMecanum = 1000 / (timeToMove1000mmMecanum / 1000.0);     
 
 const int incrementDistance = 1;
 const int inkrementGrad = 1;
-const int minMoveTimeMs = 10;
+const int minMoveTimeMs = 5;
 
 // testest
 
@@ -67,14 +67,14 @@ const int B1_IN4 = 9;
 const int B1_ENB = 3;
 
 // Motor 3
-const int B2_IN1 = 10;
-const int B2_IN2 = 11;
-const int B2_ENA = 4;
+const int B2_IN1 = 10; 
+const int B2_IN2 = 11; 
+const int B2_ENA = 4; 
 
 // Motor 4
-const int B2_IN3 = 12;
-const int B2_IN4 = 13;
-const int B2_ENB = 5;
+const int B2_IN3 = 30; 
+const int B2_IN4 = 32; 
+const int B2_ENB = 12; 
 
 // Ultraschallsensor 1 Vorn
 const int U1_trig = 23;
@@ -110,8 +110,8 @@ void moveToRightWall2Wheel(int distanceToWall);
 void goParallel();
 
 
-DC_Motor M1(B1_IN1, B1_IN2, B1_ENA); //Motor rechts
-DC_Motor M2(B1_IN3, B1_IN4, B1_ENB); //Motor links
+DC_Motor M1(B1_IN1, B1_IN2, B1_ENA); // 2-Rad: Motor rechts
+DC_Motor M2(B1_IN3, B1_IN4, B1_ENB); // 2-Rad: Motor links
 DC_Motor M3(B2_IN1, B2_IN2, B2_ENA);
 DC_Motor M4(B2_IN3, B2_IN4, B2_ENB);
 ultraschallsensor U1(U1_echo, U1_trig);
@@ -474,14 +474,13 @@ void moveForwardParallelUntilContainer(int distanceToWall){
 
   // Main Logic of the function
   while (distanceBack - distanceFront < containerDepth){
-    if (distanceFront > distanceBack){
-      if(distanceFront - distanceBack < toleranceWheelsmm && distanceBack - distanceFront < toleranceWheelsmm){
-        moveForward(incrementDistance);
-        distanceFront = U1.getDistance();
-        distanceBack = U2.getDistance();
-      }
+    if (distanceFront - distanceBack < toleranceWheelsmm || distanceBack - distanceFront < toleranceWheelsmm){
+      moveForward(incrementDistance);
+      distanceFront = U1.getDistance();
+      distanceBack = U2.getDistance();
+      
     }
-    else if (distanceBack > distanceFront){
+    else if (distanceBack - distanceFront > toleranceWheelsmm){
       if (distanceBack - distanceFront > toleranceWheelsmm){
         turnSlowLeft(incrementDistance);
         distanceFront = U1.getDistance();
