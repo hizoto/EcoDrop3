@@ -8,5 +8,7 @@ The goal of this project ist to create an autonomous robot, which can collect 6 
 
 # VS-Code Extensions to use
 - Platformio
+- ToDo Tree
+- GitLens
 
 
