@@ -20,6 +20,10 @@ There are also multiple sensors using I2C:
 - Voltage and Current Sensor INA 3221 
 - Pixycam V2.0
 - BME280 Temp + Humidity Sensor
+- AS5600 Inductive Encoder Front Left
+- AS5600 Inductive Encoder Front Right
+- AS5600 Inductive Encoder Back Left
+- AS5600 Inductive Encoder Back Right
 
 
 
