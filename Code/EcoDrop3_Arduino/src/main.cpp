@@ -14,4 +14,12 @@ void setup() {
 
 void loop() {
     getComm(&currentStep);
+    switch(currentStep){
+        // idle
+        case 0:
+            break;
+        // kann noch genau definiert werden oder von Flowchart übernommen werden. Kommunikation ist notwendig.
+        case 1:
+            break;
+    }
 }
