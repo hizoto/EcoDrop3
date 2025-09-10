@@ -15,5 +15,8 @@ class DC_Motor{
     void backward(int speed);
 };
 
+
+void turnRight();
+
 #endif
 
