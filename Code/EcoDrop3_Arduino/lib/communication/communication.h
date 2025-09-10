@@ -6,3 +6,5 @@ void logMessage();
 void startComm();
 
 void handleCommand(const String& cmd);
+
+void sendStepFinished(int step);

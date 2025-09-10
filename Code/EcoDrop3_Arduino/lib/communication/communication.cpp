@@ -33,3 +33,8 @@ void handleCommand(const String& cmd, int* stp) {
         logMessage("[WARNUNG] unbekannter Befehl!!");
     }
 }
+
+void sendStepFinished(int step){
+    Serial.print("[FINISHED]");
+    Serial.println(step);
+}
