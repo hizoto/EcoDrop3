@@ -11,7 +11,7 @@ void getComm(int* stp){
 }
 
 void logMessage(const char* msg){
-  Serial.print("[LOG] ");
+  Serial.print("[LOG]");
   Serial.println(msg);
 }
 

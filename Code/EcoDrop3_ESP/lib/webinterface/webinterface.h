@@ -1,0 +1,1 @@
+void logToWebinterface(String log);
