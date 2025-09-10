@@ -21,19 +21,26 @@ void getComm(int& currentStep, int& lastFinishedStep){
         if (msg.startsWith("[FINISHED]")){
             lastFinishedStep = msg.substring(10).toInt();
         }
+        
         else if (msg.startsWith("[STARTED]")){
             currentStep = msg.substring(9).toInt();
         }
+
         else if (msg.startsWith("[LOG]")){
             String logmsg = msg.substring(5);
             logToWebinterface(logmsg);
         }
+
         else {
+            logToWebinterface(" ");
+            logToWebinterface("****************************************");
             logToWebinterface("!!! CRITICAL ERROR !!!");
             logToWebinterface("RECEIVED UNKNOWN MESSAGE FROM ARDUINO:");
             logToWebinterface(msg);
             Serial.print("unknown communication received : ");
             Serial.println(msg);
+            logToWebinterface("****************************************");
+            logToWebinterface(" ");
         }
     }
 }
