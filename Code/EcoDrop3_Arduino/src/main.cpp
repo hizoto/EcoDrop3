@@ -10,6 +10,7 @@ int currentStep = 0;
 
 
 void setup() {
+    void startComm();
 }
 
 void loop() {
