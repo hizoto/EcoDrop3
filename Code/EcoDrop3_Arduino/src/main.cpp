@@ -22,5 +22,7 @@ void loop() {
         // kann noch genau definiert werden oder von Flowchart übernommen werden. Kommunikation ist notwendig.
         case 1:
             break;
-    }
+    }    
+    sendStepFinished(currentStep);
+    currentStep = 0;
 }

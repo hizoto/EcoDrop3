@@ -27,7 +27,8 @@ void handleCommand(const String& cmd, int* stp) {
 
         *stp = numPart.toInt();
         
-        // hier evtl. Acknoledgement senden
+        // hier evtl. Acknowledgement senden
+        sendStepStarted(*stp);
     }
     else {
         logMessage("[WARNUNG] unbekannter Befehl!!");
@@ -36,5 +37,10 @@ void handleCommand(const String& cmd, int* stp) {
 
 void sendStepFinished(int step){
     Serial.print("[FINISHED]");
+    Serial.println(step);
+}
+
+void sendStepStarted(int step){
+    Serial.print("[STARTED]");
     Serial.println(step);
 }
