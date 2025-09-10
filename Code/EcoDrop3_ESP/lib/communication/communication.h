@@ -1,2 +1,2 @@
 void startComm();
-bool getComm(int& currentStep, int& lastFinishedStep);
+void getComm(int& currentStep, int& lastFinishedStep);

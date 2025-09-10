@@ -16,10 +16,10 @@ void getComm(int& currentStep, int& lastFinishedStep){
         String msg = Serial2.readStringUntil('\n');
         msg.trim();
         if (msg.startsWith("[FINISHED]")){
-            *lastFinishedStep = msg.substring(10).toInt();
+            lastFinishedStep = msg.substring(10).toInt();
         }
         else if (msg.startsWith("[STARTED]")){
-            *currentStep = msg.substring(9).toInt();
+            currentStep = msg.substring(9).toInt();
         }
     }
 }
