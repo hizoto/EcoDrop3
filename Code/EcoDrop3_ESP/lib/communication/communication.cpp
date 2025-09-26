@@ -14,6 +14,7 @@ void startComm(){
     ArduinoSlave.begin(115200, SERIAL_8N1, RX_PIN, TX_PIN);
     delay(3000);
     logToWebinterface("Serial communication ready.");
+    Serial.println("Serial communication started.");
 }
 
 void getComm(int& currentStep, int& lastFinishedStep){
