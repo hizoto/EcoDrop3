@@ -3,7 +3,8 @@
 #include <ESPAsyncWebServer.h>
 #include <LittleFS.h>
 #include "webinterface.h"
-#include "secrets.h"
+#include "../../include/secrets.h"
+#include "datenerfassung.h"
 
 void logToWebinterface(String log){
     delay(10);
@@ -38,4 +39,9 @@ void startWebinterface() {
   });
 
   server.begin();
+}
+
+
+void refreshWebinterface(){
+  //TODO
 }

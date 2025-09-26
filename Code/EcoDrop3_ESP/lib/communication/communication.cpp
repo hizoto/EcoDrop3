@@ -4,14 +4,15 @@
 
 
 // UART für Arduino
-#define RX_PIN 16   // an Arduino TX
-#define TX_PIN 17   // an Arduino RX
+#define RX_PIN D8   // an Arduino TX
+#define TX_PIN D9   // an Arduino RX
 
 HardwareSerial& Arduino = Serial2;
 
 void startComm(){
     Serial.begin(19200);
     Arduino.begin(19200, SERIAL_8N1, RX_PIN, TX_PIN);
+    logToWebinterface("Serial communication ready.");
 }
 
 void getComm(int& currentStep, int& lastFinishedStep){
