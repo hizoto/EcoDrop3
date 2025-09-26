@@ -17,7 +17,9 @@ void startWebinterface() {
     Serial.println("LittleFS Mount fehlgeschlagen");
     return;
   }
-
+  WiFi.mode(WIFI_OFF);
+  delay(100);
+  WiFi.mode(WIFI_AP);
   
   // Access Point starten
   WiFi.softAP(ssid, password);
