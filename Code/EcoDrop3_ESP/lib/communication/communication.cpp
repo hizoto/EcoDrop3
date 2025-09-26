@@ -7,16 +7,17 @@
 #define RX_PIN D8   // an Arduino TX
 #define TX_PIN D9   // an Arduino RX
 
-HardwareSerial& Arduino = Serial2;
+HardwareSerial& ArduinoSlave = Serial2;
 
 void startComm(){
-    Serial.begin(19200);
-    Arduino.begin(19200, SERIAL_8N1, RX_PIN, TX_PIN);
+    Serial.begin(115200);
+    ArduinoSlave.begin(115200, SERIAL_8N1, RX_PIN, TX_PIN);
+    delay(3000);
     logToWebinterface("Serial communication ready.");
 }
 
 void getComm(int& currentStep, int& lastFinishedStep){
-    if (Arduino.available()) {
+    if (ArduinoSlave.available()) {
         String msg = Serial2.readStringUntil('\n');
         msg.trim();
         if (msg.startsWith("[FINISHED]")){
