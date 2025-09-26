@@ -21,3 +21,17 @@ h2 {
     color: white;
     font-size: 12;
 }
+
+p {
+    color: white;
+}
+
+button {
+    margin-top: 40px;
+    color: white;
+    font-size: 15px;
+    background-color: rgb(90,0,172);
+    border-radius: 5px;
+    border-color: rgb(80, 0, 155);
+    padding: 10px;
+}
