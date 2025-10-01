@@ -15,17 +15,13 @@ static void listFS() {
 }
 
 void testLittleFS() {
-  bool ok = LittleFS.begin(true); // formatOnFail = true
-  Serial.printf("LittleFS.begin(): %s\n", ok ? "OK" : "FAIL");
-  if (!ok) return;
-
   // Kapazität/Belegung
   size_t total = LittleFS.totalBytes();
   size_t used  = LittleFS.usedBytes();
   Serial.printf("LittleFS total: %u bytes, used: %u bytes\n", (unsigned)total, (unsigned)used);
 
   // Falls index fehlt -> anlegen (Proof)
-  if (!LittleFS.exists("/index.ssssssssssssssssssssssssssssssssssssssssssssssssshtml")) {
+  if (!LittleFS.exists("/index.html")) {
     Serial.println("'/index.html' fehlt -> erstelle Testdatei");
     File w = LittleFS.open("/index.html", FILE_WRITE);
     if (w) { w.print("<h1>It works (LittleFS)</h1>"); w.close(); }

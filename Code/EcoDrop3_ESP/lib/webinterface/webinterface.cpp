@@ -20,7 +20,7 @@ void startFilesystem() {
   }
   Serial.println("LittleFS gemountet");
 }
-
+// Standard IP: 192.168.4.1
 void startWebinterface() {
   Serial.println("startWebinterface()");
 
@@ -54,11 +54,11 @@ void startWebinterface() {
       req->send(200, "text/plain", "Hello from EcoDrop3 AP");
   });
 
-  server.on("/style.css", HTTP_GET, [fsOK](AsyncWebServerRequest *req){
+  server.on("/styles.css", HTTP_GET, [fsOK](AsyncWebServerRequest *req){
     if (fsOK && LittleFS.exists("/styles.css"))
       req->send(LittleFS, "/styles.css", "text/css");
     else
-      req->send(404, "text/plain", "style.css not found");
+      req->send(404, "text/plain", "styles.css not found");
   });
 
   server.on("/script.js", HTTP_GET, [fsOK](AsyncWebServerRequest *req){
