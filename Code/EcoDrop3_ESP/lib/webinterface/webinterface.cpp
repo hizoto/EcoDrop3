@@ -13,6 +13,14 @@ void logToWebinterface(String log){
 
 AsyncWebServer server(80);
 
+void startFilesystem() {
+  if(!LittleFS.begin(true)) {           // true = einmalig formatieren, wenn nötig
+    Serial.println("LittleFS mount fehlgeschlagen");
+    return;
+  }
+  Serial.println("LittleFS gemountet");
+}
+
 void startWebinterface() {
   Serial.println("startWebinterface()");
 
