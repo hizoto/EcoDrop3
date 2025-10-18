@@ -5,6 +5,7 @@
 bool signalIsRunning = false;
 
 
+
 void getComm(int* stp){
     while (Serial.available()) {
         String input = Serial.readStringUntil('\n');
