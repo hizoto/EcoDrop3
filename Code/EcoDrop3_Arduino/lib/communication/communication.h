@@ -8,7 +8,7 @@ void logMessage();
 
 void startComm();
 
-void handleCommand(const String& cmd);
+void handleCommand(const String& cmd, int* stp);
 
 void sendStepFinished(int step);
 
