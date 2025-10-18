@@ -1,4 +1,9 @@
-#include <Arduino.h>
+#include "communication.h"
+
+#define EMERGENCYSTOP_PIN 2
+
+bool signalIsRunning = false;
+
 
 void getComm(int* stp){
     if (Serial.available()) {
@@ -17,7 +22,8 @@ void logMessage(const char* msg){
 
 void startComm(){
     Serial.begin(19200);
-    logMessage("Kommunikation erfolgreich gestartet.");
+    attachInterrupt(EMERGENCYSTOP_PIN, emergencystop, RISING);
+    logMessage("Kommunikation von Arduino erfolgreich gestartet.");
 }
 
 void handleCommand(const String& cmd, int* stp) {
@@ -30,6 +36,15 @@ void handleCommand(const String& cmd, int* stp) {
         // hier evtl. Acknowledgement senden
         sendStepStarted(*stp);
     }
+
+    else if (cmd.startsWith("[START]")) {
+        signalIsRunning = true;
+    }
+
+    else if (cmd.startsWith("[STOP]")) {
+        signalIsRunning = false;
+    }
+
     else {
         logMessage("[WARNUNG] unbekannter Befehl!!");
     }
@@ -43,4 +58,12 @@ void sendStepFinished(int step){
 void sendStepStarted(int step){
     Serial.print("[STARTED]");
     Serial.println(step);
+}
+
+bool updateStatus(){
+    return signalIsRunning;
+}
+
+void emergencystop(){
+    signalIsRunning = false;
 }
