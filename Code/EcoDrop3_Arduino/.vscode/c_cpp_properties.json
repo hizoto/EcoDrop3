@@ -9,8 +9,6 @@
             "name": "PlatformIO",
             "includePath": [
                 "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/src",
-                "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/sensors",
-                "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/communication",
                 "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit_VL53L0X/src",
                 "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/SD/src",
                 "C:/Users/miran/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
@@ -20,6 +18,8 @@
                 "C:/Users/miran/.platformio/packages/framework-arduino-avr/cores/arduino",
                 "C:/Users/miran/.platformio/packages/framework-arduino-avr/variants/mega",
                 "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/bewegung",
+                "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/communication",
+                "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/sensors",
                 "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit BusIO",
                 "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit GFX Library",
                 "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit SSD1306",
@@ -32,8 +32,6 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
                     "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/src",
-                    "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/sensors",
-                    "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/communication",
                     "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit_VL53L0X/src",
                     "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/SD/src",
                     "C:/Users/miran/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
@@ -43,6 +41,8 @@
                     "C:/Users/miran/.platformio/packages/framework-arduino-avr/cores/arduino",
                     "C:/Users/miran/.platformio/packages/framework-arduino-avr/variants/mega",
                     "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/bewegung",
+                    "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/communication",
+                    "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/sensors",
                     "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit BusIO",
                     "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit GFX Library",
                     "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit SSD1306",
@@ -63,7 +63,7 @@
             ],
             "cStandard": "gnu11",
             "cppStandard": "gnu++11",
-            "compilerPath": "C:/Users/miran/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe",
+            "compilerPath": "C:/Users/larsh/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe",
             "compilerArgs": [
                 "-mmcu=atmega2560",
                 ""
