@@ -63,7 +63,7 @@
             ],
             "cStandard": "gnu11",
             "cppStandard": "gnu++11",
-            "compilerPath": "C:/Users/miran/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe",
+            "compilerPath": "C:/Users/larsh/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe",
             "compilerArgs": [
                 "-mmcu=atmega2560",
                 ""
