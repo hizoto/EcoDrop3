@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+
 void getComm(int* stp){
     if (Serial.available()) {
         String input = Serial.readStringUntil('\n');
