@@ -7,28 +7,42 @@
 
 
 // definition des INA3221
-INA3221 ina_0(INA3221_ADDR40_GND);
+INA3221 ina(INA3221_ADDR40_GND);
 
 void current_measure_init() {
-    ina_0.begin(&Wire);
-    ina_0.reset();
-    ina_0.setShuntRes(100, 100, 100);
+    ina.begin(&Wire);
+    ina.reset();
+    ina.setShuntRes(100, 100, 100);
 }
 
-void setup() {
-    current_measure_init();
-
-    while (!Serial) {
-        delay(1);
+float getCurrent(int channel){
+    float current;
+    switch(channel){
+        case 1:
+            current = ina.getCurrent(INA3221_CH1);
+            break;
+        case 2:
+            current = ina.getCurrent(INA3221_CH2);
+            break;
+        case 3:
+            current = ina.getCurrent(INA3221_CH3);
+            break;
     }
-    // Set shunt resistors to 10 mOhm for all channels
+    return current;
 }
 
-void loop() {
-    Serial.printf(
-        "A1%3.0fma %1.1fV A2%3.0fma %1.1fV\r\n",
-        ina_0.getCurrent(INA3221_CH1) * 1000, ina_0.getVoltage(INA3221_CH1),
-        ina_0.getCurrent(INA3221_CH2) * 1000, ina_0.getVoltage(INA3221_CH2));
-
-    delay(1000);
+float getVoltage(int channel){
+    float voltage;
+    switch(channel){
+        case 1:
+            voltage = ina.getVoltage(INA3221_CH1);
+            break;
+        case 2:
+            voltage = ina.getVoltage(INA3221_CH2);
+            break;
+        case 3:
+            voltage = ina.getVoltage(INA3221_CH3);
+            break;
+    }
+    return voltage;
 }
