@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "communication.h"
 #include "sensors.h"
 
@@ -10,7 +9,8 @@ int currentStep = 0;
 
 
 void setup() {
-    void startComm();
+    startComm();
+    tof_setup();
 }
 
 void loop() {
@@ -23,6 +23,8 @@ void loop() {
         case 1:
             break;
     }    
-    sendStepFinished(currentStep);
+    //sendStepFinished(currentStep);
     currentStep = 0;
+    tof_loop();
 }
+
