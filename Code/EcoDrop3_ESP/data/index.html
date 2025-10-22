@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>EcoDrop3</title>
     <link href="styles.css" rel="stylesheet"/>
+    <script src="/script.js?v=1" defer></script>
 </head>
 <body>
     <h1>ECO DROP 3</h1>
@@ -12,15 +13,19 @@
     <a href="logs.html" class="menu_item">Logs</a>
     <a href="detaildaten.html" class="menu_item">Detaillierte Daten</a>
     <p>
-    <button>EcoDrop3 starten</button>
-    <button>EcoDrop3 stoppen</button>
-    <button>Daten speichern</button>
+    <button onclick="sendCommand('start')">EcoDrop3 starten</button>
+    <button onclick="sendCommand('stop')">EcoDrop3 stoppen</button>
+    <button onclick="sendCommand('save')">Daten speichern</button>
     </p>
     <p>
-        Achtung! Ausschalten des Roboters ohne speichern führt zu Datenverlust!
+    <button onclick="sendCommand('estop')">NOT AUS</button></p>
+    <p>
+        Achtung! Ausschalten des Roboters ohne speichern kann zu Datenverlust führen!
     </p>
     <p>
         Es wird jeweils alle X Minuten automatisch gespeichert.
     </p>
+
+    <div id="log" style="font-family: monospace; background: #111; color: #0f0; padding: 10px; height: 300px; overflow-y: scroll;"></div>
 </body>
 </html>
