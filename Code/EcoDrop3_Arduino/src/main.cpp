@@ -31,5 +31,7 @@ void loop() {
         }
         sendStepFinished(currentStep);
     }
+    tof_loop();
+    
 }
 

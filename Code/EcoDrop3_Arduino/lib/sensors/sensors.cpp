@@ -3,39 +3,81 @@
 #include <Adafruit_VL53L0X.h>
 #include "sensors.h"
 
-Adafruit_VL53L0X lox = Adafruit_VL53L0X();
+Adafruit_VL53L0X lox1 = Adafruit_VL53L0X();
+Adafruit_VL53L0X lox2 = Adafruit_VL53L0X();
+
+#define SHUT_Pin 22
 
 void tof_setup() {
   Serial.begin(115200);
+  Wire.begin();
+
+  pinMode(SHUT_Pin, OUTPUT);
 
   // wait until serial port opens for native USB devices
   while (! Serial) {
     delay(1);
   }
   
-  Serial.println("Adafruit VL53L0X test");
-  if (!lox.begin()) {
-    Serial.println(F("Failed to boot VL53L0X"));
+  Serial.println("TOF_Sensor_Test");
+  if (!lox1.begin()) {
+    Serial.println(F("Keine Vrbindung Sensor vorne"));
     while(1);
   }
-  // power 
-  Serial.println(F("VL53L0X API Simple Ranging example\n\n")); 
+  if (!lox2.begin()) {
+    Serial.println(F("Keine Verbindung Sensor hinten"));
+    while(1);
+  }
+  //Ausschalten des Sensors vorne um Adressänderung des hinteren Sensors zu machen
+  digitalWrite(SHUT_Pin, LOW);
+
+  //Adressänderung des hinteren Sensors auf 0x30
+  if(!lox1.begin(0x30)) {
+    Serial.println(F("Failed to boot first VL53L0X"));
+    while(1);
+  }
+  delay(100);
+
+  //Einschalten des vorderen Sensors
+  digitalWrite(SHUT_Pin, HIGH);
+
 }
 
 
 void tof_loop() {
-  VL53L0X_RangingMeasurementData_t measure;
+ // VL53L0X_RangingMeasurementData_t measure;
     
-  Serial.print("Reading a measurement... ");
-  lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
+//  Serial.print("Reading a measurement... ");
+ // lox.rangingTest(&measure, true); // pass in 'true' to get debug data printout!
 
-  if (measure.RangeStatus != 4) {  // phase failures have incorrect data
-    Serial.print("Distance (mm): "); Serial.println(measure.RangeMilliMeter);
-  } else {
-    Serial.println(" out of range ");
-  }
+ // if (measure.RangeStatus != 4) {  // phase failures have incorrect data
+ //   Serial.print("Distance (mm): "); Serial.println(measure.RangeMilliMeter);
+ // } else {
+ //   Serial.println(" out of range ");
+ // }
     
-  delay(100);
+ // delay(2000);
+  
+   byte error, address;
+  int nDevices = 0;
+  for(address = 1; address < 127; address++) {
+    Wire.beginTransmission(address);
+    error = Wire.endTransmission();
+    if (error == 0) {
+      Serial.print("Found I2C device at 0x");
+      if (address < 16) Serial.print("0");
+      Serial.print(address, HEX);
+      Serial.println("  !");
+      nDevices++;
+    } else if (error==4) {
+      Serial.print("Unknown error at 0x");
+      if (address < 16) Serial.print("0");
+      Serial.println(address, HEX);
+    }
+  }
+  if (nDevices == 0) Serial.println("No I2C devices found");
+  else Serial.println("done");
+  delay(3000);
 }
 
 /*
@@ -70,7 +112,7 @@ void setID() {
   delay(100);
 
   // activating LOX1 and resetting LOX2
-  /*digitalWrite(SHT_LOX1, HIGH);
+  digitalWrite(SHT_LOX1, HIGH);
   digitalWrite(SHT_LOX2, LOW);
 
   // initing LOX1
@@ -79,7 +121,7 @@ void setID() {
     while(1);
   }
   delay(100);
-*//*
+/*
   // activating LOX2
   digitalWrite(SHT_LOX2, HIGH);
   delay(100);
@@ -91,31 +133,6 @@ void setID() {
   }
 }
 
-void read_dual_sensors() {
-  
-  lox1.rangingTest(&measure1, false); // pass in 'true' to get debug data printout!
-  lox2.rangingTest(&measure2, false); // pass in 'true' to get debug data printout!
-
-  // print sensor one reading
-  Serial.print(F("1: "));
-  if(measure1.RangeStatus != 4) {     // if not out of range
-    Serial.print(measure1.RangeMilliMeter);
-  } else {
-    Serial.print(F("Out of range"));
-  }
-  
-  Serial.print(F(" "));
-
-  // print sensor two reading
-  Serial.print(F("2: "));
-  if(measure2.RangeStatus != 4) {
-    Serial.print(measure2.RangeMilliMeter);
-  } else {
-    Serial.print(F("Out of range"));
-  }
-  
-  Serial.println();
-}
 
 void setup() {
   Serial.begin(115200);
@@ -142,8 +159,6 @@ void setup() {
 
 void loop() {
    
-  read_dual_sensors();
-  delay(100);
 }
 
 #include <Wire.h>
