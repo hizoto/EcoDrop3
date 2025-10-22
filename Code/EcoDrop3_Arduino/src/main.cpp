@@ -9,7 +9,7 @@ int currentStep = 0;
 bool isRunning = false;
 
 void setup() {
-    startComm();
+    //startComm();
     tof_setup();
 }
 
