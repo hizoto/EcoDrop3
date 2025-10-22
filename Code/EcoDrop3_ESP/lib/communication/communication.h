@@ -7,3 +7,4 @@ extern HardwareSerial& ArduinoSlave;
 void sendEmergencyStop();
 void sendStartSignal();
 void sendStopSignal();
+void saveSensorDataToWebinterface();

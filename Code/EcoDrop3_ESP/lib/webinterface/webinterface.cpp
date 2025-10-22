@@ -6,12 +6,14 @@
 #include "webinterface.h"
 #include "../../include/secrets.h"
 #include "datenerfassung.h"
+#include "communication.h"
 
 void logToWebinterface(String log){
     delay(10);
 }
 
 AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
 
 void startFilesystem() {
   if(!LittleFS.begin(true)) {           // true = einmalig formatieren, wenn nötig
@@ -73,6 +75,36 @@ void startWebinterface() {
 }
 
 
-void refreshWebinterface(){
-  //TODO
+
+void sendDataToWebinterface(String name, int value){
+
+}
+
+void sendDataToWebinterface(String name, float value){
+
+}
+
+void onWsMessage(AsyncWebSocket *server, AsyncWebSocketClient *client, 
+                 AwsEventType type, void *arg, uint8_t *data, size_t len) {
+  if (type == WS_EVT_DATA) {
+    String msg = "";
+    for (size_t i = 0; i < len; i++) msg += (char)data[i];
+
+    if (msg == "start") {
+      sendStartSignal();
+      client->text("EcoDrop3 gestartet.");
+    }
+    else if (msg == "stop"){
+      sendStopSignal();
+      client->text("EcoDrop3 gestoppt.");
+    }
+    else if (msg == "estop"){
+      sendStopSignal();
+      client->text("EcoDrop3 Not-Aus betätigt!");
+    }
+    else if (msg == "save"){
+      saveSensorDataToWebinterface();
+      client->text("Daten wurden manuell gespeichert.");
+    }
+  }
 }

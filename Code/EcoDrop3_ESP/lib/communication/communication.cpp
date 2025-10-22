@@ -77,3 +77,7 @@ void sendStopSignal(){
     ArduinoSlave.write("[STOP]");
 }
 
+
+void saveSensorDataToWebinterface(){
+    
+}
