@@ -1,4 +1,7 @@
 #pragma once
+#include <Arduino.h>
+#include <ESPAsyncWebServer.h>
+
 void logToWebinterface(String log);
 void startWebinterface();
 void startFilesystem();
