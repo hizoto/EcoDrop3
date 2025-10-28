@@ -12,7 +12,7 @@
 Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 
 void tof_setup() {
-  Serial.begin(115200);
+  Serial.begin(19200);
   Wire.begin();
 
   pinMode(SHUT_PIN, OUTPUT);
