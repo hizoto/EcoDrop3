@@ -26,3 +26,28 @@ function sendCommand(cmd) {
     console.warn("WebSocket nicht verbunden!");
   }
 }
+
+// Elemente im UI
+const tempSpan = document.getElementById("temp");
+const voltageSpan = document.getElementById("voltage");
+const currentSpan = document.getElementById("current");
+
+// Funktion, um Sensordaten vom ESP zu holen
+async function fetchSensorData() {
+  try {
+    const response = await fetch(`http://${window.location.hostname}/sensors`);
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const data = await response.json();
+
+    if (tempSpan) tempSpan.textContent = data.temp + " °C";
+    if (voltageSpan) voltageSpan.textContent = data.voltage + " V";
+    if (currentSpan) currentSpan.textContent = data.current + " A";
+    if (chargingCurrentSpan) chargingCurrentSpan.textContent = data.chargingCurrent + " A";
+  } catch (err) {
+    console.warn("Konnte Sensordaten nicht laden:", err);
+  }
+}
+
+// alle 5s aktualisieren
+setInterval(fetchSensorData, 5000);
+fetchSensorData();

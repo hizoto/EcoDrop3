@@ -27,7 +27,7 @@ p {
 }
 
 button {
-    margin-top: 40px;
+    /*margin-top: 40px;*/
     color: white;
     font-size: 15px;
     background-color: rgb(0, 109, 7);
@@ -45,4 +45,8 @@ button {
     overflow-y: scroll;
     max-width: 1200px;
     margin: 0 auto;
+}
+
+.data {
+    color: white;
 }
