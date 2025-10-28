@@ -1,8 +1,8 @@
 #pragma once
 
-float temp;
-float voltage;
-float current;
-float chargingCurrent;
+extern float temp;
+extern float voltage;
+extern float current;
+extern float chargingCurrent;
 
 void updateSensorData();
