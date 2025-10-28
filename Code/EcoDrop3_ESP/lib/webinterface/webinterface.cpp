@@ -8,9 +8,7 @@
 #include "datenerfassung.h"
 #include "communication.h"
 
-void logToWebinterface(String log){
-    delay(10);
-}
+
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
@@ -24,14 +22,12 @@ void startFilesystem() {
 }
 // Standard IP: 192.168.4.1
 void startWebinterface() {
-  Serial.println("startWebinterface()");
-
   // WLAN sauber in AP-Modus
   WiFi.persistent(false);
   WiFi.mode(WIFI_OFF);
   delay(100);
   WiFi.mode(WIFI_AP);
-  WiFi.setTxPower(WIFI_POWER_19_5dBm); // optional: maximale Sendeleistung
+  WiFi.setTxPower(WIFI_POWER_19_5dBm); // maximale Sendeleistung
 
   // Passwort-Check & AP starten
   const bool usePw = (password && strlen(password) >= 8);
@@ -70,6 +66,10 @@ void startWebinterface() {
       req->send(404, "text/plain", "script.js not found");
   });
 
+  // WebSocket initialisieren
+  ws.onEvent(onWsMessage);
+  server.addHandler(&ws);
+
   server.begin();
   Serial.println("HTTP-Server gestartet");
 }
@@ -99,7 +99,7 @@ void onWsMessage(AsyncWebSocket *server, AsyncWebSocketClient *client,
       client->text("EcoDrop3 gestoppt.");
     }
     else if (msg == "estop"){
-      sendStopSignal();
+      sendEmergencyStop();
       client->text("EcoDrop3 Not-Aus betätigt!");
     }
     else if (msg == "save"){
@@ -107,4 +107,8 @@ void onWsMessage(AsyncWebSocket *server, AsyncWebSocketClient *client,
       client->text("Daten wurden manuell gespeichert.");
     }
   }
+}
+
+void logToWebinterface(String log){
+  ws.textAll(log);
 }
