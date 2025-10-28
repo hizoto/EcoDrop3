@@ -1,7 +1,7 @@
 * {
     text-align: center;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    background-color: rgb(0, 172, 11);
+    background-color: rgb(18, 48, 20)/*rgb(0, 172, 11);*/
 }
 
 .menu_item {
@@ -34,4 +34,15 @@ button {
     border-radius: 5px;
     border-color: rgb(0,112,7);
     padding: 10px;
+}
+
+#log {
+    font-family: monospace; 
+    background: #111; 
+    color: #0f0; 
+    padding: 10px; 
+    height: 300px; 
+    overflow-y: scroll;
+    max-width: 1200px;
+    margin: 0 auto;
 }
