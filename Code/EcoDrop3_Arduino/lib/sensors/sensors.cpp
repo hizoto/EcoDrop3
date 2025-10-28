@@ -9,7 +9,8 @@
 #define SHUT_PIN 22
 
 
-Adafruit_VL53L0X lox = Adafruit_VL53L0X();
+Adafruit_VL53L0X lox1 = Adafruit_VL53L0X();
+Adafruit_VL53L0X lox2 = Adafruit_VL53L0X();
 
 void tof_setup() {
   Serial.begin(115200);
@@ -26,7 +27,7 @@ void tof_setup() {
   delay(500);
   
   Serial.println("Adafruit VL53L0X test");
-  if (!lox.begin(0x30)) {
+  if (!lox1.begin(0x30)) {
     Serial.println(F("Failed to boot VL53L0X"));
     while(1);
   }
@@ -42,7 +43,7 @@ void tof_loop() {
   VL53L0X_RangingMeasurementData_t measure1;
     
   Serial.print("Reading a measurement... ");
-  lox.rangingTest(&measure1, false); // pass in 'true' to get debug data printout!
+  lox1.rangingTest(&measure1, false); // pass in 'true' to get debug data printout!
 
   if (measure1.RangeStatus != 4) {  // phase failures have incorrect data
     Serial.print("Distance (mm): "); Serial.println(measure1.RangeMilliMeter);
@@ -52,7 +53,7 @@ void tof_loop() {
   VL53L0X_RangingMeasurementData_t measure2;
     
   Serial.print("Reading a measurement... ");
-  lox.rangingTest(&measure2, false); // pass in 'true' to get debug data printout!
+  lox2.rangingTest(&measure2, false); // pass in 'true' to get debug data printout!
 
   if (measure2.RangeStatus != 4) {  // phase failures have incorrect data
     Serial.print("Distance (mm): "); Serial.println(measure2.RangeMilliMeter);
