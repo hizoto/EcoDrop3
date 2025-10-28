@@ -17,6 +17,7 @@ unsigned long lastSerialStatusUpdate = 0;
 void setup() {
     startComm();
     startWebinterface();
+    updateSensorData();
 }
 
 void loop() {
