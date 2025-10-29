@@ -47,7 +47,7 @@ void startWebinterface() {
 
   // HTTP-Endpunkt für Sensordaten
   server.on("/sensors", HTTP_GET, [](AsyncWebServerRequest *request){
-    DynamicJsonDocument sensorDaten(128);
+    JsonDocument sensorDaten;
     sensorDaten["temp"] = temp;
     sensorDaten["voltage"] = voltage;
     sensorDaten["current"] = current;
