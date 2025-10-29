@@ -31,6 +31,8 @@ function sendCommand(cmd) {
 const tempSpan = document.getElementById("temp");
 const voltageSpan = document.getElementById("voltage");
 const currentSpan = document.getElementById("current");
+const chargingCurrentSpan = document.getElementById("chargingCurrent");
+const chargingVoltageSpan = document.getElementById("chargingVoltage");
 
 // Funktion, um Sensordaten vom ESP zu holen
 async function fetchSensorData() {
@@ -43,6 +45,7 @@ async function fetchSensorData() {
     if (voltageSpan) voltageSpan.textContent = data.voltage + " V";
     if (currentSpan) currentSpan.textContent = data.current + " A";
     if (chargingCurrentSpan) chargingCurrentSpan.textContent = data.chargingCurrent + " A";
+    if (chargingVoltageSpan) chargingVoltageSpan.textContent = data.chargingVoltage + " V";
   } catch (err) {
     console.warn("Konnte Sensordaten nicht laden:", err);
   }
