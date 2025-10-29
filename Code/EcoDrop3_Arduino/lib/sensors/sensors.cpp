@@ -1,90 +1,75 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include <Adafruit_VL53L0X.h>
 #include "sensors.h"
+#include <vl53lx_class.h>
 
 
-#include "Adafruit_VL53L0X.h"
+#define TCAADDR 0x70       // I2C-Adresse des TCA9548A
+#define CHANNEL_SENSOR1 0  // Kanal 0 am Multiplexer
+#define CHANNEL_SENSOR2 1  // Kanal 1 am Multiplexer
 
-#define SHUT_PIN 22
+VL53LX sensor1(&Wire);
+VL53LX sensor2(&Wire);
 
-
-Adafruit_VL53L0X lox1 = Adafruit_VL53L0X();
-Adafruit_VL53L0X lox2 = Adafruit_VL53L0X();
-
-void tof_setup() {
-  Serial.begin(19200);
-  Wire.begin();
-
-  pinMode(SHUT_PIN, OUTPUT);
-  
-
-  // wait until serial port opens for native USB devices
-  while (! Serial) {
-    delay(1);
-  }
-  digitalWrite(SHUT_PIN, LOW);
-  delay(500);
-  
-  Serial.println("Adafruit VL53L0X test");
-  if (!lox1.begin(0x30)) {
-    Serial.println(F("Failed to boot VL53L0X"));
-    while(1);
-  }
-  // power 
-  Serial.println(F("VL53L0X API Simple Ranging example\n\n")); 
-
-  digitalWrite(SHUT_PIN, HIGH);
-  delay(500);
+void tcaselect(uint8_t channel) {
+  if (channel > 7) return;
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(1 << channel);
+  Wire.endTransmission();
+  delay(10);  // Kurzes Delay für Stabilität
 }
 
+void tof_setup() {
+  Serial.begin(115200);
+  Wire.begin();
+  delay(100);
+
+  Serial.println("VL53L3CX + TCA9548A Setup");
+
+  // --- Sensor 1 ---
+  tcaselect(CHANNEL_SENSOR1);
+  if (sensor1.begin() != 0) {
+    Serial.println("Sensor 1 Init Fehler!");
+    while (1);
+  }
+  sensor1.InitSensor(0x29);          // Adresse (Multiplexer erlaubt gleiche Adresse)
+  sensor1.VL53LX_StartMeasurement();
+  Serial.println("Sensor 1 bereit (Kanal 0)");
+
+  // --- Sensor 2 ---
+  tcaselect(CHANNEL_SENSOR2);
+  if (sensor2.begin() != 0) {
+    Serial.println("Sensor 2 Init Fehler!");
+    while (1);
+  }
+  sensor2.InitSensor(0x29);
+  sensor2.VL53LX_StartMeasurement();
+  Serial.println("Sensor 2 bereit (Kanal 1)");
+}
 
 void tof_loop() {
-  VL53L0X_RangingMeasurementData_t measure1;
-    
-  Serial.print("Reading a measurement... ");
-  lox1.rangingTest(&measure1, false); // pass in 'true' to get debug data printout!
+  uint8_t ready = 0;
+  VL53LX_MultiRangingData_t data;
 
-  if (measure1.RangeStatus != 4) {  // phase failures have incorrect data
-    Serial.print("Distance (mm): "); Serial.println(measure1.RangeMilliMeter);
-  } else {
-    Serial.println(" out of range ");
-  }
-  VL53L0X_RangingMeasurementData_t measure2;
-    
-  Serial.print("Reading a measurement... ");
-  lox2.rangingTest(&measure2, false); // pass in 'true' to get debug data printout!
+  // --- Sensor 1 ---
+  tcaselect(CHANNEL_SENSOR1);
+  do {
+    sensor1.VL53LX_GetMeasurementDataReady(&ready);
+  } while (!ready);
+  sensor1.VL53LX_GetMultiRangingData(&data);
+  Serial.print("S1: ");
+  Serial.println(data.RangeData[0].RangeMilliMeter);
 
-  if (measure2.RangeStatus != 4) {  // phase failures have incorrect data
-    Serial.print("Distance (mm): "); Serial.println(measure2.RangeMilliMeter);
-  } else {
-    Serial.println(" out of range ");
-  }
-    
-  delay(100);
-  byte error, address;
-  int nDevices = 0;
+  delay(50);
 
-  for (address = 1; address < 127; address++) {
-    Wire.beginTransmission(address);
-    error = Wire.endTransmission();
+  // --- Sensor 2 ---
+  tcaselect(CHANNEL_SENSOR2);
+  do {
+    sensor2.VL53LX_GetMeasurementDataReady(&ready);
+  } while (!ready);
+  sensor2.VL53LX_GetMultiRangingData(&data);
+  Serial.print("S2: ");
+  Serial.println(data.RangeData[0].RangeMilliMeter);
 
-    if (error == 0) {
-      Serial.print("Gerät gefunden bei Adresse 0x");
-      if (address < 16) {
-        Serial.print("0");
-      }
-      Serial.print(address, HEX);
-      Serial.println();
-      nDevices++;
-    }
-  }
-
-  if (nDevices == 0) {
-    Serial.println("Keine I2C-Geräte gefunden");
-  } else {
-    Serial.println("Scan abgeschlossen");
-  }
-
-  delay(5000); // 5 Sekunden warten, bevor erneut gescannt wird
+  delay(200);
 }
