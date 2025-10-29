@@ -21,19 +21,12 @@ void startComm(){
     Serial.println("Serial communication ready.");
 }
 
-void getComm(int& currentStep, int& lastFinishedStep){
+void getComm(){
     while (ArduinoSlave.available()) {
         String msg = Serial2.readStringUntil('\n');
         msg.trim();
-        if (msg.startsWith("[FINISHED]")){
-            lastFinishedStep = msg.substring(10).toInt();
-        }
-        
-        else if (msg.startsWith("[STARTED]")){
-            currentStep = msg.substring(9).toInt();
-        }
 
-        else if (msg.startsWith("[LOG]")){
+        if (msg.startsWith("[LOG]")){
             String logmsg = msg.substring(5);
             logToWebinterface(logmsg);
         }

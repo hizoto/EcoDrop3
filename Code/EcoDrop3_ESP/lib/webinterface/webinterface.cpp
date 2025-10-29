@@ -7,38 +7,17 @@
 #include "../../include/secrets.h"
 #include "datenerfassung.h"
 #include "communication.h"
+#include <ArduinoJson.h>
 
 
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
-void startFilesystem() {
-  if(!LittleFS.begin(true)) {           // true = einmalig formatieren, wenn nötig
-    Serial.println("LittleFS mount fehlgeschlagen");
-    return;
-  }
-  Serial.println("LittleFS gemountet");
-}
+
 // Standard IP: 192.168.4.1
 void startWebinterface() {
-  // WLAN sauber in AP-Modus
-  WiFi.persistent(false);
-  WiFi.mode(WIFI_OFF);
-  delay(100);
-  WiFi.mode(WIFI_AP);
-  WiFi.setTxPower(WIFI_POWER_19_5dBm); // maximale Sendeleistung
-
-  // Passwort-Check & AP starten
-  const bool usePw = (password && strlen(password) >= 8);
-  if (!usePw) Serial.println("WARNUNG: Passwort zu kurz (< 8 Zeichen). Starte offenen AP.");
-
-  bool ok = usePw
-    ? WiFi.softAP(ssid, password, /*channel*/1, /*hidden*/false, /*max_conn*/4)
-    : WiFi.softAP(ssid, nullptr, 1, false, 4);
-
-  Serial.printf("softAP: %s\n", ok ? "OK" : "FAIL");
-  Serial.print("AP IP: "); Serial.println(WiFi.softAPIP());
+  startAP();
 
   // Dateisystem mounten (AP läuft unabhängig davon)
   bool fsOK = LittleFS.begin(true);
@@ -66,6 +45,19 @@ void startWebinterface() {
       req->send(404, "text/plain", "script.js not found");
   });
 
+  // HTTP-Endpunkt für Sensordaten
+  server.on("/sensors", HTTP_GET, [](AsyncWebServerRequest *request){
+    JsonDocument sensorDaten;
+    sensorDaten["temp"] = temp;
+    sensorDaten["voltage"] = voltage;
+    sensorDaten["current"] = current;
+    sensorDaten["chargingCurrent"] = chargingCurrent;
+
+    String json;
+    serializeJson(sensorDaten, json);
+    request->send(200, "application/json", json);
+  });
+
   // WebSocket initialisieren
   ws.onEvent(onWsMessage);
   server.addHandler(&ws);
@@ -74,15 +66,6 @@ void startWebinterface() {
   Serial.println("HTTP-Server gestartet");
 }
 
-
-
-void sendDataToWebinterface(String name, int value){
-
-}
-
-void sendDataToWebinterface(String name, float value){
-
-}
 
 void onWsMessage(AsyncWebSocket *server, AsyncWebSocketClient *client, 
                  AwsEventType type, void *arg, uint8_t *data, size_t len) {
@@ -111,4 +94,24 @@ void onWsMessage(AsyncWebSocket *server, AsyncWebSocketClient *client,
 
 void logToWebinterface(String log){
   ws.textAll(log);
+}
+
+void startAP(){
+  // WLAN sauber in AP-Modus
+  WiFi.persistent(false);
+  WiFi.mode(WIFI_OFF);
+  delay(100);
+  WiFi.mode(WIFI_AP);
+  WiFi.setTxPower(WIFI_POWER_19_5dBm); // maximale Sendeleistung
+
+  // Passwort-Check & AP starten
+  const bool usePw = (password && strlen(password) >= 8);
+  if (!usePw) Serial.println("WARNUNG: Passwort zu kurz (< 8 Zeichen). Starte offenen AP.");
+
+  bool ok = usePw
+    ? WiFi.softAP(ssid, password, /*channel*/1, /*hidden*/false, /*max_conn*/4)
+    : WiFi.softAP(ssid, nullptr, 1, false, 4);
+
+  Serial.printf("softAP: %s\n", ok ? "OK" : "FAIL");
+  Serial.print("AP IP: "); Serial.println(WiFi.softAPIP());
 }

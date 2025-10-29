@@ -9,22 +9,28 @@
 </head>
 <body>
     <h1>ECO DROP 3</h1>
-    <h2>Home</h2>
-    <a href="detaildaten.html" class="menu_item">Detaillierte Daten</a>
+    <!--<h2>Home</h2>
+    <a href="detaildaten.html" class="menu_item">Detaillierte Daten</a>-->
     <p>
     <button onclick="sendCommand('start')">EcoDrop3 starten</button>
-    <button onclick="sendCommand('stop')">EcoDrop3 stoppen</button>
-    <button onclick="sendCommand('save')">Daten speichern</button>
+    <button onclick="sendCommand('stop')">EcoDrop3 stoppen</button><!--
+    <button onclick="sendCommand('save')">Daten speichern</button>-->
     </p>
+    <div class="data">Temperatur: <span id="temp">--</span></div>
+    <div class="data">Spannung: <span id="voltage">--</span></div>
+    <div class="data">Stromverbrauch: <span id="current">--</span></div>
+    <div class="data">Ladestrom: <span id="chargingCurrent">--</span></div>
+    <div class="data">Ladespannung: <span id="chargingVoltage">--</span></div>
+
     <p>
     <button onclick="sendCommand('estop')">NOT AUS</button></p>
-    <p>
+    <!--<p>
         Achtung! Ausschalten des Roboters ohne speichern kann zu Datenverlust führen!
     </p>
     <p>
         Es wird jeweils alle X Minuten automatisch gespeichert.
     </p>
-
-    <div id="log" style="font-family: monospace; background: #111; color: #0f0; padding: 10px; height: 300px; overflow-y: scroll;"></div>
+-->
+    <div id="log"></div>
 </body>
 </html>

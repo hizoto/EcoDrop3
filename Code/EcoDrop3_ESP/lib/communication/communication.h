@@ -2,7 +2,7 @@
 #include <HardwareSerial.h>
 
 void startComm();
-void getComm(int& currentStep, int& lastFinishedStep);
+void getComm();
 extern HardwareSerial& ArduinoSlave;
 void sendEmergencyStop();
 void sendStartSignal();

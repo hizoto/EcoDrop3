@@ -8,9 +8,6 @@
 void currentTest();
 
 
-int lastFinishedStep = 0;
-int currentStep = 0;
-
 int timeToUpdateSensorData = 5000; // Millisekunden
 
 // Variablen um Zyklische Prozesse abzuarbeiten
@@ -19,16 +16,16 @@ unsigned long lastSerialStatusUpdate = 0;
 
 void setup() {
     startComm();
-    startFilesystem();
     startWebinterface();
+    updateSensorData();
 }
 
 void loop() {
-    if (millis() - lastSerialStatusUpdate >= 2000){ 
-        Serial.println("Serial is working");
-        currentTest();
-        lastSerialStatusUpdate = millis();
+    if (millis() - lastSensorDataUpdate > 2000){
+        updateSensorData();
     }
+
+    if (ArduinoSlave.available()) getComm();
     /*
     getComm(currentStep, lastFinishedStep);
     if (lastFinishedStep == currentStep && lastFinishedStep != 0){
