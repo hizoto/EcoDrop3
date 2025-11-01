@@ -11,32 +11,38 @@ bool isRunning = false;
 void setup() {
     startComm();
     initSensors();
+    pinMode(12, OUTPUT);
+    digitalWrite(12, LOW);
 }
 
 void loop() {
-    /*
-    getComm(&currentStep);
-    isRunning = updateStatus();
-    while(isRunning){
+    if(Serial.available()){
+        getComm();
+    }
+    if(isRunning){
         switch(currentStep){
             // idle
             case 0:
+                currentStep = 1;
                 break;
             // kann noch genau definiert werden oder von Flowchart übernommen werden. Kommunikation ist notwendig.
             case 1:
+                digitalWrite(12, HIGH);
+                logMessage("EcoDrop on.");
+                currentStep++;
                 break;
             // fertig
             case 900:
                 currentStep = 0;
                 break;
         }
-        sendStepFinished(currentStep);
-    } */
-    Serial.print("Distanz hinten: ");
-    Serial.println(readTofBack());
-    delay(1000);
-    Serial.print("Distanz vorne: ");
-    Serial.println(readTofFront());
-    delay(1000);
+    }
+    else {
+        currentStep = 0;
+        digitalWrite(12, LOW);
+        logMessage("EcoDrop is now idle.");
+    }
+    sendStepFinished(currentStep);
+    
 }
 

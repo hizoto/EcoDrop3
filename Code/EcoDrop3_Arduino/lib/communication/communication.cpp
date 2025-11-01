@@ -6,12 +6,12 @@ bool signalIsRunning = false;
 
 
 
-void getComm(int* stp){
+void getComm(){
     while (Serial.available()) {
         String input = Serial.readStringUntil('\n');
         input.trim();
         if (input.length() > 0) {
-            handleCommand(input, stp);
+            handleCommand(input);
         }
     }
 }
@@ -28,17 +28,8 @@ void startComm(){
     logMessage("Kommunikation von Arduino erfolgreich gestartet.");
 }
 
-void handleCommand(const String& cmd, int* stp) {
-    if (cmd.startsWith("[STEP]")) {
-        String numPart = cmd.substring(6);
-        numPart.trim();
-
-        *stp = numPart.toInt();
-        
-        // hier evtl. Acknowledgement senden
-    }
-
-    else if (cmd.startsWith("[START]")) {
+void handleCommand(const String& cmd) {
+    if (cmd.startsWith("[START]")) {
         signalIsRunning = true;
     }
 

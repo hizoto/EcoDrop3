@@ -2,13 +2,13 @@
 #include <Arduino.h>
 
 // Pointer zur Step-Variabel muss mitgegeben werden!
-void getComm(int* stp);
+void getComm();
 
-void logMessage();
+void logMessage(const char* msg);
 
 void startComm();
 
-void handleCommand(const String& cmd, int* stp);
+void handleCommand(const String& cmd);
 
 void sendStepFinished(int step);
 
