@@ -1,75 +1,69 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "sensors.h"
-#include <vl53lx_class.h>
+#include <Adafruit_VL53L0X.h>
+#include <TCA9548A-SOLDERED.h>
+#include "communication.h"
 
+TCA9548A I2CMUX;
+Adafruit_VL53L0X loxFront = Adafruit_VL53L0X();
+Adafruit_VL53L0X loxBack = Adafruit_VL53L0X();
 
-#define TCAADDR 0x70       // I2C-Adresse des TCA9548A
-#define CHANNEL_SENSOR1 0  // Kanal 0 am Multiplexer
-#define CHANNEL_SENSOR2 1  // Kanal 1 am Multiplexer
+int tofFrontChannel = 0;
+int tofBackChannel = 1;
 
-VL53LX sensor1(&Wire);
-VL53LX sensor2(&Wire);
-
-void tcaselect(uint8_t channel) {
-  if (channel > 7) return;
-  Wire.beginTransmission(TCAADDR);
-  Wire.write(1 << channel);
-  Wire.endTransmission();
-  delay(10);  // Kurzes Delay für Stabilität
-}
-
-void tof_setup() {
-  Serial.begin(115200);
-  Wire.begin();
+void initSensors(){
+  initMux();
+  initTofBack();
+  initTofFront();
   delay(100);
-
-  Serial.println("VL53L3CX + TCA9548A Setup");
-
-  // --- Sensor 1 ---
-  tcaselect(CHANNEL_SENSOR1);
-  if (sensor1.begin() != 0) {
-    Serial.println("Sensor 1 Init Fehler!");
-    while (1);
-  }
-  sensor1.InitSensor(0x29);          // Adresse (Multiplexer erlaubt gleiche Adresse)
-  sensor1.VL53LX_StartMeasurement();
-  Serial.println("Sensor 1 bereit (Kanal 0)");
-
-  // --- Sensor 2 ---
-  tcaselect(CHANNEL_SENSOR2);
-  if (sensor2.begin() != 0) {
-    Serial.println("Sensor 2 Init Fehler!");
-    while (1);
-  }
-  sensor2.InitSensor(0x29);
-  sensor2.VL53LX_StartMeasurement();
-  Serial.println("Sensor 2 bereit (Kanal 1)");
 }
 
-void tof_loop() {
-  uint8_t ready = 0;
-  VL53LX_MultiRangingData_t data;
+void initMux(){
+  I2CMUX.begin();
+  I2CMUX.closeAll();
+}
 
-  // --- Sensor 1 ---
-  tcaselect(CHANNEL_SENSOR1);
-  do {
-    sensor1.VL53LX_GetMeasurementDataReady(&ready);
-  } while (!ready);
-  sensor1.VL53LX_GetMultiRangingData(&data);
-  Serial.print("S1: ");
-  Serial.println(data.RangeData[0].RangeMilliMeter);
+void initTofFront(){
+  I2CMUX.openChannel(tofFrontChannel);
+  if(!loxFront.begin()){
+    Serial.println("Failed to boot Front TOF"); // TODO
+    return;
+  }
+  //delay(10);
+  I2CMUX.closeAll();
+}
 
-  delay(50);
+void initTofBack(){
+  I2CMUX.openChannel(tofBackChannel);
+  if(!loxBack.begin()){
+    Serial.println("Failed to boot Back TOF"); // TODO
+    return;
+  }
+  //delay(10);
+  I2CMUX.closeAll();
+}
 
-  // --- Sensor 2 ---
-  tcaselect(CHANNEL_SENSOR2);
-  do {
-    sensor2.VL53LX_GetMeasurementDataReady(&ready);
-  } while (!ready);
-  sensor2.VL53LX_GetMultiRangingData(&data);
-  Serial.print("S2: ");
-  Serial.println(data.RangeData[0].RangeMilliMeter);
+uint16_t readTofFront(){
+  I2CMUX.openChannel(tofFrontChannel);
+  //delay(10);
+  VL53L0X_RangingMeasurementData_t measure;
+  loxFront.rangingTest(&measure, false);
+  I2CMUX.closeAll();
+  if (measure.RangeStatus != 4) {
+    uint16_t distance = measure.RangeMilliMeter;
+    return distance;
+  }
+}
 
-  delay(200);
+uint16_t readTofBack(){
+  I2CMUX.openChannel(tofBackChannel);
+  //delay(10);
+  VL53L0X_RangingMeasurementData_t measure;
+  loxBack.rangingTest(&measure, false);
+  I2CMUX.closeAll();
+  if (measure.RangeStatus != 4) {
+    uint16_t distance = measure.RangeMilliMeter;
+    return distance;
+  }
 }

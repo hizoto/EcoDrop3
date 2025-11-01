@@ -12,9 +12,9 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "C:/Users/larsh/OneDrive/Systemtechnik/AÜP/EcoDrop3/Code/EcoDrop3_Arduino/.pio/build/megaatmega2560/firmware.elf",
+            "executable": "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/build/megaatmega2560/firmware.elf",
             "projectEnvName": "megaatmega2560",
-            "toolchainBinDir": "C:/Users/larsh/.platformio/packages/toolchain-atmelavr/bin",
+            "toolchainBinDir": "C:/Users/miran/.platformio/packages/toolchain-atmelavr/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "preLaunchTask": {
                 "type": "PlatformIO",
@@ -25,18 +25,18 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "C:/Users/larsh/OneDrive/Systemtechnik/AÜP/EcoDrop3/Code/EcoDrop3_Arduino/.pio/build/megaatmega2560/firmware.elf",
+            "executable": "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/build/megaatmega2560/firmware.elf",
             "projectEnvName": "megaatmega2560",
-            "toolchainBinDir": "C:/Users/larsh/.platformio/packages/toolchain-atmelavr/bin",
+            "toolchainBinDir": "C:/Users/miran/.platformio/packages/toolchain-atmelavr/bin",
             "internalConsoleOptions": "openOnSessionStart"
         },
         {
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (without uploading)",
-            "executable": "C:/Users/larsh/OneDrive/Systemtechnik/AÜP/EcoDrop3/Code/EcoDrop3_Arduino/.pio/build/megaatmega2560/firmware.elf",
+            "executable": "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/build/megaatmega2560/firmware.elf",
             "projectEnvName": "megaatmega2560",
-            "toolchainBinDir": "C:/Users/larsh/.platformio/packages/toolchain-atmelavr/bin",
+            "toolchainBinDir": "C:/Users/miran/.platformio/packages/toolchain-atmelavr/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "loadMode": "manual"
         }

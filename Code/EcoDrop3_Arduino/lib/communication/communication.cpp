@@ -22,7 +22,7 @@ void logMessage(const char* msg){
 }
 
 void startComm(){
-    Serial.begin(19200);
+    Serial.begin(115200);
     pinMode(EMERGENCYSTOP_PIN, INPUT_PULLUP);
     attachInterrupt(EMERGENCYSTOP_PIN, emergencystop, RISING);
     logMessage("Kommunikation von Arduino erfolgreich gestartet.");

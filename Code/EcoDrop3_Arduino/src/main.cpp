@@ -9,11 +9,12 @@ int currentStep = 0;
 bool isRunning = false;
 
 void setup() {
-    //startComm();
-    tof_setup();
+    startComm();
+    initSensors();
 }
 
 void loop() {
+    /*
     getComm(&currentStep);
     isRunning = updateStatus();
     while(isRunning){
@@ -30,8 +31,12 @@ void loop() {
                 break;
         }
         sendStepFinished(currentStep);
-    }
-    tof_loop();
-    
+    } */
+    Serial.print("Distanz hinten: ");
+    Serial.println(readTofBack());
+    delay(1000);
+    Serial.print("Distanz vorne: ");
+    Serial.println(readTofFront());
+    delay(1000);
 }
 
