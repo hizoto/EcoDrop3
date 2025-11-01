@@ -1,6 +1,12 @@
 #include <Arduino.h>
 #include "bewegung.h"
 
+DC_Motor M1(1, 2, 3); // Vorne links
+
+void func(){
+    M1.brake();
+}
+
 DC_Motor::DC_Motor(int _IN1, int _IN2, int _ENA){
     IN1 = _IN1;
     IN2 = _IN2;
