@@ -20,7 +20,7 @@ void startWebinterface() {
   startAP();
 
   // Dateisystem mounten (AP läuft unabhängig davon)
-  bool fsOK = LittleFS.begin(true);
+  bool fsOK = LittleFS.begin(false);
   if (!fsOK) Serial.println("LittleFS Mount fehlgeschlagen – zeige Fallback-Seite.");
 
   // Routen

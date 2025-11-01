@@ -15,9 +15,10 @@ unsigned long lastSensorDataUpdate = 0;
 unsigned long lastSerialStatusUpdate = 0;
 
 void setup() {
-    startComm();
-    startWebinterface();
-    updateSensorData();
+    Serial.begin(115200);
+    //startComm();
+    //startWebinterface();
+    //updateSensorData();
 }
 
 void loop() {
@@ -26,6 +27,8 @@ void loop() {
     }
 
     if (ArduinoSlave.available()) getComm();
+    Serial.println("läuft...");
+    delay(2000);
     /*
     getComm(currentStep, lastFinishedStep);
     if (lastFinishedStep == currentStep && lastFinishedStep != 0){
