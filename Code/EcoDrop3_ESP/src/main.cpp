@@ -16,8 +16,8 @@ unsigned long lastSerialStatusUpdate = 0;
 
 void setup() {
     Serial.begin(115200);
-    //startComm();
-    //startWebinterface();
+    startComm();
+    startWebinterface();
     //updateSensorData();
 }
 
