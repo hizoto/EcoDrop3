@@ -5,12 +5,13 @@
 // 0 = Idle
 // 1 = xxxx
 
+unsigned long lastLogMessage = 0;
+
 int currentStep = 0;
-bool isRunning = false;
 
 void setup() {
     startComm();
-    initSensors();
+    //initSensors();
     pinMode(12, OUTPUT);
     digitalWrite(12, LOW);
 }
@@ -40,9 +41,11 @@ void loop() {
     else {
         currentStep = 0;
         digitalWrite(12, LOW);
+        if(millis() - lastLogMessage > 5000){
         logMessage("EcoDrop is now idle.");
+        lastLogMessage = millis();
+        }
     }
-    sendStepFinished(currentStep);
     
 }
 

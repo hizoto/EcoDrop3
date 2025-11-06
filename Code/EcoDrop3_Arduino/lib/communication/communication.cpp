@@ -2,12 +2,12 @@
 
 #define EMERGENCYSTOP_PIN 2
 
-bool signalIsRunning = false;
+bool isRunning = false;
 
 
 
 void getComm(){
-    while (Serial.available()) {
+    if (Serial.available()) {
         String input = Serial.readStringUntil('\n');
         input.trim();
         if (input.length() > 0) {
@@ -30,11 +30,11 @@ void startComm(){
 
 void handleCommand(const String& cmd) {
     if (cmd.startsWith("[START]")) {
-        signalIsRunning = true;
+        isRunning = true;
     }
 
     else if (cmd.startsWith("[STOP]")) {
-        signalIsRunning = false;
+        isRunning = false;
     }
 
     else {
@@ -53,9 +53,9 @@ void sendStepStarted(int step){
 }
 
 bool updateStatus(){
-    return signalIsRunning;
+    return isRunning;
 }
 
 void emergencystop(){
-    signalIsRunning = false;
+    isRunning = false;
 }
