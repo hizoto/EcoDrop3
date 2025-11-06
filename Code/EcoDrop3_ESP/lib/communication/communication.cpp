@@ -62,12 +62,14 @@ void sendEmergencyStop(){
 
 
 void sendStartSignal(){
-    ArduinoSlave.write("[START]");
+    ArduinoSlave.println("[START]");
+    Serial.println("Start Signal gesendet.");
 }
 
 
 void sendStopSignal(){
-    ArduinoSlave.write("[STOP]");
+    ArduinoSlave.println("[STOP]");
+    Serial.println("Stop Signal gesendet.");
 }
 
 
