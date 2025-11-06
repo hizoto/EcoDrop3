@@ -18,12 +18,14 @@ void setup() {
     Serial.begin(115200);
     startComm();
     startWebinterface();
+    //current_measure_init();
     //updateSensorData();
 }
 
 void loop() {
     if (millis() - lastSensorDataUpdate > 2000){
-        updateSensorData();
+        //updateSensorData();
+        lastSensorDataUpdate = millis();
     }
 
     if (ArduinoSlave.available()) getComm();

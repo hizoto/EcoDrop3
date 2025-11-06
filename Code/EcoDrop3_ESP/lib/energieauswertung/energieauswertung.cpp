@@ -10,6 +10,7 @@
 INA3221 ina(INA3221_ADDR40_GND);
 
 void current_measure_init() {
+    Wire.begin();
     ina.begin(&Wire);
     ina.reset();
     ina.setShuntRes(100, 100, 100);
