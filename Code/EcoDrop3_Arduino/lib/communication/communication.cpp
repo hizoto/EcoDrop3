@@ -7,8 +7,8 @@ bool isRunning = false;
 
 
 void getComm(){
-    if (Serial.available()) {
-        String input = Serial.readStringUntil('\n');
+    if (Serial1.available()) {
+        String input = Serial1.readStringUntil('\n');
         input.trim();
         if (input.length() > 0) {
             handleCommand(input);
@@ -19,12 +19,15 @@ void getComm(){
 void logMessage(const char* msg){
   Serial.print("[LOG]");
   Serial.println(msg);
+  Serial1.print("[LOG]");
+  Serial1.println(msg);
 }
 
 void startComm(){
     Serial.begin(115200);
+    Serial1.begin(115200);
     pinMode(EMERGENCYSTOP_PIN, INPUT_PULLUP);
-    attachInterrupt(EMERGENCYSTOP_PIN, emergencystop, RISING);
+    attachInterrupt(digitalPinToInterrupt(EMERGENCYSTOP_PIN), emergencystop, RISING);
     logMessage("Kommunikation von Arduino erfolgreich gestartet.");
 }
 
@@ -45,11 +48,15 @@ void handleCommand(const String& cmd) {
 void sendStepFinished(int step){
     Serial.print("[FINISHED]");
     Serial.println(step);
+    Serial1.print("[FINISHED]");
+    Serial1.println(step);
 }
 
 void sendStepStarted(int step){
     Serial.print("[STARTED]");
     Serial.println(step);
+    Serial1.print("[STARTED]");
+    Serial1.println(step);
 }
 
 bool updateStatus(){
