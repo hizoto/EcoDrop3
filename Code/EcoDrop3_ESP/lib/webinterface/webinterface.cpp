@@ -52,7 +52,8 @@ void startWebinterface() {
     sensorDaten["voltage"] = voltage;
     sensorDaten["current"] = current;
     sensorDaten["chargingCurrent"] = chargingCurrent;
-
+    sensorDaten["chargingVoltage"] = chargingVoltage;
+    
     String json;
     serializeJson(sensorDaten, json);
     request->send(200, "application/json", json);
