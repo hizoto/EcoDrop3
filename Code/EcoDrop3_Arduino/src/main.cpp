@@ -32,7 +32,7 @@ void loop() {
             case 0:
                 currentStep = 1;
                 break;
-            // kann noch genau definiert werden oder von Flowchart übernommen werden. Kommunikation ist notwendig.
+            // Testcase
             case 1:
                 digitalWrite(12, HIGH);
                 logMessage("EcoDrop on.");
@@ -89,7 +89,6 @@ void loop() {
             case 70:
                 turnRight(90);
                 pickUpContainer();
-                turnRight(90);
                 currentStep = 80;
                 break;
 
@@ -102,6 +101,7 @@ void loop() {
             // abladen
             case 90:
                 abladen();
+                moveForward(sicherheitsmarge);
                 currentStep = 100;
                 break;
 

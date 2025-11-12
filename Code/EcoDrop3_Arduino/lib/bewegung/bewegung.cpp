@@ -23,27 +23,27 @@ const int minMoveTimeMs = 5;
 
 
 // PINS
-int endschalterHinten = 10;
+int endschalterHinten = 10; // TODO pseudopin
 
 // Motor 1 Vorne links
-const int B1_IN1 = 6;
-const int B1_IN2 = 7;
-const int B1_ENA = 2;
+const int B1_IN1 = 46;
+const int B1_IN2 = 47;
+const int B1_ENA = 10;
 
 // Motor 2 Vorne rechts
-const int B1_IN3 = 8;
-const int B1_IN4 = 9;
-const int B1_ENB = 3;
+const int B1_IN3 = 48;
+const int B1_IN4 = 49;
+const int B1_ENB = 11;
 
 // Motor 3 Hinten links
-const int B2_IN1 = 10; 
-const int B2_IN2 = 11; 
-const int B2_ENA = 4; 
+const int B2_IN1 = 50; 
+const int B2_IN2 = 51; 
+const int B2_ENA = 12; 
 
 // Motor 4 Hinten rechts
-const int B2_IN3 = 30; 
-const int B2_IN4 = 32; 
-const int B2_ENB = 12; 
+const int B2_IN3 = 52; 
+const int B2_IN4 = 53; 
+const int B2_ENB = 13; 
 
 /*  Definition der Motoren Mecanum Räder:
 
@@ -60,7 +60,7 @@ DC_Motor M3(B2_IN1, B2_IN2, B2_ENA);
 DC_Motor M4(B2_IN3, B2_IN4, B2_ENB);
 
 
-DC_Motor::DC_Motor(int _IN1, int _IN2, int _ENA){
+DC_Motor::DC_Motor(int _IN1, int _IN2, int _ENA){ // TODO wird ausgeführt wenn deklariert??
     IN1 = _IN1;
     IN2 = _IN2;
     ENA = _ENA;
@@ -95,6 +95,23 @@ void moveForward(int distancemm){
   M2.forward(speedFast);
   M3.forward(speedFast);
   M4.forward(speedFast);
+  if (timeToDrive < minMoveTimeMs){
+    delay(minMoveTimeMs - timeToDrive);
+  }
+  delay(timeToDrive);
+  M1.brake();
+  M2.brake();
+  M3.brake();
+  M4.brake();
+}
+
+
+void moveBackward(int distancemm){
+  unsigned long timeToDrive = (distancemm / distancePerSecond) * 1000;
+  M1.backward(speedFast);
+  M2.backward(speedFast);
+  M3.backward(speedFast);
+  M4.backward(speedFast);
   if (timeToDrive < minMoveTimeMs){
     delay(minMoveTimeMs - timeToDrive);
   }
