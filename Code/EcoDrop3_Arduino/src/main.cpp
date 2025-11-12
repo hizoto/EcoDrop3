@@ -17,7 +17,7 @@ void setup() {
 }
 
 void loop() {
-    if(Serial.available()){
+    if(Serial1.available()){
         getComm();
     }
     if(isRunning){

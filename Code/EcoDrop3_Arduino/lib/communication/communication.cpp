@@ -9,6 +9,7 @@ bool isRunning = false;
 void getComm(){
     if (Serial1.available()) {
         String input = Serial1.readStringUntil('\n');
+        Serial.println("Kommunikation erhalten.");
         input.trim();
         if (input.length() > 0) {
             handleCommand(input);
