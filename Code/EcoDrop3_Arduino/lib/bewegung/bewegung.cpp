@@ -218,6 +218,7 @@ void moveToRightWall(int distanceToWall){  // nach rechts bewegen bis in gewüns
 }
 
 void goParallel(){
+    logMessage("Parallelität zur Wand wird hergestellt...");
     uint16_t distanceFront = readTofFront();
     uint16_t distanceBack = readTofBack();
 
@@ -232,6 +233,7 @@ void goParallel(){
         distanceFront = readTofFront();
         distanceBack = readTofBack();
     }
+    logMessage("Success!");
 }
 
 
@@ -251,6 +253,7 @@ void moveForwardParallelUntilContainer(int distanceToWall){
   distanceBack = readTofBack();
 
   // Main Logic of the function
+  logMessage("Suche Containter...");
   while (distanceBack - distanceFront < containerDepth){
     if (distanceFront - distanceBack < toleranceWheelsmm || distanceBack - distanceFront < toleranceWheelsmm){
       moveForward(incrementDistance);
@@ -272,4 +275,5 @@ void moveForwardParallelUntilContainer(int distanceToWall){
       distanceBack = readTofBack();
     }
   }
+  logMessage("Container gefunden!");
 }

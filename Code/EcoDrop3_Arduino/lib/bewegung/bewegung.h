@@ -1,6 +1,7 @@
 #ifndef BEWEGUNG_H
 #define BEWEGUNG_H
 #include "sensors.h"
+#include "communication.h"
 
 class DC_Motor{
   private:
