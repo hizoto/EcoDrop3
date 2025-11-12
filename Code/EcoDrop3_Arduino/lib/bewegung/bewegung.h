@@ -1,5 +1,6 @@
 #ifndef BEWEGUNG_H
 #define BEWEGUNG_H
+#include "sensors.h"
 
 class DC_Motor{
   private:
@@ -15,8 +16,16 @@ class DC_Motor{
     void backward(int speed);
 };
 
-
-void turnRight();
+void moveForward(int distancemm);
+void turnLeft(int deg);
+void turnRight(int deg);
+void moveLeft(int distancemm);
+void moveRight(int distancemm);
+void moveForwardParallelUntilContainer(int distanceToWall);
+void turnSlowRight(int distancemm);
+void turnSlowLeft(int distancemm);
+void moveToRightWall(int distanceToWall);
+void goParallel();
 
 #endif
 
