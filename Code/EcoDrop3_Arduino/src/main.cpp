@@ -20,8 +20,6 @@ int currentStep = 0;
 void setup() {
     startComm();
     //initSensors();
-    pinMode(12, OUTPUT);
-    digitalWrite(12, LOW);
 }
 
 void loop() {
@@ -122,9 +120,10 @@ void loop() {
     }
     else {
         currentStep = 0;
+        //logik für Kommunikationstests
         digitalWrite(12, LOW);
-        if(millis() - lastLogMessage > 5000){
-        logMessage("EcoDrop is now idle.");
+        if(millis() - lastLogMessage > 10000){
+        logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
         }
     }
