@@ -223,7 +223,7 @@ void goParallel(){
 
   if (distanceFront > distanceBack){
     while (distanceFront > distanceBack){
-      turnRight(inkrementGrad);
+      turnRight(incrementGrad);
       distanceFront = readTofFront();
       distanceBack = readTofBack();
     }
@@ -231,7 +231,7 @@ void goParallel(){
 
   else if (distanceFront < distanceBack){
     while (distanceFront < distanceBack){
-      turnLeft(inkrementGrad);
+      turnLeft(incrementGrad);
       distanceFront = readTofFront();
       distanceBack = readTofBack();
     }
