@@ -1,9 +1,17 @@
 #include "communication.h"
 #include "sensors.h"
+#include "bewegung.h"
 
 // Steps:
 // 0 = Idle
 // 1 = xxxx
+
+// Konfigurationsvariablen
+int wandabstand = 50;
+int wandabstandLadezone = 60;
+int abladeZoneWandabstand = 850;
+int roboterbreite = 250; 
+int sicherheitsmarge = 50;
 
 unsigned long lastLogMessage = 0;
 
@@ -32,7 +40,81 @@ void loop() {
                 logMessage("EcoDrop on.");
                 currentStep++;
                 break;
-            // fertig
+            
+            // Ladestation verlassen
+            case 10:
+                moveOutOfDock();
+                currentStep = 20;
+                break;
+
+            // ersten Container finden
+            case 20:
+                goParallel();
+                moveToRightWall(wandabstand);
+                moveForwardParallelUntilContainer(wandabstand);
+                currentStep = 30;
+                break;
+
+            // ersten Container aufnehmen
+            case 30:
+                turnRight(90);
+                pickUpContainer();
+                turnLeft(180);
+                currentStep = 40;
+                break;
+
+            // zweiten Container finden
+            case 40:
+                goParallel();
+                moveToRightWall(wandabstand);
+                moveForwardParallelUntilContainer(wandabstand);
+                currentStep = 50;
+                break;
+
+            // zweiten Container aufnehmen
+            case 50:
+                turnRight(90);
+                pickUpContainer();
+                turnLeft(180);
+                currentStep = 60;
+                break;
+
+            // dritten Container finden
+            case 60:
+                goParallel();
+                moveToRightWall(wandabstand);
+                moveForwardParallelUntilContainer(wandabstand);
+                currentStep = 70;
+                break;
+
+            // dritten Container aufnehmen
+            case 70:
+                turnRight(90);
+                pickUpContainer();
+                turnRight(90);
+                currentStep = 80;
+                break;
+
+            // in Abladezone fahren
+            case 80:
+                moveToRightWall(abladeZoneWandabstand);
+                currentStep = 90;
+                break;
+
+            // abladen
+            case 90:
+                abladen();
+                currentStep = 100;
+                break;
+
+            case 100:
+                moveToRightWall(abladeZoneWandabstand - roboterbreite + sicherheitsmarge);
+                turnRight(90);
+                moveToRightWall(wandabstandLadezone);
+                parkieren();
+                currentStep = 0;
+                break;
+
             case 900:
                 currentStep = 0;
                 break;

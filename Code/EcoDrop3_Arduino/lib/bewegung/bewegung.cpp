@@ -13,7 +13,7 @@ unsigned long timeToTurn360Milliseconds = 5700;
 unsigned long timeToMove1000mmSidewaysMilliseconds = 10000;   //TODO Ausmessen wie lange eine Umdrehung dauert
 unsigned long timeToMove1000mm = 5720;                //TODO
 
-               //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
+//TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
 float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                       //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
 
 
@@ -21,6 +21,9 @@ const int incrementDistance = 1;
 const int incrementGrad = 1;
 const int minMoveTimeMs = 5;
 
+
+// PINS
+int endschalterHinten = 10;
 
 // Motor 1 Vorne links
 const int B1_IN1 = 6;
@@ -201,8 +204,8 @@ void turnSlowLeft(int distancemm){
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
 void moveToRightWall(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   uint16_t distanceFront = readTofFront();
-  String message = "Abstand zur Wand von " + distanceToWall + "mm mm wird hergestellt.";
-  logMessage(message);
+  String message = "Abstand zur Wand von " + String(distanceToWall) + "mm mm wird hergestellt.";
+  logMessage(message.c_str());
   if (distanceFront > distanceToWall){
     while (distanceFront > distanceToWall){
       moveRight(1);
@@ -278,4 +281,22 @@ void moveForwardParallelUntilContainer(int distanceToWall){
     }
   }
   logMessage("Container gefunden!");
+}
+
+void parkieren(){
+  while(!digitalRead(endschalterHinten)){
+      moveBackward(incrementDistance);
+  }
+}
+
+void moveOutOfDock(){
+//TODO
+}
+
+void pickUpContainer(){
+//TODO
+}
+
+void abladen(){
+//TODO
 }
