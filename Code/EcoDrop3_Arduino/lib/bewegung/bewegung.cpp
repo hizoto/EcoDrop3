@@ -218,24 +218,20 @@ void moveToRightWall(int distanceToWall){  // nach rechts bewegen bis in gewüns
 }
 
 void goParallel(){
-  uint16_t distanceFront = readTofFront();
-  uint16_t distanceBack = readTofBack();
+    uint16_t distanceFront = readTofFront();
+    uint16_t distanceBack = readTofBack();
 
-  if (distanceFront > distanceBack){
-    while (distanceFront > distanceBack){
-      turnRight(incrementGrad);
-      distanceFront = readTofFront();
-      distanceBack = readTofBack();
-    }
-  }
+    while (abs((int)distanceFront - (int)distanceBack) > toleranceWheelsmm){
+        if (distanceFront > distanceBack){
+        turnRight(incrementGrad);
+        }
+        else {
+        turnLeft(incrementGrad);
+        }
 
-  else if (distanceFront < distanceBack){
-    while (distanceFront < distanceBack){
-      turnLeft(incrementGrad);
-      distanceFront = readTofFront();
-      distanceBack = readTofBack();
+        distanceFront = readTofFront();
+        distanceBack = readTofBack();
     }
-  }
 }
 
 
