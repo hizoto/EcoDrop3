@@ -12,13 +12,15 @@ There are two main controllers:
     - Controlling lifting of the containers
     - Reading sensors affiliated with movement
 
-The two controllers communicate via I2C.
+The two controllers communicate via serial communication.
 There are also multiple sensors using I2C:
+On Arduino:
 - ToF front VL53L0X
 - ToF back VL53L0X
-- RTC DS1307
-- Voltage and Current Sensor INA 3221 
 - Pixycam V2.0
+
+On ESP32:
+- Voltage and Current Sensor INA 3221 
 - BME280 Temp + Humidity Sensor
 
 
