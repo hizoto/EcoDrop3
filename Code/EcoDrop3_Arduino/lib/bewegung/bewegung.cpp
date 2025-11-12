@@ -201,7 +201,8 @@ void turnSlowLeft(int distancemm){
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
 void moveToRightWall(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   uint16_t distanceFront = readTofFront();
-
+  String message = "Abstand zur Wand von " + distanceToWall + "mm mm wird hergestellt.";
+  logMessage(message);
   if (distanceFront > distanceToWall){
     while (distanceFront > distanceToWall){
       moveRight(1);
@@ -215,6 +216,7 @@ void moveToRightWall(int distanceToWall){  // nach rechts bewegen bis in gewüns
       distanceFront = readTofFront();
     }
   }
+  logSuccess();
 }
 
 void goParallel(){
@@ -233,7 +235,7 @@ void goParallel(){
         distanceFront = readTofFront();
         distanceBack = readTofBack();
     }
-    logMessage("Success!");
+    logSuccess();
 }
 
 

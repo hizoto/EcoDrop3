@@ -17,3 +17,5 @@ void sendStepFinished(int step);
 bool updateStatus();
 
 void emergencystop();
+
+void logSuccess();

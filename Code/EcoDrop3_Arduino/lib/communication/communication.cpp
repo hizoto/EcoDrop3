@@ -66,3 +66,7 @@ bool updateStatus(){
 void emergencystop(){
     isRunning = false;
 }
+
+void logSuccess(){
+    logMessage("Success!");
+}
