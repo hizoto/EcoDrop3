@@ -1,6 +1,7 @@
 #include "communication.h"
 #include "sensors.h"
 #include "bewegung.h"
+#include "Pixy2Cam.h"
 
 // Steps:
 // 0 = Idle
@@ -20,6 +21,7 @@ int currentStep = 0;
 void setup() {
     startComm();
     //initSensors();
+    //pixySetup();
 }
 
 void loop() {
@@ -30,7 +32,7 @@ void loop() {
         switch(currentStep){
             // idle
             case 0:
-                currentStep = 1;
+                currentStep = 1;        //Auskommentieren zum testen
                 break;
             // Testcase
             case 1:
@@ -127,6 +129,7 @@ void loop() {
         lastLogMessage = millis();
         }
     }
+    pixyTestfunktion();
     
 }
 
