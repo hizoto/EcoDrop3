@@ -8,9 +8,9 @@
 // 1 = xxxx
 
 // Konfigurationsvariablen
-int wandabstand = 50;
-int wandabstandLadezone = 60;
-int abladeZoneWandabstand = 850;
+uint16_t wandabstand = 50;
+uint16_t wandabstandLadezone = 60;
+uint16_t abladeZoneWandabstand = 850;
 int roboterbreite = 250; 
 int sicherheitsmarge = 50;
 

@@ -223,7 +223,7 @@ void stopMotors(){
 }
 
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
-void moveToRightWall(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
+void moveToRightWall(uint16_t distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   uint16_t distanceFront = readTofFront();
   uint16_t distanceBack;
   String message = "Abstand zur Wand von " + String(distanceToWall) + "mm mm wird hergestellt.";
@@ -271,7 +271,7 @@ void goParallel(){
 }
 
 
-void moveForwardParallelUntilContainer(int distanceToWall){
+void moveForwardParallelUntilContainer(uint16_t distanceToWall){
   // abstandserfassung
   uint16_t distanceFront = readTofFront();
   uint16_t distanceBack = readTofBack();
