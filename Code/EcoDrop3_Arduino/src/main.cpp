@@ -17,6 +17,7 @@ int sicherheitsmarge = 50;
 unsigned long lastLogMessage = 0;
 
 int currentStep = 0;
+bool firstTry = true;
 
 void setup() {
     startComm();
@@ -25,9 +26,10 @@ void setup() {
 }
 
 void loop() {
-    if(Serial1.available()){
+    /*if(Serial1.available()){
         getComm();
     }
+        */
     if(isRunning){
         switch(currentStep){
             // idle
@@ -122,14 +124,19 @@ void loop() {
     }
     else {
         currentStep = 0;
-        //logik für Kommunikationstests
-        digitalWrite(12, LOW);
         if(millis() - lastLogMessage > 10000){
         logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
         }
     }
     pixyTestfunktion();
+    //goParallel();
+    //moveToRightWall(50);
+    /*moveForward(50);
+    delay(1000);
+    moveBackward(50);
+    delay(1000);*/
+    //testVorwaerts();
     
 }
 
