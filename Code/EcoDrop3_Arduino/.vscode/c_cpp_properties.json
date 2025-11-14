@@ -8,12 +8,8 @@
         {
             "name": "PlatformIO",
             "includePath": [
-<<<<<<< HEAD
+                "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/include",
                 "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/src",
-                "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/Pixy2Cam",
-                "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/bewegung",
-                "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/sensors",
-                "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/communication",
                 "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/pixy2/src",
                 "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Soldered TCA9548A Multiplexer Arduino Library/src",
                 "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit_VL53L0X/src",
@@ -30,40 +26,13 @@
                 "C:/Users/miran/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                 "C:/Users/miran/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                 "C:/Users/miran/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
-=======
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/src",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/lib/Pixy2Cam",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/lib/bewegung",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/lib/sensors",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/lib/communication",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/pixy2/src",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Soldered TCA9548A Multiplexer Arduino Library/src",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit_VL53L0X/src",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/SD/src",
-                "/home/hizoto/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/LiquidCrystal_I2C",
-                "/home/hizoto/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Servo/src",
-                "/home/hizoto/.platformio/packages/framework-arduino-avr/cores/arduino",
-                "/home/hizoto/.platformio/packages/framework-arduino-avr/variants/mega",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit BusIO",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit GFX Library",
-                "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit SSD1306",
-                "/home/hizoto/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
-                "/home/hizoto/.platformio/packages/framework-arduino-avr/libraries/HID/src",
-                "/home/hizoto/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
->>>>>>> 785ad99de44f58cb659cce8e7c026098d3107de3
                 ""
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-<<<<<<< HEAD
+                    "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/include",
                     "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/src",
-                    "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/Pixy2Cam",
-                    "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/bewegung",
-                    "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/sensors",
-                    "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/lib/communication",
                     "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/pixy2/src",
                     "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Soldered TCA9548A Multiplexer Arduino Library/src",
                     "C:/Users/miran/OneDrive - ZBW Zentrum für Berufliche Weiterbildung/Desktop/Weiterbildung/AÜP/Software/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit_VL53L0X/src",
@@ -80,29 +49,6 @@
                     "C:/Users/miran/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                     "C:/Users/miran/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                     "C:/Users/miran/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
-=======
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/src",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/lib/Pixy2Cam",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/lib/bewegung",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/lib/sensors",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/lib/communication",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/pixy2/src",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Soldered TCA9548A Multiplexer Arduino Library/src",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit_VL53L0X/src",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/SD/src",
-                    "/home/hizoto/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/LiquidCrystal_I2C",
-                    "/home/hizoto/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Servo/src",
-                    "/home/hizoto/.platformio/packages/framework-arduino-avr/cores/arduino",
-                    "/home/hizoto/.platformio/packages/framework-arduino-avr/variants/mega",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit BusIO",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit GFX Library",
-                    "/home/hizoto/Projects/EcoDrop3/Code/EcoDrop3_Arduino/.pio/libdeps/megaatmega2560/Adafruit SSD1306",
-                    "/home/hizoto/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
-                    "/home/hizoto/.platformio/packages/framework-arduino-avr/libraries/HID/src",
-                    "/home/hizoto/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
->>>>>>> 785ad99de44f58cb659cce8e7c026098d3107de3
                     ""
                 ]
             },
@@ -117,7 +63,7 @@
             ],
             "cStandard": "gnu11",
             "cppStandard": "gnu++11",
-            "compilerPath": "/home/hizoto/.platformio/packages/toolchain-atmelavr/bin/avr-gcc",
+            "compilerPath": "C:/Users/miran/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe",
             "compilerArgs": [
                 "-mmcu=atmega2560",
                 ""
