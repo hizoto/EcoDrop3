@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include "bewegung.h"
+#include "pins.h"
+#include "config.h"
 
 const int speedFast = 100;
 const int speedSlow = 25;

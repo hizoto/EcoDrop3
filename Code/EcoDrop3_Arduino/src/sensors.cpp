@@ -4,6 +4,8 @@
 #include <Adafruit_VL53L0X.h>
 #include <TCA9548A-SOLDERED.h>
 #include "communication.h"
+#include "pins.h"
+#include "config.h"
 
 TCA9548A I2CMUX;
 Adafruit_VL53L0X loxFront = Adafruit_VL53L0X();
@@ -23,7 +25,7 @@ void initSensors(){
 }
 
 void initMux(){
-  I2CMUX.begin();
+  I2CMUX.begin();-
   I2CMUX.closeAll();
 }
 
