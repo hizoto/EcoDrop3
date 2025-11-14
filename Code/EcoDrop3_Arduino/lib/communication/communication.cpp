@@ -43,6 +43,7 @@ void handleCommand(const String& cmd) {
 
     else {
         logMessage("[WARNUNG] unbekannter Befehl!!");
+        logMessage(cmd.c_str());
     }
 }
 

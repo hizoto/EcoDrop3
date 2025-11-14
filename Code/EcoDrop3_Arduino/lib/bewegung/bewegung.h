@@ -18,19 +18,23 @@ class DC_Motor{
 
 void moveForward(int distancemm);
 void moveBackward(int distancemm);
-void turnLeft(int deg);
-void turnRight(int deg);
+void turnLeft(float deg);
+void turnRight(float deg);
+void turnLeftSlow(float deg);
+void turnRightSlow(float deg);
 void moveLeft(int distancemm);
 void moveRight(int distancemm);
 void moveForwardParallelUntilContainer(int distanceToWall);
-void turnSlowRight(int distancemm);
-void turnSlowLeft(int distancemm);
+void rechtsKurve(int distancemm);
+void linksKurve(int distancemm);
 void moveToRightWall(int distanceToWall);
+void stopMotors();
 void goParallel();
 void parkieren();
 void moveOutOfDock();
 void pickUpContainer();
 void abladen();
+void testVorwaerts();
 
 #endif
 
