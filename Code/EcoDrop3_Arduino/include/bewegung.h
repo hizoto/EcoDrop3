@@ -1,5 +1,4 @@
-#ifndef BEWEGUNG_H
-#define BEWEGUNG_H
+#pragma once
 #include "sensors.h"
 #include "communication.h"
 
@@ -36,5 +35,4 @@ void pickUpContainer();
 void abladen();
 void testVorwaerts();
 
-#endif
 
