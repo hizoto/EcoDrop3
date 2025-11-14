@@ -130,9 +130,6 @@ void loop() {
         }
     }
     pixyTestfunktion();
-<<<<<<< HEAD
-    delay(1000);
-=======
     //goParallel();
     //moveToRightWall(50);
     /*moveForward(50);
@@ -140,7 +137,6 @@ void loop() {
     moveBackward(50);
     delay(1000);*/
     //testVorwaerts();
->>>>>>> 785ad99de44f58cb659cce8e7c026098d3107de3
     
 }
 
