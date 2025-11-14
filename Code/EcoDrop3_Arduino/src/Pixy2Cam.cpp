@@ -27,6 +27,7 @@ void pixyMoveForward()
         {
         moveForward(1);
         Serial.println("Roboter bewegt sich vorwärts");
+        pixy.ccc.getBlocks();
         }
         stopMotors();
         
@@ -42,6 +43,7 @@ pixy.ccc.getBlocks();
         {
         moveBackward(1);
         Serial.println("Roboter bewegt sich rückwärts");
+        pixy.ccc.getBlocks();
         }
         stopMotors();
         
@@ -57,6 +59,7 @@ pixy.ccc.getBlocks();
         {
         moveRight(1);
         Serial.println("Roboter fährt nach rechts");
+        pixy.ccc.getBlocks();
         }
         stopMotors();
         
@@ -73,6 +76,7 @@ pixy.ccc.getBlocks();
         {
         moveLeft(1);
         Serial.println("Roboter fährt nach links");
+        pixy.ccc.getBlocks();
         }
         stopMotors();
         
