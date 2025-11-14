@@ -21,7 +21,7 @@ int currentStep = 0;
 void setup() {
     startComm();
     //initSensors();
-    //pixySetup();
+    pixySetup();
 }
 
 void loop() {
@@ -130,6 +130,7 @@ void loop() {
         }
     }
     pixyTestfunktion();
+    delay(1000);
     
 }
 
