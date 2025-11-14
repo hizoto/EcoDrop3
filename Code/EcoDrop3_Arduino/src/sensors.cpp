@@ -4,16 +4,12 @@
 #include <Adafruit_VL53L0X.h>
 #include <TCA9548A-SOLDERED.h>
 #include "communication.h"
-#include "pins.h"
-#include "config.h"
 
-TCA9548A I2CMUX;
-Adafruit_VL53L0X loxFront = Adafruit_VL53L0X();
-Adafruit_VL53L0X loxBack = Adafruit_VL53L0X();
+TCA9548A I2CMUX;                                  // multiplexer
+Adafruit_VL53L0X loxFront = Adafruit_VL53L0X();   // TOF
+Adafruit_VL53L0X loxBack = Adafruit_VL53L0X();    // TOF
 
-int samples = 5;
-
-
+// Multiplexer Channels
 int tofFrontChannel = 0;
 int tofBackChannel = 1;
 
@@ -25,14 +21,14 @@ void initSensors(){
 }
 
 void initMux(){
-  I2CMUX.begin();-
+  I2CMUX.begin();
   I2CMUX.closeAll();
 }
 
 void initTofFront(){
   I2CMUX.openChannel(tofFrontChannel);
   if(!loxFront.begin()){
-    Serial.println("Failed to boot Front TOF"); // TODO
+    Serial.println("Failed to boot Front TOF");   // TODO
     return;
   }
   I2CMUX.closeAll();
@@ -41,72 +37,21 @@ void initTofFront(){
 void initTofBack(){
   I2CMUX.openChannel(tofBackChannel);
   if(!loxBack.begin()){
-    Serial.println("Failed to boot Back TOF"); // TODO
+    Serial.println("Failed to boot Back TOF");    // TODO
     return;
   }
   I2CMUX.closeAll();
 }
 
-uint16_t readTofFront(){
-  I2CMUX.openChannel(tofFrontChannel);
-  VL53L0X_RangingMeasurementData_t measure;
-  loxFront.rangingTest(&measure, false);
-  I2CMUX.closeAll();
-  if (measure.RangeStatus != 4) {
-    uint16_t distance = measure.RangeMilliMeter;
-    return distance;
-  }
-}
-
-uint16_t readTofBack(){
-  I2CMUX.openChannel(tofBackChannel);
-  VL53L0X_RangingMeasurementData_t measure;
-  loxBack.rangingTest(&measure, false);
-  I2CMUX.closeAll();
-  if (measure.RangeStatus != 4) {
-    uint16_t distance = measure.RangeMilliMeter;
-    return distance;
-  }
-}
-
-/*int averageTofFront(){
-  int sum = 0;
-  I2CMUX.openChannel(tofFrontChannel);
-  for (int i = 0; i < samples; i++){
-    VL53L0X_RangingMeasurementData_t measure;
-    loxFront.rangingTest(&measure, false);
-      if (measure.RangeStatus != 4) {
-    uint16_t distance = measure.RangeMilliMeter;
-    sum += distance;
-    }
-  }
-  I2CMUX.closeAll();
-  sum = sum / 5;
-  return sum;
-} 
-
-int averageTofBack(){
-  int sum = 0;
-  I2CMUX.openChannel(tofBackChannel);
-  for (int i = 0; i < samples; i++){
-    VL53L0X_RangingMeasurementData_t measure;
-    loxFront.rangingTest(&measure, false);
-      if (measure.RangeStatus != 4) {
-    uint16_t distance = measure.RangeMilliMeter;
-    sum += distance;
-    }
-  }
-  I2CMUX.closeAll();
-  sum = sum / 5;
-  return sum;
-}
-
-*/
-
-int averageTofFront() {
-  static int filteredDistance = 0;   // letzter geglätteter Wert (bleibt zwischen Aufrufen erhalten)
-  const float alpha = 0.3;           // Glättungsfaktor (0.1 = sehr weich, 0.5 = schneller)
+int readTofFront() {
+  static int filteredDistance = 0;                // letzter geglätteter Wert
+  static unsigned long lastRead = 0;
+  const float alpha = 0.3;                        // Glättungsfaktor (0.1 = sehr weich, 0.5 = schneller)
   
+  if(millis() - lastRead > 500){
+    filteredDistance = 0;
+  }
+
   VL53L0X_RangingMeasurementData_t measure;
   I2CMUX.openChannel(tofFrontChannel);
   loxFront.rangingTest(&measure, false);
@@ -128,10 +73,15 @@ int averageTofFront() {
   return filteredDistance;
 }
 
-int averageTofBack() {
+int readTofBack() {
   static int filteredDistance = 0;   // letzter geglätteter Wert (bleibt zwischen Aufrufen erhalten)
+  static unsigned long lastRead = 0;
   const float alpha = 0.3;           // Glättungsfaktor (0.1 = sehr weich, 0.5 = schneller)
   
+  if(millis() - lastRead > 500){
+    filteredDistance = 0;
+  }
+
   VL53L0X_RangingMeasurementData_t measure;
   I2CMUX.openChannel(tofBackChannel);
   loxBack.rangingTest(&measure, false);

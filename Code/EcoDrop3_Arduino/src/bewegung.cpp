@@ -1,7 +1,5 @@
 #include <Arduino.h>
 #include "bewegung.h"
-#include "pins.h"
-#include "config.h"
 
 const int speedFast = 100;
 const int speedSlow = 25;
@@ -13,10 +11,9 @@ const int containerDepth = 40;
 
 unsigned long timeToTurn360Milliseconds = 5700;
 unsigned long timeToMove1000mmSidewaysMilliseconds = 10000;   //TODO Ausmessen wie lange eine Umdrehung dauert
-unsigned long timeToMove1000mm = 5720;                //TODO
+unsigned long timeToMove1000mm = 5720;              //TODO 
 
-//TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
-float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                       //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
+float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                      
 
 
 const int incrementDistance = 1;
@@ -227,25 +224,29 @@ void stopMotors(){
 
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
 void moveToRightWall(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
-  uint16_t distanceFront = averageTofFront();
-  uint16_t distanceBack = averageTofBack();
+  uint16_t distanceFront = readTofFront();
+  uint16_t distanceBack;
   String message = "Abstand zur Wand von " + String(distanceToWall) + "mm mm wird hergestellt.";
   logMessage(message.c_str());
   if ((int)distanceFront > distanceToWall){
     while ((int)distanceFront > distanceToWall){
       moveRight(1);
-      distanceFront = averageTofFront();
-      distanceBack = averageTofBack();
-      //goParallel();
+      distanceFront = readTofFront();
+      distanceBack = readTofBack();
+      if(abs(distanceBack - distanceFront) > toleranceWheelsmm + 5){
+        goParallel();
+      }
     }
   }
 
   else if (distanceFront < distanceToWall){
     while (distanceFront < distanceToWall){
       moveLeft(1);
-      distanceFront = averageTofFront();
-      distanceBack = averageTofBack();
-      //goParallel();
+      distanceFront = readTofFront();
+      distanceBack = readTofBack();
+      if(abs(distanceBack - distanceFront) > toleranceWheelsmm + 5){
+        goParallel();
+      }
     }
   }
   stopMotors();
@@ -253,8 +254,8 @@ void moveToRightWall(int distanceToWall){  // nach rechts bewegen bis in gewüns
 
 void goParallel(){
     logMessage("Parallelität zur Wand wird hergestellt...");
-    uint16_t distanceFront = averageTofFront();
-    uint16_t distanceBack = averageTofBack();
+    uint16_t distanceFront = readTofFront();
+    uint16_t distanceBack = readTofBack();
     while (abs((int)distanceFront - (int)distanceBack) > toleranceWheelsmm){
         if (distanceFront > distanceBack){
         turnRightSlow(incrementGrad);
@@ -263,8 +264,8 @@ void goParallel(){
         turnLeftSlow(incrementGrad);
         }
 
-      distanceFront = averageTofFront();
-      distanceBack = averageTofBack();
+      distanceFront = readTofFront();
+      distanceBack = readTofBack();
     }
     stopMotors();
 }
@@ -272,8 +273,8 @@ void goParallel(){
 
 void moveForwardParallelUntilContainer(int distanceToWall){
   // abstandserfassung
-  uint16_t distanceFront = averageTofFront();
-  uint16_t distanceBack = averageTofBack();
+  uint16_t distanceFront = readTofFront();
+  uint16_t distanceBack = readTofBack();
   
   // INITIAL PARALLELIZATION
   goParallel();
@@ -282,28 +283,28 @@ void moveForwardParallelUntilContainer(int distanceToWall){
   moveToRightWall(distanceToWall);
 
   goParallel();
-  distanceFront = averageTofFront();
-  distanceBack = averageTofBack();
+  distanceFront = readTofFront();
+  distanceBack = readTofBack();
 
   // Main Logic of the function
   logMessage("Suche Containter...");
   while (abs(distanceBack - distanceFront) < containerDepth){
     if (abs(distanceFront - distanceBack) < toleranceWheelsmm){
       moveForward(incrementDistance);
-      distanceFront = averageTofFront();
-      distanceBack = averageTofBack();
+      distanceFront = readTofFront();
+      distanceBack = readTofBack();
       
     }
     else if (distanceBack - distanceFront > toleranceWheelsmm){
       turnLeftSlow(incrementDistance);
-      distanceFront = averageTofFront();
-      distanceBack = averageTofBack();
+      distanceFront = readTofFront();
+      distanceBack = readTofBack();
     }
 
     else {
       turnRightSlow(incrementDistance);
-      distanceFront = averageTofFront();
-      distanceBack = averageTofBack();
+      distanceFront = readTofFront();
+      distanceBack = readTofBack();
     }
   }
   stopMotors();

@@ -1,3 +1,5 @@
+#pragma once
+
 void pixyMoveForward();
 void pixyMoveBackwardUntilObject();
 void pixyMoveRight();

@@ -3,9 +3,6 @@
 #include "bewegung.h"
 #include <Arduino.h>
 #include "communication.h"
-#include "pins.h"
-#include "config.h"
-
 
 Pixy2 pixy;
 int pixyHoehe = 208;
