@@ -8,8 +8,8 @@
 
 
 Pixy2 pixy;
-int pixyHoehe = 208;
-int pixyBreite = 316;
+uint16_t pixyHoehe = 208;
+uint16_t pixyBreite = 316;
 
 
 void pixySetup()
@@ -24,14 +24,14 @@ void pixySetup()
 
 void pixyMoveForward()
 {
-pixy.ccc.getBlocks();
+    pixy.ccc.getBlocks();
     if(pixy.ccc.blocks[0].m_y < pixyHoehe/2){
         while (pixy.ccc.blocks[0].m_y < pixyHoehe/2)
         {
         moveForward(1);
         Serial.println("Roboter bewegt sich vorwärts");
         }
-        //stopMotors();
+        stopMotors();
         
     }
 
@@ -46,7 +46,7 @@ pixy.ccc.getBlocks();
         moveBackward(1);
         Serial.println("Roboter bewegt sich rückwärts");
         }
-        //stopMotors();
+        stopMotors();
         
     }
 
@@ -61,7 +61,7 @@ pixy.ccc.getBlocks();
         moveRight(1);
         Serial.println("Roboter fährt nach rechts");
         }
-        //stopMotors();
+        stopMotors();
         
     }
 
@@ -77,7 +77,7 @@ pixy.ccc.getBlocks();
         moveLeft(1);
         Serial.println("Roboter fährt nach links");
         }
-        //stopMotors();
+        stopMotors();
         
     }
     

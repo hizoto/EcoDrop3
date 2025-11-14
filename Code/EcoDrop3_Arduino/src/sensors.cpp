@@ -25,7 +25,7 @@ void initSensors(){
 }
 
 void initMux(){
-  I2CMUX.begin();-
+  I2CMUX.begin();
   I2CMUX.closeAll();
 }
 
