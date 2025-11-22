@@ -6,4 +6,5 @@ void pixyMoveRight();
 void pixyMoveLeft();
 void pixySetup();
 void pixyTestfunktion();
+void pixyErrorObjects();
 

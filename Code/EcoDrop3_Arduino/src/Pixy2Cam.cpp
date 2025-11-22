@@ -54,8 +54,8 @@ pixy.ccc.getBlocks();
 void pixyMoveRight()
 {
 pixy.ccc.getBlocks();
-    if(pixy.ccc.blocks[0].m_x > pixyBreite/2){
-        while (pixy.ccc.blocks[0].m_x > pixyBreite/2)
+    if(pixy.ccc.blocks[0].m_x > 160){
+        while (pixy.ccc.blocks[0].m_x > 160)
         {
         moveRight(1);
         Serial.println("Roboter fährt nach rechts");
@@ -71,8 +71,8 @@ pixy.ccc.getBlocks();
 void pixyMoveLeft()
 {
 pixy.ccc.getBlocks();
-    if (pixy.ccc.blocks[0].m_x < pixyBreite/2){
-        while (pixy.ccc.blocks[0].m_x < pixyBreite/2)
+    if (pixy.ccc.blocks[0].m_x < 140){
+        while (pixy.ccc.blocks[0].m_x < 140)
         {
         moveLeft(1);
         Serial.println("Roboter fährt nach links");
@@ -85,11 +85,26 @@ pixy.ccc.getBlocks();
 
 }
 
+void pixyErrorObjects()
+{
+    if(pixy.ccc.numBlocks > 1){
+    
+        pixy.ccc.getBlocks();
+        Serial.println("Mehrere Objekte erkannt");
+    }
+}
+
 void pixyTestfunktion(){
-    pixyMoveForward();
-    pixyMoveBackwardUntilObject();
-    pixyMoveLeft();
-    pixyMoveRight();
+    
+         pixyErrorObjects();
+         pixyMoveForward();
+         pixyMoveBackwardUntilObject();
+         pixyMoveLeft();
+         pixyMoveRight();
+    
+   
+    
+
 }
 
 
