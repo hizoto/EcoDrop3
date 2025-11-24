@@ -10,8 +10,8 @@ float chargingVoltage = 0.0;
 
 void updateSensorData(){
     temp = 20.0; // TODO
-    voltage = 3.7 * 3; //getVoltage(1);
-    current = 0.500; //getCurrent(1);
+    voltage = getVoltage(1);
+    current = getCurrent(1);
     //chargingCurrent = getCurrent(2);
     //chargingVoltage = getVoltage(2);
 }
