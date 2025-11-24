@@ -19,7 +19,7 @@ void setup() {
     Serial.begin(115200);
     startComm();
     startWebinterface();
-    current_measure_init();
+    //current_measure_init();
     updateSensorData();
 }
 
@@ -28,7 +28,7 @@ void loop() {
     if (ArduinoSlave.available()) getComm();
     
     if (millis() - lastSensorDataUpdate >= timeToUpdateSensorData){
-        updateSensorData();
+        //updateSensorData();
         lastSensorDataUpdate = millis();
     }
 }
