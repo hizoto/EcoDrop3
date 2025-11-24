@@ -21,15 +21,14 @@ bool firstTry = true;
 
 void setup() {
     startComm();
-    //initSensors();
+    initSensors();
     pixySetup();
 }
 
 void loop() {
-    /*if(Serial1.available()){
+    if(Serial1.available()){
         getComm();
     }
-        */
     if(isRunning){
         switch(currentStep){
             // idle
@@ -38,9 +37,18 @@ void loop() {
                 break;
             // Testcase
             case 1:
-                digitalWrite(12, HIGH);
-                logMessage("EcoDrop on.");
-                currentStep++;
+                if (millis() - lastLogMessage > 10000){
+                    logMessage("EcoDrop on.");
+                    lastLogMessage = millis();
+                }
+                //pixyTestfunktion();
+                //goParallel();
+                //moveToRightWall(50);
+                /*moveForward(50);
+                delay(1000);
+                moveBackward(50);
+                delay(1000);*/
+                //testVorwaerts();
                 break;
             
             // Ladestation verlassen
@@ -128,15 +136,6 @@ void loop() {
         logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
         }
-    }
-    pixyTestfunktion();
-    //goParallel();
-    //moveToRightWall(50);
-    /*moveForward(50);
-    delay(1000);
-    moveBackward(50);
-    delay(1000);*/
-    //testVorwaerts();
-    
+    }    
 }
 

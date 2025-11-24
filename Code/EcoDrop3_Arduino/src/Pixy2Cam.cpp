@@ -10,10 +10,7 @@ uint16_t pixyBreite = 316;
 
 
 void pixySetup()
-{
-  Serial.begin(115200);
-  Serial.print("Starting...\n");
-  
+{  
   pixy.init();
 }
 
