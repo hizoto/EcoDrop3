@@ -44,8 +44,6 @@ async function fetchSensorData() {
     if (tempSpan) tempSpan.textContent = data.temp + " °C";
     if (voltageSpan) voltageSpan.textContent = data.voltage + " V";
     if (currentSpan) currentSpan.textContent = data.current + " A";
-    if (chargingCurrentSpan) chargingCurrentSpan.textContent = data.chargingCurrent + " A";
-    if (chargingVoltageSpan) chargingVoltageSpan.textContent = data.chargingVoltage + " V";
   } catch (err) {
     console.warn("Konnte Sensordaten nicht laden:", err);
   }
