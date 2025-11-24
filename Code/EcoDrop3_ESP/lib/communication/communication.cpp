@@ -29,7 +29,7 @@ void getComm(){
 
         if (msg.startsWith("[LOG]")){
             String logmsg = msg.substring(5);
-            Serial.println("log message reaceived: ");
+            Serial.println("log message received: ");
             Serial.println(logmsg);
             logToWebinterface(logmsg);
         }
