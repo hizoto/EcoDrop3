@@ -10,10 +10,7 @@ uint16_t pixyBreite = 316;          // Definierte Breite der Pixyanzeige
 
 
 void pixySetup()
-{
-  Serial.begin(115200);                                         // Setup von Pixy
-  Serial.print("Starting...\n");
-  
+{  
   pixy.init();
 }
 

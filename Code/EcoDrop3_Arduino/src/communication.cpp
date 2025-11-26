@@ -4,12 +4,13 @@
 
 bool isRunning = false;
 
-
+int baudrate = 9600;
 
 void getComm(){
     if (Serial1.available()) {
         String input = Serial1.readStringUntil('\n');
-        Serial.println("Kommunikation erhalten.");
+        Serial.println("Kommunikation erhalten: ");
+        Serial.println(input);
         input.trim();
         if (input.length() > 0) {
             handleCommand(input);
@@ -25,8 +26,8 @@ void logMessage(const char* msg){
 }
 
 void startComm(){
-    Serial.begin(115200);
-    Serial1.begin(115200);
+    Serial.begin(baudrate);
+    Serial1.begin(baudrate);
     pinMode(EMERGENCYSTOP_PIN, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(EMERGENCYSTOP_PIN), emergencystop, RISING);
     logMessage("Kommunikation von Arduino erfolgreich gestartet.");
