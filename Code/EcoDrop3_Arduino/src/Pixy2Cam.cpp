@@ -5,13 +5,13 @@
 #include "communication.h"
 
 Pixy2 pixy;
-uint16_t pixyHoehe = 208;
-uint16_t pixyBreite = 316;
+uint16_t pixyHoehe = 208;           // Definierte Höhe der Pixyanzeige
+uint16_t pixyBreite = 316;          // Definierte Breite der Pixyanzeige
 
 
 void pixySetup()
 {
-  Serial.begin(115200);
+  Serial.begin(115200);                                         // Setup von Pixy
   Serial.print("Starting...\n");
   
   pixy.init();
@@ -22,7 +22,7 @@ void pixySetup()
 void pixyMoveForward()
 {
     pixy.ccc.getBlocks();
-    if(pixy.ccc.blocks[0].m_y < pixyHoehe/2){
+    if(pixy.ccc.blocks[0].m_y < pixyHoehe/2){                   // Wenn Endschalter verbaut dann IF Funktion raus und mit While solange Endschalter nicht betätigt
         while (pixy.ccc.blocks[0].m_y < pixyHoehe/2)
         {
         moveForward(1);
@@ -34,10 +34,18 @@ void pixyMoveForward()
     }
 
 }
+/*void pixyMoveForwardE()
+{
+    while(!endschalterContainer){                               // Funktion wenn Endschaöter verbaut ist
+        moveForward(1);
+        Serial.println("Roboter fährt zum Container");
+    }
+    stopMotors();
+}*/
 
 void pixyMoveBackwardUntilObject()
 {
-pixy.ccc.getBlocks();
+pixy.ccc.getBlocks();                                           // Roboter fährt Rückwärts solange kein Objekt erkannt wurde
     if(!pixy.ccc.numBlocks){
         while (!pixy.ccc.numBlocks)
         {
@@ -53,7 +61,7 @@ pixy.ccc.getBlocks();
 
 void pixyMoveRight()
 {
-pixy.ccc.getBlocks();
+pixy.ccc.getBlocks();                                           // Roboter fährt nach rechts solange Objekt nicht im Bereich erscheint
     if(pixy.ccc.blocks[0].m_x > 160){
         while (pixy.ccc.blocks[0].m_x > 160)
         {
@@ -70,7 +78,7 @@ pixy.ccc.getBlocks();
 
 void pixyMoveLeft()
 {
-pixy.ccc.getBlocks();
+pixy.ccc.getBlocks();                                           // Roboter fährt nach links solange Objekt nicht im Bereich erscheint
     if (pixy.ccc.blocks[0].m_x < 140){
         while (pixy.ccc.blocks[0].m_x < 140)
         {
@@ -87,7 +95,7 @@ pixy.ccc.getBlocks();
 
 void pixyErrorObjects()
 {
-    if(pixy.ccc.numBlocks > 1){
+    if(pixy.ccc.numBlocks > 1){                                 // Fehlermeldung falls mehrere Objekte erkannt wurden
     
         pixy.ccc.getBlocks();
         Serial.println("Mehrere Objekte erkannt");
