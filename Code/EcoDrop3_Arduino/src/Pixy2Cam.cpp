@@ -23,7 +23,7 @@ void pixyMoveForward()
         while (pixy.ccc.blocks[0].m_y < pixyHoehe/2)
         {
         moveForward(1);
-        Serial.println("Roboter bewegt sich vorwärts");
+        logMessage("Roboter bewegt sich vorwärts");
         pixy.ccc.getBlocks();
         }
         stopMotors();
@@ -35,7 +35,7 @@ void pixyMoveForward()
 {
     while(!endschalterContainer){                               // Funktion wenn Endschaöter verbaut ist
         moveForward(1);
-        Serial.println("Roboter fährt zum Container");
+        logMessage("Roboter fährt zum Container");
     }
     stopMotors();
 }*/
@@ -47,7 +47,7 @@ pixy.ccc.getBlocks();                                           // Roboter fähr
         while (!pixy.ccc.numBlocks)
         {
         moveBackward(1);
-        Serial.println("Roboter bewegt sich rückwärts");
+        logMessage("Roboter bewegt sich rückwärts");
         pixy.ccc.getBlocks();
         }
         stopMotors();
@@ -63,7 +63,7 @@ pixy.ccc.getBlocks();                                           // Roboter fähr
         while (pixy.ccc.blocks[0].m_x > 160)
         {
         moveRight(1);
-        Serial.println("Roboter fährt nach rechts");
+        logMessage("Roboter fährt nach rechts");
         pixy.ccc.getBlocks();
         }
         stopMotors();
@@ -80,7 +80,7 @@ pixy.ccc.getBlocks();                                           // Roboter fähr
         while (pixy.ccc.blocks[0].m_x < 140)
         {
         moveLeft(1);
-        Serial.println("Roboter fährt nach links");
+        logMessage("Roboter fährt nach links");
         pixy.ccc.getBlocks();
         }
         stopMotors();
@@ -95,7 +95,7 @@ void pixyErrorObjects()
     if(pixy.ccc.numBlocks > 1){                                 // Fehlermeldung falls mehrere Objekte erkannt wurden
     
         pixy.ccc.getBlocks();
-        Serial.println("Mehrere Objekte erkannt");
+        logMessage("Mehrere Objekte erkannt");
     }
 }
 
