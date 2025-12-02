@@ -5,12 +5,17 @@
 
 #define PRINT_DEC_POINTS 3  
 
+#define I2C_SDA A4
+#define I2C_SCL A5
 
 // definition des INA3221
 INA3221 ina(INA3221_ADDR40_GND);
 
 void current_measure_init() {
-    Wire.begin();
+    Wire.begin(I2C_SDA, I2C_SCL);
+    Wire.setClock(100000);
+    delay(10);
+
     ina.begin(&Wire);
     ina.reset();
     ina.setShuntRes(100, 100, 100);

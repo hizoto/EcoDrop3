@@ -4,6 +4,7 @@
 #include "datenerfassung.h"
 #include "testfunctions.h"
 #include <esp_partition.h>
+#include "energieauswertung.h"
 
 void currentTest();
 
@@ -18,29 +19,18 @@ void setup() {
     Serial.begin(115200);
     startComm();
     startWebinterface();
-    //current_measure_init();
-    //updateSensorData();
+    current_measure_init();
+    updateSensorData();
 }
 
 void loop() {
-    if (millis() - lastSensorDataUpdate > 2000){
-        //updateSensorData();
-        lastSensorDataUpdate = millis();
-    }
 
     if (ArduinoSlave.available()) getComm();
-    Serial.println("läuft...");
-    delay(2000);
-    /*
-    getComm(currentStep, lastFinishedStep);
-    if (lastFinishedStep == currentStep && lastFinishedStep != 0){
-
-    }
+    
     if (millis() - lastSensorDataUpdate >= timeToUpdateSensorData){
         updateSensorData();
-        refreshWebinterface();
         lastSensorDataUpdate = millis();
-    } */
+    }
 }
 
 void currentTest(){

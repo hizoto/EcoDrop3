@@ -1,25 +1,28 @@
 #include "communication.h"
 #include "sensors.h"
 #include "bewegung.h"
+#include "Pixy2Cam.h"
 
 // Steps:
 // 0 = Idle
 // 1 = xxxx
 
 // Konfigurationsvariablen
-int wandabstand = 50;
-int wandabstandLadezone = 60;
-int abladeZoneWandabstand = 850;
+uint16_t wandabstand = 50;
+uint16_t wandabstandLadezone = 60;
+uint16_t abladeZoneWandabstand = 850;
 int roboterbreite = 250; 
 int sicherheitsmarge = 50;
 
 unsigned long lastLogMessage = 0;
 
 int currentStep = 0;
+bool firstTry = true;
 
 void setup() {
     startComm();
-    //initSensors();
+    initSensors();
+    pixySetup();
 }
 
 void loop() {
@@ -30,13 +33,22 @@ void loop() {
         switch(currentStep){
             // idle
             case 0:
-                currentStep = 1;
+                currentStep = 1;        //Auskommentieren zum testen
                 break;
             // Testcase
             case 1:
-                digitalWrite(12, HIGH);
-                logMessage("EcoDrop on.");
-                currentStep++;
+                if (millis() - lastLogMessage > 10000){
+                    logMessage("EcoDrop on.");
+                    lastLogMessage = millis();
+                }
+                //pixyTestfunktion();
+                //goParallel();
+                //moveToRightWall(50);
+                /*moveForward(50);
+                delay(1000);
+                moveBackward(50);
+                delay(1000);*/
+                //testVorwaerts();
                 break;
             
             // Ladestation verlassen
@@ -120,13 +132,10 @@ void loop() {
     }
     else {
         currentStep = 0;
-        //logik für Kommunikationstests
-        digitalWrite(12, LOW);
         if(millis() - lastLogMessage > 10000){
         logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
         }
-    }
-    
+    }    
 }
 

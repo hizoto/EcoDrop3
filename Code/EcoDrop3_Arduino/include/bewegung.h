@@ -1,5 +1,4 @@
-#ifndef BEWEGUNG_H
-#define BEWEGUNG_H
+#pragma once
 #include "sensors.h"
 #include "communication.h"
 
@@ -18,19 +17,22 @@ class DC_Motor{
 
 void moveForward(int distancemm);
 void moveBackward(int distancemm);
-void turnLeft(int deg);
-void turnRight(int deg);
+void turnLeft(float deg);
+void turnRight(float deg);
+void turnLeftSlow(float deg);
+void turnRightSlow(float deg);
 void moveLeft(int distancemm);
 void moveRight(int distancemm);
-void moveForwardParallelUntilContainer(int distanceToWall);
-void turnSlowRight(int distancemm);
-void turnSlowLeft(int distancemm);
-void moveToRightWall(int distanceToWall);
+void moveForwardParallelUntilContainer(uint16_t distanceToWall);
+void rechtsKurve(int distancemm);
+void linksKurve(int distancemm);
+void moveToRightWall(uint16_t distanceToWall);
+void stopMotors();
 void goParallel();
 void parkieren();
 void moveOutOfDock();
 void pickUpContainer();
 void abladen();
+void testVorwaerts();
 
-#endif
 

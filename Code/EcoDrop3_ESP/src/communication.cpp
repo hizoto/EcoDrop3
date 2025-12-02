@@ -8,12 +8,13 @@
 #define TX_PIN D9   // an Arduino RX
 #define SEND_EMERGENCY_STOP_PIN D2
 
+int baudrate = 9600;
 
 HardwareSerial& ArduinoSlave = Serial2;
 
 void startComm(){
-    Serial.begin(115200);
-    ArduinoSlave.begin(115200, SERIAL_8N1, RX_PIN, TX_PIN);
+    Serial.begin(baudrate);
+    ArduinoSlave.begin(baudrate, SERIAL_8N1, RX_PIN, TX_PIN);
     pinMode(SEND_EMERGENCY_STOP_PIN, OUTPUT);
     digitalWrite(SEND_EMERGENCY_STOP_PIN, LOW);    
     delay(3000);
@@ -28,6 +29,8 @@ void getComm(){
 
         if (msg.startsWith("[LOG]")){
             String logmsg = msg.substring(5);
+            Serial.println("log message received: ");
+            Serial.println(logmsg);
             logToWebinterface(logmsg);
         }
 

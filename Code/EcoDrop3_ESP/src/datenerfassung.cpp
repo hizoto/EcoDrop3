@@ -12,6 +12,6 @@ void updateSensorData(){
     temp = 20.0; // TODO
     voltage = getVoltage(1);
     current = getCurrent(1);
-    chargingCurrent = getCurrent(2);
-    chargingVoltage = getVoltage(2);
+    //chargingCurrent = getCurrent(2);
+    //chargingVoltage = getVoltage(2);
 }

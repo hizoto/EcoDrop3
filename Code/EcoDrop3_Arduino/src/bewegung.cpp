@@ -1,49 +1,48 @@
 #include <Arduino.h>
 #include "bewegung.h"
 
-const int speedFast = 255;
-const int speedSlow = 127;
+const int speedFast = 100;
+const int speedSlow = 25;
 // Toleranz Wandabstand
 const int toleranceToWallmm = 15;
 // Toleranz für parallelität
-const int toleranceWheelsmm = 5;
-const int containerDepth = 20;
+const int toleranceWheelsmm = 10;
+const int containerDepth = 40;
 
-unsigned long timeToTurn360Milliseconds = 5700;       
+unsigned long timeToTurn360Milliseconds = 5700;
 unsigned long timeToMove1000mmSidewaysMilliseconds = 10000;   //TODO Ausmessen wie lange eine Umdrehung dauert
-unsigned long timeToMove1000mm = 5720;                //TODO
+unsigned long timeToMove1000mm = 5720;              //TODO 
 
-//TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
-float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                       //TODO Ausmessen welche Strecke in mm gefahren wird in einer Sekunde
+float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                      
 
 
 const int incrementDistance = 1;
-const int incrementGrad = 1;
-const int minMoveTimeMs = 5;
+const float incrementGrad = 0.1;
+const int minMoveTimeMs = 1;
 
 
 // PINS
-int endschalterHinten = 10; // TODO pseudopin
+int endschalterHinten = 50; // TODO pseudopin
 
 // Motor 1 Vorne links
 const int B1_IN1 = 46;
 const int B1_IN2 = 47;
-const int B1_ENA = 10;
+const int B1_ENA = 8;
 
 // Motor 2 Vorne rechts
 const int B1_IN3 = 48;
 const int B1_IN4 = 49;
-const int B1_ENB = 11;
+const int B1_ENB = 9;
 
 // Motor 3 Hinten links
 const int B2_IN1 = 50; 
 const int B2_IN2 = 51; 
-const int B2_ENA = 12; 
+const int B2_ENA = 10;
 
 // Motor 4 Hinten rechts
 const int B2_IN3 = 52; 
 const int B2_IN4 = 53; 
-const int B2_ENB = 13; 
+const int B2_ENB = 11; 
 
 /*  Definition der Motoren Mecanum Räder:
 
@@ -99,10 +98,6 @@ void moveForward(int distancemm){
     delay(minMoveTimeMs - timeToDrive);
   }
   delay(timeToDrive);
-  M1.brake();
-  M2.brake();
-  M3.brake();
-  M4.brake();
 }
 
 
@@ -116,13 +111,9 @@ void moveBackward(int distancemm){
     delay(minMoveTimeMs - timeToDrive);
   }
   delay(timeToDrive);
-  M1.brake();
-  M2.brake();
-  M3.brake();
-  M4.brake();
 }
 
-void turnLeft(int deg){
+void turnLeft(float deg){
   unsigned long timeToTurn = (deg / 360.0) * timeToTurn360Milliseconds;
   M1.backward(speedFast);
   M3.backward(speedFast);
@@ -132,61 +123,75 @@ void turnLeft(int deg){
     delay(minMoveTimeMs - timeToTurn);
   }
   delay(timeToTurn);
-  M1.brake();
-  M2.brake();
-  M3.brake();
-  M4.brake();
 }
 
-void turnRight(int deg){
+void turnLeftSlow(float deg){
   unsigned long timeToTurn = (deg / 360.0) * timeToTurn360Milliseconds;
+  M1.backward(speedSlow);
+  M3.backward(speedSlow);
+  M2.forward(speedSlow);
+  M4.forward(speedSlow);
+  if (timeToTurn < minMoveTimeMs){
+    delay(minMoveTimeMs - timeToTurn);
+  }
+  delay(timeToTurn);
+}
+
+void turnRight(float deg){
+  unsigned long timeToTurn = (deg / 360.0) * timeToTurn360Milliseconds;
+  Serial.print("Time To Turn: ");
+  Serial.println(timeToTurn);
   M2.backward(speedFast);
   M4.backward(speedFast);
   M1.forward(speedFast);
   M3.forward(speedFast);
   if (timeToTurn < minMoveTimeMs){
-    delay(minMoveTimeMs - timeToTurn);
+    timeToTurn = minMoveTimeMs;
   }
   delay(timeToTurn);
-  M1.brake();
-  M2.brake();
-  M3.brake();
-  M4.brake();
 }
 
-void moveLeft(int distancemm){
-  unsigned long timeToMove = (distancemm / 1000.0) * timeToMove1000mmSidewaysMilliseconds;
-  M1.backward(speedFast);
-  M2.forward(speedFast);
-  M3.forward(speedFast);
-  M4.backward(speedFast);
-  if (timeToMove < minMoveTimeMs){
-    delay(minMoveTimeMs - timeToMove);
+void turnRightSlow(float deg){
+  unsigned long timeToTurn = (deg / 360.0) * timeToTurn360Milliseconds;
+  Serial.print("Time To Turn: ");
+  Serial.println(timeToTurn);
+  M2.backward(speedSlow);
+  M4.backward(speedSlow);
+  M1.forward(speedSlow);
+  M3.forward(speedSlow);
+  if (timeToTurn < minMoveTimeMs){
+    timeToTurn = minMoveTimeMs;
   }
-  delay(timeToMove);
-  M1.brake();
-  M2.brake();
-  M3.brake();
-  M4.brake();
+  delay(timeToTurn);
 }
 
 void moveRight(int distancemm){
   unsigned long timeToMove = (distancemm / 1000.0) * timeToMove1000mmSidewaysMilliseconds;
+ 
+  M1.backward(speedSlow);
+  M2.forward(speedFast);
+  M3.forward(speedSlow);
+  M4.backward(speedSlow);
+  
+  if (timeToMove < minMoveTimeMs){
+    timeToMove = minMoveTimeMs;
+  }
+  delay(timeToMove);
+}
+
+void moveLeft(int distancemm){
+  unsigned long timeToMove = (distancemm / 1000.0) * timeToMove1000mmSidewaysMilliseconds;
   M1.forward(speedFast);
   M2.backward(speedFast);
   M3.backward(speedFast);
   M4.forward(speedFast);
   if (timeToMove < minMoveTimeMs){
-    delay(minMoveTimeMs - timeToMove);
+    timeToMove = minMoveTimeMs;
   }
   delay(timeToMove);
-  M1.brake();
-  M2.brake();
-  M3.brake();
-  M4.brake();
 }
 
-void turnSlowRight(int distancemm){  
+void rechtsKurve(int distancemm){  
   unsigned long moveTime = (distancemm * 1000) / distancePerSecond; 
   M1.forward(speedFast);
   M2.forward(speedSlow);
@@ -196,13 +201,9 @@ void turnSlowRight(int distancemm){
     delay(minMoveTimeMs - moveTime);
   }
   delay(moveTime);
-  M1.brake();
-  M2.brake();
-  M3.brake();
-  M4.brake();
 }
 
-void turnSlowLeft(int distancemm){ 
+void linksKurve(int distancemm){ 
   unsigned long moveTime = (distancemm * 1000) / distancePerSecond; 
   M1.forward(speedSlow);
   M2.forward(speedFast);
@@ -212,6 +213,9 @@ void turnSlowLeft(int distancemm){
     delay(minMoveTimeMs - moveTime);
   }
   delay(moveTime);
+}
+
+void stopMotors(){
   M1.brake();
   M2.brake();
   M3.brake();
@@ -219,14 +223,19 @@ void turnSlowLeft(int distancemm){
 }
 
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
-void moveToRightWall(int distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
+void moveToRightWall(uint16_t distanceToWall){  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
   uint16_t distanceFront = readTofFront();
+  uint16_t distanceBack;
   String message = "Abstand zur Wand von " + String(distanceToWall) + "mm mm wird hergestellt.";
   logMessage(message.c_str());
-  if (distanceFront > distanceToWall){
-    while (distanceFront > distanceToWall){
+  if ((int)distanceFront > distanceToWall){
+    while ((int)distanceFront > distanceToWall){
       moveRight(1);
       distanceFront = readTofFront();
+      distanceBack = readTofBack();
+      if(abs(distanceBack - distanceFront) > toleranceWheelsmm + 5){
+        goParallel();
+      }
     }
   }
 
@@ -234,32 +243,35 @@ void moveToRightWall(int distanceToWall){  // nach rechts bewegen bis in gewüns
     while (distanceFront < distanceToWall){
       moveLeft(1);
       distanceFront = readTofFront();
+      distanceBack = readTofBack();
+      if(abs(distanceBack - distanceFront) > toleranceWheelsmm + 5){
+        goParallel();
+      }
     }
   }
-  logSuccess();
+  stopMotors();
 }
 
 void goParallel(){
     logMessage("Parallelität zur Wand wird hergestellt...");
     uint16_t distanceFront = readTofFront();
     uint16_t distanceBack = readTofBack();
-
     while (abs((int)distanceFront - (int)distanceBack) > toleranceWheelsmm){
         if (distanceFront > distanceBack){
-        turnRight(incrementGrad);
+        turnRightSlow(incrementGrad);
         }
         else {
-        turnLeft(incrementGrad);
+        turnLeftSlow(incrementGrad);
         }
 
-        distanceFront = readTofFront();
-        distanceBack = readTofBack();
+      distanceFront = readTofFront();
+      distanceBack = readTofBack();
     }
-    logSuccess();
+    stopMotors();
 }
 
 
-void moveForwardParallelUntilContainer(int distanceToWall){
+void moveForwardParallelUntilContainer(uint16_t distanceToWall){
   // abstandserfassung
   uint16_t distanceFront = readTofFront();
   uint16_t distanceBack = readTofBack();
@@ -276,27 +288,26 @@ void moveForwardParallelUntilContainer(int distanceToWall){
 
   // Main Logic of the function
   logMessage("Suche Containter...");
-  while (distanceBack - distanceFront < containerDepth){
-    if (distanceFront - distanceBack < toleranceWheelsmm || distanceBack - distanceFront < toleranceWheelsmm){
+  while (abs(distanceBack - distanceFront) < containerDepth){
+    if (abs(distanceFront - distanceBack) < toleranceWheelsmm){
       moveForward(incrementDistance);
       distanceFront = readTofFront();
       distanceBack = readTofBack();
       
     }
     else if (distanceBack - distanceFront > toleranceWheelsmm){
-      if (distanceBack - distanceFront > toleranceWheelsmm){
-        turnSlowLeft(incrementDistance);
-        distanceFront = readTofFront();
-        distanceBack = readTofBack();
-      }
+      turnLeftSlow(incrementDistance);
+      distanceFront = readTofFront();
+      distanceBack = readTofBack();
     }
 
     else {
-      turnSlowRight(incrementDistance);
+      turnRightSlow(incrementDistance);
       distanceFront = readTofFront();
       distanceBack = readTofBack();
     }
   }
+  stopMotors();
   logMessage("Container gefunden!");
 }
 
@@ -304,6 +315,7 @@ void parkieren(){
   while(!digitalRead(endschalterHinten)){
       moveBackward(incrementDistance);
   }
+  stopMotors();
 }
 
 void moveOutOfDock(){
@@ -316,4 +328,11 @@ void pickUpContainer(){
 
 void abladen(){
 //TODO
+}
+
+void testVorwaerts(){
+    M1.backward(255);
+    M2.backward(55);
+    M3.backward(255);
+    M4.backward(255);
 }
