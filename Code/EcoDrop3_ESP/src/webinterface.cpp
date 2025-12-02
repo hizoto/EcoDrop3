@@ -4,7 +4,7 @@
 #include <FS.h>
 #include <LittleFS.h>
 #include "webinterface.h"
-#include "../../include/secrets.h"
+#include "../include/secrets.h"
 #include "datenerfassung.h"
 #include "communication.h"
 #include <ArduinoJson.h>
