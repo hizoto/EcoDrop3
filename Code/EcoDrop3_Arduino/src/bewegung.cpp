@@ -247,8 +247,8 @@ void moveToRightWall(uint16_t distanceToWall){  // nach rechts bewegen bis in ge
   uint16_t distanceBack;
   String message = "Abstand zur Wand von " + String(distanceToWall) + "mm mm wird hergestellt.";
   logMessage(message.c_str());
-  if ((int)distanceFront > distanceToWall){
-    while ((int)distanceFront > distanceToWall){
+  if (distanceFront > distanceToWall){
+    while (distanceFront > distanceToWall){
       moveRight(1);
       distanceFront = readTofFront();
       distanceBack = readTofBack();

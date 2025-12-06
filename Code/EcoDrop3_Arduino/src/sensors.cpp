@@ -14,8 +14,8 @@ Adafruit_VL53L0X loxBack = Adafruit_VL53L0X();    // TOF
 // Multiplexer Channels
 int tofFrontChannel = 0;
 int tofBackChannel = 1;
-int tofFrontXShut = 90;
-int tofBackXShut = 91;
+int tofFrontXShut = 23;
+int tofBackXShut = 22;
 
 void initSensors(){
   TOFsetID();
