@@ -15,7 +15,6 @@ unsigned long timeToMove1000mmSidewaysMilliseconds = 10000;   //TODO Ausmessen w
 unsigned long timeToMove1000mm = 5720;              //TODO 
 unsigned long bewegungsZeitLinear = 5000; // TODO in ms
 int dockLength = 300; // TODO
-int endschalterUnten = 40;
 
 float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                      
 
@@ -27,6 +26,7 @@ const int minMoveTimeMs = 1;
 
 // PINS
 int endschalterHinten = 50; // TODO pseudopin
+int endschalterUnten = 40;
 
 // Motor 1 Vorne links
 const int B1_IN1 = 46;
@@ -63,10 +63,10 @@ const int B3_ENA = 12;
 
 */
 
-DC_Motor M1(B1_IN1, B1_IN2, B1_ENA); 
-DC_Motor M2(B1_IN3, B1_IN4, B1_ENB); 
-DC_Motor M3(B2_IN1, B2_IN2, B2_ENA);
-DC_Motor M4(B2_IN3, B2_IN4, B2_ENB);
+DC_Motor M1(B1_IN1, B1_IN2, B1_ENA); // vorne links
+DC_Motor M2(B1_IN3, B1_IN4, B1_ENB); // vorne rechts
+DC_Motor M3(B2_IN1, B2_IN2, B2_ENA); // hinten links
+DC_Motor M4(B2_IN3, B2_IN4, B2_ENB); // hinten rechts
 DC_Motor LinearAntrieb(B3_IN1, B3_IN2, B3_ENA);
 
 
