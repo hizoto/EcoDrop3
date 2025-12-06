@@ -27,10 +27,6 @@ const int incrementDistance = 1;
 const float incrementGrad = 0.1;
 const int minMoveTimeMs = 1;
 
-void startMotors(){
-  klappe.attach(servoPin);
-}
-
 // PINS
 int endschalterHinten = 50; // TODO pseudopin
 int endschalterUnten = 40;
@@ -239,6 +235,10 @@ void stopMotors(){
   M2.brake();
   M3.brake();
   M4.brake();
+}
+
+void startMotors(){
+  klappe.attach(servoPin);
 }
 
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
