@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "bewegung.h"
 #include "Pixy2Cam.h"
+#include <Servo.h>
 
 const int speedFast = 200; // max 255
 const int speedSlow = 100;
@@ -15,6 +16,9 @@ unsigned long timeToMove1000mmSidewaysMilliseconds = 10000;   //TODO Ausmessen w
 unsigned long timeToMove1000mm = 5720;              //TODO 
 unsigned long bewegungsZeitLinear = 5000; // TODO in ms
 int dockLength = 300; // TODO
+int posKlappeOffen = 0; // TODO
+int posKlappeGeschlossen = 90; // TODO
+int zeitEntleeren = 2000;
 
 float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                      
 
@@ -23,10 +27,14 @@ const int incrementDistance = 1;
 const float incrementGrad = 0.1;
 const int minMoveTimeMs = 1;
 
+void startMotors(){
+  klappe.attach(servoPin);
+}
 
 // PINS
 int endschalterHinten = 50; // TODO pseudopin
 int endschalterUnten = 40;
+int servoPin = 13;
 
 // Motor 1 Vorne links
 const int B1_IN1 = 46;
@@ -68,7 +76,7 @@ DC_Motor M2(B1_IN3, B1_IN4, B1_ENB); // vorne rechts
 DC_Motor M3(B2_IN1, B2_IN2, B2_ENA); // hinten links
 DC_Motor M4(B2_IN3, B2_IN4, B2_ENB); // hinten rechts
 DC_Motor LinearAntrieb(B3_IN1, B3_IN2, B3_ENA);
-
+Servo klappe;
 
 DC_Motor::DC_Motor(int _IN1, int _IN2, int _ENA){ // TODO wird ausgeführt wenn deklariert??
     IN1 = _IN1;
@@ -341,7 +349,9 @@ void pickUpContainer(){
 }
 
 void abladen(){
-
+  klappe.write(posKlappeOffen);
+  delay(zeitEntleeren);
+  klappe.write(posKlappeGeschlossen);
 }
 
 void containerAufladen(){
@@ -353,4 +363,10 @@ void containerAufladen(){
     delay(1);
   }
   LinearAntrieb.brake();
+}
+
+void rueckwaertsBisAnschlag(){
+  while(!digitalRead(endschalterHinten)){
+    moveBackward(1);
+  }
 }

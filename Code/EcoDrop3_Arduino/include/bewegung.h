@@ -15,6 +15,7 @@ class DC_Motor{
     void backward(int speed);
 };
 
+void startMotors();
 void moveForward(int distancemm);
 void moveBackward(int distancemm);
 void turnLeft(float deg);
@@ -33,5 +34,6 @@ void parkieren();
 void moveOutOfDock();
 void pickUpContainer();
 void abladen();
+void rueckwaertsBisAnschlag();
 
 

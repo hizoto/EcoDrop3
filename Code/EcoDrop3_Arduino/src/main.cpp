@@ -23,6 +23,7 @@ void setup() {
     startComm();
     initSensors();
     pixySetup();
+    startMotors();
 }
 
 void loop() {
@@ -113,11 +114,13 @@ void loop() {
 
             // abladen
             case 90:
+                rueckwaertsBisAnschlag();
                 abladen();
                 moveForward(sicherheitsmarge);
                 currentStep = 100;
                 break;
 
+            // zurück zur Ladestation
             case 100:
                 moveToRightWall(abladeZoneWandabstand - roboterbreite + sicherheitsmarge);
                 turnRight(90);
