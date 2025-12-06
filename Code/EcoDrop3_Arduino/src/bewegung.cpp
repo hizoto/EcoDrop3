@@ -342,10 +342,11 @@ void moveOutOfDock(){
 }
 
 void pickUpContainer(){
-  pixyErrorObjects();
+  pixyLampeOn();
   pixyMoveBackwardUntilObject();
   pixyMoveMiddle();
   pixyMoveForward();
+  pixyLampeOff();
 }
 
 void abladen(){

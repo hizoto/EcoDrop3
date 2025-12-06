@@ -6,4 +6,6 @@ void pixyMoveMiddle();
 void pixySetup();
 void pixyTestfunktion();
 void pixyErrorObjects();
+void pixyLampeOn();
+void pixyLampeOff();
 

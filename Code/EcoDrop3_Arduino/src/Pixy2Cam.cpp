@@ -80,3 +80,10 @@ void pixyTestfunktion(){
 }
 
 
+void pixyLampeOn(){
+    pixy.setLamp(1, 0);
+}
+
+void pixyLampeOff(){
+    pixy.setLamp(0, 0);
+}
