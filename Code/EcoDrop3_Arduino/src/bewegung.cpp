@@ -12,6 +12,7 @@ const int containerDepth = 40;
 unsigned long timeToTurn360Milliseconds = 5700;
 unsigned long timeToMove1000mmSidewaysMilliseconds = 10000;   //TODO Ausmessen wie lange eine Umdrehung dauert
 unsigned long timeToMove1000mm = 5720;              //TODO 
+unsigned long bewegungsZeitLinear = 5000; // TODO in ms
 
 float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                      
 
@@ -30,19 +31,25 @@ const int B1_IN2 = 47;
 const int B1_ENA = 8;
 
 // Motor 2 Vorne rechts
-const int B1_IN3 = 48;
-const int B1_IN4 = 49;
-const int B1_ENB = 9;
+const int B1_IN3 = 52;
+const int B1_IN4 = 53;
+const int B1_ENB = 11;
 
 // Motor 3 Hinten links
-const int B2_IN1 = 50; 
-const int B2_IN2 = 51; 
-const int B2_ENA = 10;
+const int B2_IN1 = 48; 
+const int B2_IN2 = 49; 
+const int B2_ENA = 9;
 
 // Motor 4 Hinten rechts
-const int B2_IN3 = 52; 
-const int B2_IN4 = 53; 
-const int B2_ENB = 11; 
+const int B2_IN3 = 50; 
+const int B2_IN4 = 51; 
+const int B2_ENB = 10; 
+
+// Linearantrieb
+const int B3_IN1 = 44; 
+const int B3_IN2 = 45; 
+const int B3_ENA = 12; 
+
 
 /*  Definition der Motoren Mecanum Räder:
 
@@ -57,6 +64,7 @@ DC_Motor M1(B1_IN1, B1_IN2, B1_ENA);
 DC_Motor M2(B1_IN3, B1_IN4, B1_ENB); 
 DC_Motor M3(B2_IN1, B2_IN2, B2_ENA);
 DC_Motor M4(B2_IN3, B2_IN4, B2_ENB);
+DC_Motor LinearAntrieb(B3_IN1, B3_IN2, B3_ENA);
 
 
 DC_Motor::DC_Motor(int _IN1, int _IN2, int _ENA){ // TODO wird ausgeführt wenn deklariert??
@@ -323,16 +331,14 @@ void moveOutOfDock(){
 }
 
 void pickUpContainer(){
-//TODO
+  LinearAntrieb.forward(speedFast);
+  delay(bewegungsZeitLinear);
+  LinearAntrieb.brake();
 }
 
 void abladen(){
-//TODO
+  LinearAntrieb.backward(speedFast);
+  delay(bewegungsZeitLinear);
+  LinearAntrieb.brake();
 }
 
-void testVorwaerts(){
-    M1.backward(255);
-    M2.backward(55);
-    M3.backward(255);
-    M4.backward(255);
-}

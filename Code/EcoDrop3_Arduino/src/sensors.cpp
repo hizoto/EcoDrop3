@@ -28,7 +28,7 @@ void initMux(){
 void initTofFront(){
   I2CMUX.openChannel(tofFrontChannel);
   if(!loxFront.begin()){
-    Serial.println("Failed to boot Front TOF");   // TODO
+    logMessage("Failed to boot Front TOF");   
     return;
   }
   I2CMUX.closeAll();
@@ -37,7 +37,7 @@ void initTofFront(){
 void initTofBack(){
   I2CMUX.openChannel(tofBackChannel);
   if(!loxBack.begin()){
-    Serial.println("Failed to boot Back TOF");    // TODO
+    logMessage("Failed to boot Back TOF");    
     return;
   }
   I2CMUX.closeAll();
