@@ -73,6 +73,24 @@ int readTofFront() {
   return filteredDistance;
 }
 
+int readTofFrontUnfiltered() {
+  VL53L0X_RangingMeasurementData_t measure;
+  I2CMUX.openChannel(tofFrontChannel);
+  loxFront.rangingTest(&measure, false);
+  I2CMUX.closeAll();
+
+  return measure.RangeMilliMeter;
+}
+
+int readTofBackUnfiltered() {
+  VL53L0X_RangingMeasurementData_t measure;
+  I2CMUX.openChannel(tofBackChannel);
+  loxFront.rangingTest(&measure, false);
+  I2CMUX.closeAll();
+
+  return measure.RangeMilliMeter;
+}
+
 int readTofBack() {
   static int filteredDistance = 0;   // letzter geglätteter Wert (bleibt zwischen Aufrufen erhalten)
   static unsigned long lastRead = 0;

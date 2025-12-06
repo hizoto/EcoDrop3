@@ -42,6 +42,7 @@ void loop() {
                     lastLogMessage = millis();
                 }
                 //pixyTestfunktion();
+                moveBackward(10);
                 //goParallel();
                 //moveToRightWall(50);
                 /*moveForward(50);
@@ -135,7 +136,9 @@ void loop() {
         if(millis() - lastLogMessage > 10000){
         logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
+        stopMotors();
         }
     }    
+
 }
 

@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include "bewegung.h"
 
-const int speedFast = 100;
-const int speedSlow = 25;
+const int speedFast = 200; // max 255
+const int speedSlow = 100;
 // Toleranz Wandabstand
 const int toleranceToWallmm = 15;
 // Toleranz für parallelität
@@ -288,7 +288,7 @@ void moveForwardParallelUntilContainer(uint16_t distanceToWall){
 
   // Main Logic of the function
   logMessage("Suche Containter...");
-  while (abs(distanceBack - distanceFront) < containerDepth){
+  while (abs(readTofBackUnfiltered() - readTofFrontUnfiltered()) < containerDepth - 3){
     if (abs(distanceFront - distanceBack) < toleranceWheelsmm){
       moveForward(incrementDistance);
       distanceFront = readTofFront();
