@@ -2,8 +2,7 @@
 
 void pixyMoveForward();
 void pixyMoveBackwardUntilObject();
-void pixyMoveRight();
-void pixyMoveLeft();
+void pixyMoveMiddle();
 void pixySetup();
 void pixyTestfunktion();
 void pixyErrorObjects();

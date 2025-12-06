@@ -7,7 +7,7 @@
 Pixy2 pixy;
 uint16_t pixyHoehe = 208;           // Definierte Höhe der Pixyanzeige
 uint16_t pixyBreite = 316;          // Definierte Breite der Pixyanzeige
-
+int endschalterVorne = 41;
 
 void pixySetup()
 {  
@@ -18,27 +18,13 @@ void pixySetup()
 
 void pixyMoveForward()
 {
-    pixy.ccc.getBlocks();
-    if(pixy.ccc.blocks[0].m_y < pixyHoehe/2){                   // Wenn Endschalter verbaut dann IF Funktion raus und mit While solange Endschalter nicht betätigt
-        while (pixy.ccc.blocks[0].m_y < pixyHoehe/2)
-        {
+    logMessage("Roboter bewegt sich vorwärts");                 // Roboter fährt vorwärts solange der Endschalter nicht betätigt wurde
+    while(!digitalRead(endschalterVorne)){
         moveForward(1);
-        logMessage("Roboter bewegt sich vorwärts");
-        pixy.ccc.getBlocks();
-        }
-        stopMotors();
-        
-    }
-
-}
-/*void pixyMoveForwardE()
-{
-    while(!endschalterContainer){                               // Funktion wenn Endschaöter verbaut ist
-        moveForward(1);
-        logMessage("Roboter fährt zum Container");
+       
     }
     stopMotors();
-}*/
+}
 
 void pixyMoveBackwardUntilObject()
 {
@@ -56,39 +42,26 @@ pixy.ccc.getBlocks();                                           // Roboter fähr
 
 }
 
-void pixyMoveRight()
-{
-pixy.ccc.getBlocks();                                           // Roboter fährt nach rechts solange Objekt nicht im Bereich erscheint
+void pixyMoveMiddle(){
+    pixy.ccc.getBlocks();                                           // Roboter fährt nach rechts solange Objekt nicht im Bereich erscheint
     if(pixy.ccc.blocks[0].m_x > 160){
-        while (pixy.ccc.blocks[0].m_x > 160)
-        {
-        moveRight(1);
-        logMessage("Roboter fährt nach rechts");
-        pixy.ccc.getBlocks();
+        while (pixy.ccc.blocks[0].m_x > 160){
+            moveRight(1);
+            logMessage("Roboter fährt nach rechts");
+            pixy.ccc.getBlocks();
         }
         stopMotors();
-        
     }
-
-
-}
-
-void pixyMoveLeft()
-{
-pixy.ccc.getBlocks();                                           // Roboter fährt nach links solange Objekt nicht im Bereich erscheint
-    if (pixy.ccc.blocks[0].m_x < 140){
-        while (pixy.ccc.blocks[0].m_x < 140)
-        {
-        moveLeft(1);
-        logMessage("Roboter fährt nach links");
-        pixy.ccc.getBlocks();
+    else{    
+        while (pixy.ccc.blocks[0].m_x < 140){
+            moveLeft(1);
+            logMessage("Roboter fährt nach links");
+            pixy.ccc.getBlocks();
         }
         stopMotors();
-        
     }
-    
-
 }
+
 
 void pixyErrorObjects()
 {
@@ -104,12 +77,6 @@ void pixyTestfunktion(){
          pixyErrorObjects();
          pixyMoveForward();
          pixyMoveBackwardUntilObject();
-         pixyMoveLeft();
-         pixyMoveRight();
-    
-   
-    
-
 }
 
 

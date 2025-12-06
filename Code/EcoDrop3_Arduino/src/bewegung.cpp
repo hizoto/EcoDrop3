@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "bewegung.h"
+#include "Pixy2Cam.h"
 
 const int speedFast = 200; // max 255
 const int speedSlow = 100;
@@ -13,6 +14,8 @@ unsigned long timeToTurn360Milliseconds = 5700;
 unsigned long timeToMove1000mmSidewaysMilliseconds = 10000;   //TODO Ausmessen wie lange eine Umdrehung dauert
 unsigned long timeToMove1000mm = 5720;              //TODO 
 unsigned long bewegungsZeitLinear = 5000; // TODO in ms
+int dockLength = 300; // TODO
+int endschalterUnten = 40;
 
 float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                      
 
@@ -327,18 +330,27 @@ void parkieren(){
 }
 
 void moveOutOfDock(){
-//TODO
+  moveForward(dockLength);
 }
 
 void pickUpContainer(){
-  LinearAntrieb.forward(speedFast);
-  delay(bewegungsZeitLinear);
-  LinearAntrieb.brake();
+  pixyErrorObjects();
+  pixyMoveBackwardUntilObject();
+  pixyMoveMiddle();
+  pixyMoveForward();
 }
 
 void abladen(){
-  LinearAntrieb.backward(speedFast);
-  delay(bewegungsZeitLinear);
-  LinearAntrieb.brake();
+
 }
 
+void containerAufladen(){
+  LinearAntrieb.forward(speedFast);
+  delay(bewegungsZeitLinear);
+  LinearAntrieb.brake();
+  LinearAntrieb.backward(speedFast);
+  while(!digitalRead(endschalterUnten)){
+    delay(1);
+  }
+  LinearAntrieb.brake();
+}
