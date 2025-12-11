@@ -103,7 +103,7 @@ void DC_Motor::backward(int speed){
 }
 
 
-void moveForward(int distancemm){ 
+void moveForward(int distancemm){
   unsigned long timeToDrive = (distancemm / distancePerSecond) * 1000;
   M1.forward(speedFast);
   M2.forward(speedFast);
@@ -113,6 +113,22 @@ void moveForward(int distancemm){
     delay(minMoveTimeMs - timeToDrive);
   }
   delay(timeToDrive);
+}
+
+
+void driveForwardWithWheelCorrection(int baseSpeed, int correction, unsigned long durationMs){
+  int leftSpeed = constrain(baseSpeed - correction, 0, 255);
+  int rightSpeed = constrain(baseSpeed + correction, 0, 255);
+
+  M1.forward(leftSpeed);
+  M3.forward(leftSpeed);
+  M2.forward(rightSpeed);
+  M4.forward(rightSpeed);
+
+  if (durationMs < minMoveTimeMs){
+    durationMs = minMoveTimeMs;
+  }
+  delay(durationMs);
 }
 
 
@@ -294,7 +310,11 @@ void moveForwardParallelUntilContainer(uint16_t distanceToWall){
   // abstandserfassung
   uint16_t distanceFront = readTofFront();
   uint16_t distanceBack = readTofBack();
-  
+
+  const float kp = 2.0f;
+  const int baseSpeed = speedSlow;
+  const unsigned long baseDurationMs = (incrementDistance / distancePerSecond) * 1000;
+
   // INITIAL PARALLELIZATION
   goParallel();
 
@@ -310,16 +330,9 @@ void moveForwardParallelUntilContainer(uint16_t distanceToWall){
   while (abs(readTofBackUnfiltered() - readTofFrontUnfiltered()) < containerDepth - 3){
       distanceFront = readTofFront();
       distanceBack = readTofBack();
-    if (abs(distanceFront - distanceBack) < toleranceWheelsmm){
-      moveForward(incrementDistance);
-    }
-    else if (distanceBack - distanceFront > toleranceWheelsmm){
-      turnLeftSlow(incrementDistance);
-    }
-
-    else {
-      turnRightSlow(incrementDistance);
-    }
+      int16_t error = static_cast<int16_t>(distanceBack) - static_cast<int16_t>(distanceFront);
+      int correction = static_cast<int>(kp * error);
+      driveForwardWithWheelCorrection(baseSpeed, correction, baseDurationMs);
   }
   stopMotors();
   logMessage("Container gefunden!");

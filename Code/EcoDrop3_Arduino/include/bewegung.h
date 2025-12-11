@@ -25,6 +25,7 @@ void turnRightSlow(float deg);
 void moveLeft(int distancemm);
 void moveRight(int distancemm);
 void moveForwardParallelUntilContainer(uint16_t distanceToWall);
+void driveForwardWithWheelCorrection(int baseSpeed, int correction, unsigned long durationMs);
 void rechtsKurve(int distancemm);
 void linksKurve(int distancemm);
 void moveToRightWall(uint16_t distanceToWall);
