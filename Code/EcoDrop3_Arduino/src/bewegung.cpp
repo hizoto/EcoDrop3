@@ -308,22 +308,17 @@ void moveForwardParallelUntilContainer(uint16_t distanceToWall){
   // Main Logic of the function
   logMessage("Suche Containter...");
   while (abs(readTofBackUnfiltered() - readTofFrontUnfiltered()) < containerDepth - 3){
-    if (abs(distanceFront - distanceBack) < toleranceWheelsmm){
-      moveForward(incrementDistance);
       distanceFront = readTofFront();
       distanceBack = readTofBack();
-      
+    if (abs(distanceFront - distanceBack) < toleranceWheelsmm){
+      moveForward(incrementDistance);
     }
     else if (distanceBack - distanceFront > toleranceWheelsmm){
       turnLeftSlow(incrementDistance);
-      distanceFront = readTofFront();
-      distanceBack = readTofBack();
     }
 
     else {
       turnRightSlow(incrementDistance);
-      distanceFront = readTofFront();
-      distanceBack = readTofBack();
     }
   }
   stopMotors();
@@ -339,6 +334,7 @@ void parkieren(){
 
 void moveOutOfDock(){
   moveForward(dockLength);
+  stopMotors();
 }
 
 void pickUpContainer(){
@@ -370,4 +366,5 @@ void rueckwaertsBisAnschlag(){
   while(!digitalRead(endschalterHinten)){
     moveBackward(1);
   }
+  stopMotors();
 }
