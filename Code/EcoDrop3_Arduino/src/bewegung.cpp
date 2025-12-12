@@ -28,24 +28,24 @@ const float incrementGrad = 0.1;
 const int minMoveTimeMs = 1;
 
 // PINS
-int endschalterHinten = 50; // TODO pseudopin
+int endschalterHinten = 42; 
 int endschalterUnten = 40;
 int servoPin = 13;
 
 // Motor 1 Vorne links
-const int B1_IN1 = 46;
-const int B1_IN2 = 47;
-const int B1_ENA = 8;
+const int B1_IN1 = 53;
+const int B1_IN2 = 52;
+const int B1_ENA = 11;
 
 // Motor 2 Vorne rechts
-const int B1_IN3 = 52;
-const int B1_IN4 = 53;
-const int B1_ENB = 11;
+const int B1_IN3 = 48;
+const int B1_IN4 = 49;
+const int B1_ENB = 9;
 
 // Motor 3 Hinten links
-const int B2_IN1 = 48; 
-const int B2_IN2 = 49; 
-const int B2_ENA = 9;
+const int B2_IN1 = 47; 
+const int B2_IN2 = 46; 
+const int B2_ENA = 8;
 
 // Motor 4 Hinten rechts
 const int B2_IN3 = 50; 

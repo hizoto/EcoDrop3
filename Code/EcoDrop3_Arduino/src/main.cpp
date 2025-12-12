@@ -21,15 +21,19 @@ bool firstTry = true;
 
 void setup() {
     startComm();
-    initSensors();
-    pixySetup();
+    Serial.println("comm start");
+    //initSensors();
+    Serial.println("sensor start");
+    //pixySetup();
     startMotors();
+    Serial.println("motor start");
 }
 
 void loop() {
     if(Serial1.available()){
         getComm();
     }
+    moveForward(10);
     if(isRunning){
         switch(currentStep){
             // idle
@@ -43,7 +47,6 @@ void loop() {
                     lastLogMessage = millis();
                 }
                 //pixyTestfunktion();
-                moveBackward(10);
                 //goParallel();
                 //moveToRightWall(50);
                 /*moveForward(50);

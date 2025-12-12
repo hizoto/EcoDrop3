@@ -8,51 +8,42 @@
 Adafruit_VL53L0X loxFront = Adafruit_VL53L0X();   // TOF
 Adafruit_VL53L0X loxBack = Adafruit_VL53L0X();    // TOF
 
-#define LOX1_ADDRESS 0x30
-#define LOX2_ADDRESS 0x31
+TCA9548A I2CMUX; 
 
 // Multiplexer Channels
 int tofFrontChannel = 0;
 int tofBackChannel = 1;
-int tofFrontXShut = 23;
-int tofBackXShut = 22;
 
 void initSensors(){
-  TOFsetID();
+  initMux();
+  initTofBack();
+  initTofFront();
   delay(100);
 }
 
-void TOFsetID() {
-  // all reset
-  digitalWrite(tofFrontXShut, LOW);    
-  digitalWrite(tofBackXShut, LOW);
-  delay(10);
-  // all unreset
-  digitalWrite(tofFrontXShut, HIGH);
-  digitalWrite(tofBackXShut, HIGH);
-  delay(10);
-
-  // activating LOX1 and resetting LOX2
-  digitalWrite(tofFrontXShut, HIGH);
-  digitalWrite(tofBackXShut, LOW);
-
-  // initing LOX1
-  if(!loxFront.begin(LOX1_ADDRESS)) {
-    Serial.println(F("Failed to boot front VL53L0X"));
-    while(1);
-  }
-  delay(10);
-
-  // activating LOX2
-  digitalWrite(tofBackXShut, HIGH);
-  delay(10);
-
-  //initing LOX2
-  if(!loxBack.begin(LOX2_ADDRESS)) {
-    Serial.println(F("Failed to boot back VL53L0X"));
-    while(1);
-  }
+void initMux(){
+  I2CMUX.begin();
+  I2CMUX.closeAll();
 }
+
+void initTofFront(){
+  I2CMUX.openChannel(tofFrontChannel);
+  if(!loxFront.begin()){
+    logMessage("Failed to boot Front TOF");   
+    return;
+  }
+  I2CMUX.closeAll();
+}
+
+void initTofBack(){
+  I2CMUX.openChannel(tofBackChannel);
+  if(!loxBack.begin()){
+    logMessage("Failed to boot Back TOF");    
+    return;
+  }
+  I2CMUX.closeAll();
+}
+
 
 int readTofFront() {
   static int filteredDistance = 0;                // letzter geglätteter Wert
@@ -64,7 +55,10 @@ int readTofFront() {
   }
 
   VL53L0X_RangingMeasurementData_t measure;
+
+  I2CMUX.openChannel(tofFrontChannel);
   loxFront.rangingTest(&measure, false);
+  I2CMUX.closeAll();
 
   if (measure.RangeStatus == 4) {
     // Ungültige Messung, alten Wert zurückgeben
@@ -91,7 +85,9 @@ int readTofFrontUnfiltered() {
 
 int readTofBackUnfiltered() {
   VL53L0X_RangingMeasurementData_t measure;
-  loxFront.rangingTest(&measure, false);
+  I2CMUX.openChannel(tofBackChannel);
+  loxBack.rangingTest(&measure, false);
+  I2CMUX.closeAll();
 
   return measure.RangeMilliMeter;
 }
@@ -106,7 +102,9 @@ int readTofBack() {
   }
 
   VL53L0X_RangingMeasurementData_t measure;
+  I2CMUX.openChannel(tofBackChannel);
   loxBack.rangingTest(&measure, false);
+  I2CMUX.closeAll();
 
   if (measure.RangeStatus == 4) {
     // Ungültige Messung, alten Wert zurückgeben
