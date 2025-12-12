@@ -8,3 +8,4 @@ int readTofBackUnfiltered();
 void initMux();
 void initTofFront();
 void initTofBack();
+void i2cScan();
