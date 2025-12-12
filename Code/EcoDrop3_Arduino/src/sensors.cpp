@@ -12,7 +12,7 @@ TCA9548A I2CMUX;
 
 // Multiplexer Channels
 int tofFrontChannel = 0;
-int tofBackChannel = 1;
+int tofBackChannel = 5;
 
 void initSensors(){
   initMux();

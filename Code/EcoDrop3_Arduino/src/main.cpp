@@ -22,9 +22,9 @@ bool firstTry = true;
 void setup() {
     startComm();
     Serial.println("comm start");
-    //initSensors();
+    initSensors();
     Serial.println("sensor start");
-    //pixySetup();
+    pixySetup();
     startMotors();
     Serial.println("motor start");
 }
