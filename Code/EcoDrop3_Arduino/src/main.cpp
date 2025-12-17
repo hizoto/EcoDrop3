@@ -64,9 +64,6 @@ void loop() {
 
             // ersten Container aufnehmen
             case 30:
-                moveLeft(50);
-                turnRight(90);
-                moveLeft(50);
                 pickUpContainer();
                 turnLeft(180);
                 currentStep = 40;
@@ -82,7 +79,6 @@ void loop() {
 
             // zweiten Container aufnehmen
             case 50:
-                turnRight(90);
                 pickUpContainer();
                 turnLeft(180);
                 currentStep = 60;
@@ -98,7 +94,6 @@ void loop() {
 
             // dritten Container aufnehmen
             case 70:
-                turnRight(90);
                 pickUpContainer();
                 currentStep = 80;
                 break;

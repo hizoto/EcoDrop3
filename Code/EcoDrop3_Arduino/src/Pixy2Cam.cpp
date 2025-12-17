@@ -45,7 +45,8 @@ void pixyMoveMiddle(int ziel){
     int tolerance = 5;
     pixy.ccc.getBlocks();
     do {
-        if(pixy.ccc.blocks[0].m_x > ziel){
+        // Auswerten, in welche Richtung korrigiert werden muss
+        if(pixy.ccc.blocks[0].m_x < ziel){
             logMessage("Position nach rechts korrigieren...");
             while (pixy.ccc.blocks[0].m_x < ziel){
                 moveRight(1);

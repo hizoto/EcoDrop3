@@ -367,6 +367,9 @@ void moveOutOfDock(){
 }
 
 void pickUpContainer(){
+  moveLeft(50);
+  turnRight(90);
+  moveLeft(150);
   pixyLampeOn();
   pixyMoveForwardUntilObject();
   pixyMoveMiddle(255);
