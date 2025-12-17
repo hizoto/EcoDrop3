@@ -257,8 +257,8 @@ void startMotors(){
 
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
 void moveToRightWall(uint16_t distanceToWall) {  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
-  uint16_t distanceFront = readTofFrontUnfiltered();
-  uint16_t distanceBack  = readTofBackUnfiltered();
+  uint16_t distanceFront = readTofFrontRightUnfiltered();
+  uint16_t distanceBack  = readTofBackRightUnfiltered();
 
   // Falls bereits innerhalb Toleranz: nichts tun
   if (abs((int)distanceFront - (int)distanceToWall) <= toleranceToWallmm) {
@@ -277,10 +277,10 @@ void moveToRightWall(uint16_t distanceToWall) {  // nach rechts bewegen bis in g
   if (distanceFront > distanceToWall) {
     while (distanceFront > (distanceToWall + toleranceToWallmm)) {
       moveRight(1);
-      distanceFront = readTofFrontUnfiltered();
-      distanceBack  = readTofBackUnfiltered();
+      distanceFront = readTofFrontRightUnfiltered();
+      distanceBack  = readTofBackRightUnfiltered();
       if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
-        goParallel();
+        goParallelRight();
       }
     }
   }
@@ -288,10 +288,10 @@ void moveToRightWall(uint16_t distanceToWall) {  // nach rechts bewegen bis in g
   else { // distanceFront < distanceToWall
     while (distanceFront < (distanceToWall - toleranceToWallmm)) {
       moveLeft(1);
-      distanceFront = readTofFrontUnfiltered();
-      distanceBack  = readTofBackUnfiltered();
+      distanceFront = readTofFrontRightUnfiltered();
+      distanceBack  = readTofBackRightUnfiltered();
       if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
-        goParallel();
+        goParallelRight();
       }
     }
   }
@@ -299,10 +299,54 @@ void moveToRightWall(uint16_t distanceToWall) {  // nach rechts bewegen bis in g
   stopMotors();
 }
 
-void goParallel(){
-    logMessage("Parallelität zur Wand wird hergestellt...");
-    uint16_t distanceFront = readTofFront();
-    uint16_t distanceBack = readTofBack();
+// TODO
+void moveToLeftWall(uint16_t distanceToWall) {  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
+  uint16_t distanceFront = readTofFrontRightUnfiltered();
+  uint16_t distanceBack  = readTofBackRightUnfiltered();
+
+  // Falls bereits innerhalb Toleranz: nichts tun
+  if (abs((int)distanceFront - (int)distanceToWall) <= toleranceToWallmm) {
+    String message = "Abstand zur Wand ist OK: " + String(distanceFront) + "mm (Ziel " +
+                     String(distanceToWall) + "mm ±" + String(toleranceToWallmm) + "mm). Überspringe.";
+    logMessage(message.c_str());
+    stopMotors();
+    return;
+  }
+
+  String message = "Abstand zur Wand von " + String(distanceToWall) + "mm ±" +
+                   String(toleranceToWallmm) + "mm wird hergestellt.";
+  logMessage(message.c_str());
+
+  // Zu weit weg -> nach rechts (bis innerhalb Toleranz)
+  if (distanceFront > distanceToWall) {
+    while (distanceFront > (distanceToWall + toleranceToWallmm)) {
+      moveRight(1);
+      distanceFront = readTofFrontRightUnfiltered();
+      distanceBack  = readTofBackRightUnfiltered();
+      if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
+        goParallelRight();
+      }
+    }
+  }
+  // Zu nah -> nach links (bis innerhalb Toleranz)
+  else { // distanceFront < distanceToWall
+    while (distanceFront < (distanceToWall - toleranceToWallmm)) {
+      moveLeft(1);
+      distanceFront = readTofFrontRightUnfiltered();
+      distanceBack  = readTofBackRightUnfiltered();
+      if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
+        goParallelRight();
+      }
+    }
+  }
+
+  stopMotors();
+}
+
+void goParallelRight(){ 
+    logMessage("Parallelität zur rechten Wand wird hergestellt...");
+    uint16_t distanceFront = readTofFrontRight();
+    uint16_t distanceBack = readTofBackRight();
     while (abs((int)distanceFront - (int)distanceBack) > toleranceWheelsmm){
         if (distanceFront > distanceBack){
         turnRightSlow(incrementGrad);
@@ -313,17 +357,36 @@ void goParallel(){
         stopMotors();
         }
 
-      distanceFront = readTofFront();
-      distanceBack = readTofBack();
+      distanceFront = readTofFrontRight();
+      distanceBack = readTofBackRight();
     }
     stopMotors();
 }
 
+void goParallelLeft(){ // TODO 
+    logMessage("Parallelität zur linken Wand wird hergestellt...");
+    uint16_t distanceFront = readTofFrontLeft();
+    uint16_t distanceBack = readTofBackLeft();
+    while (abs((int)distanceFront - (int)distanceBack) > toleranceWheelsmm){
+        if (distanceFront < distanceBack){
+        turnRightSlow(incrementGrad);
+        stopMotors();
+        }
+        else {
+        turnLeftSlow(incrementGrad);
+        stopMotors();
+        }
+
+      distanceFront = readTofFrontLeft();
+      distanceBack = readTofBackLeft();
+    }
+    stopMotors();
+}
 
 void moveForwardParallelUntilContainer(uint16_t distanceToWall){
   // abstandserfassung
-  uint16_t distanceFront = readTofFront();
-  uint16_t distanceBack = readTofBack();
+  uint16_t distanceFront = readTofFrontRight();
+  uint16_t distanceBack = readTofBackRight();
 
   const float kp = 2.0f;
   const int baseSpeed = speedSlow;
@@ -331,20 +394,20 @@ void moveForwardParallelUntilContainer(uint16_t distanceToWall){
   
 
   // INITIAL PARALLELIZATION
-  goParallel();
+  goParallelRight();
 
   // Move to wall distance
   moveToRightWall(distanceToWall);
 
-  goParallel();
-  distanceFront = readTofFront();
-  distanceBack = readTofBack();
+  goParallelRight();
+  distanceFront = readTofFrontRight();
+  distanceBack = readTofBackRight();
 
   // Main Logic of the function
   logMessage("Suche Containter...");
-  while (abs(readTofBackUnfiltered() - readTofFrontUnfiltered()) < containerDepth - 3){
-      distanceFront = readTofFrontUnfiltered();
-      distanceBack = readTofBackUnfiltered();/*
+  while (abs(readTofBackRightUnfiltered() - readTofFrontRightUnfiltered()) < containerDepth - 3){
+      distanceFront = readTofFrontRightUnfiltered();
+      distanceBack = readTofBackRightUnfiltered();/*
       int16_t error = static_cast<int16_t>(distanceBack) - static_cast<int16_t>(distanceFront);
       int correction = static_cast<int>(kp * error);
       driveForwardWithWheelCorrection(baseSpeed, correction, baseDurationMs);*/
@@ -367,15 +430,14 @@ void moveOutOfDock(){
 }
 
 void pickUpContainer(){
-  moveLeft(50);
-  turnRight(90);
-  moveLeft(150);
   pixyLampeOn();
+  moveLeft(50);
   pixyMoveForwardUntilObject();
-  pixyMoveMiddle(255);
+  pixyMoveMiddle(166);
   pixyMoveForward();
   pixyLampeOff();
   containerAufladen();
+  moveBackward(150);
 }
 
 void abladen(){

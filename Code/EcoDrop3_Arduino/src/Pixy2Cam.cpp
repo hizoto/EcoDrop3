@@ -12,6 +12,7 @@ int endschalterVorne = 41;
 void pixySetup(){
     pinMode(endschalterVorne, INPUT_PULLUP);
     pixy.init();
+    pixy.setLamp(0, 0);
 }
 
 
@@ -27,9 +28,10 @@ void pixyMoveForward(){
 }
 
 void pixyMoveForwardUntilObject(){
-pixy.ccc.getBlocks();                                           // Roboter fährt Rückwärts solange kein Objekt erkannt wurde
+pixy.ccc.getBlocks();    
+    unsigned long startTime = millis();                                       // Roboter fährt Rückwärts solange kein Objekt erkannt wurde
     if(!pixy.ccc.numBlocks){
-        while (!pixy.ccc.numBlocks)
+        while (!pixy.ccc.numBlocks && millis() - startTime < 1000)
         {
         moveForward(1);
         pixy.ccc.getBlocks();
@@ -42,13 +44,13 @@ pixy.ccc.getBlocks();                                           // Roboter fähr
 }
 
 void pixyMoveMiddle(int ziel){
-    int tolerance = 5;
+    int tolerance = 10;
     pixy.ccc.getBlocks();
     do {
         // Auswerten, in welche Richtung korrigiert werden muss
-        if(pixy.ccc.blocks[0].m_x < ziel){
+        if(pixy.ccc.blocks[0].m_x > ziel){
             logMessage("Position nach rechts korrigieren...");
-            while (pixy.ccc.blocks[0].m_x < ziel){
+            while (pixy.ccc.blocks[0].m_x > ziel){
                 moveRight(1);
                 pixy.ccc.getBlocks();
                 stopMotors();
@@ -56,7 +58,7 @@ void pixyMoveMiddle(int ziel){
         }
         else{
             logMessage("Position nach links korrigieren...");
-            while (pixy.ccc.blocks[0].m_x > ziel){
+            while (pixy.ccc.blocks[0].m_x < ziel){
                 moveLeft(1);
                 pixy.ccc.getBlocks();
                 stopMotors();

@@ -1,11 +1,17 @@
 #pragma once
 
 void initSensors();
-int readTofFront();
-int readTofBack();
-int readTofFrontUnfiltered();
-int readTofBackUnfiltered();
+int readTofFrontRight();
+int readTofBackRight();
+int readTofFrontLeft();
+int readTofBackLeft();
+int readTofFrontRightUnfiltered();
+int readTofBackRightUnfiltered();
+int readTofFrontLeftUnfiltered();
+int readTofBackLeftUnfiltered();
 void initMux();
-void initTofFront();
-void initTofBack();
+void initTofFrontRight();
+void initTofBackRight();
+void initTofFrontLeft();
+void initTofBackLeft();
 void i2cScan();
