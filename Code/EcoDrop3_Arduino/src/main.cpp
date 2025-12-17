@@ -8,7 +8,7 @@
 // 1 = xxxx
 
 // Konfigurationsvariablen
-uint16_t wandabstand = 50;
+uint16_t wandabstand = 150;
 uint16_t wandabstandLadezone = 60;
 uint16_t abladeZoneWandabstand = 850;
 int roboterbreite = 250; 
@@ -21,24 +21,21 @@ bool firstTry = true;
 
 void setup() {
     startComm();
-    Serial.println("comm start");
     initSensors();
-    Serial.println("sensor start");
     pixySetup();
     startMotors();
-    Serial.println("motor start");
+    stopMotors();
 }
 
 void loop() {
     if(Serial1.available()){
         getComm();
     }
-    moveForward(10);
     if(isRunning){
         switch(currentStep){
             // idle
             case 0:
-                currentStep = 1;        //Auskommentieren zum testen
+                currentStep = 10;  // 1 -> Testcase  // 10 -> Schrittkette
                 break;
             // Testcase
             case 1:
@@ -46,14 +43,9 @@ void loop() {
                     logMessage("EcoDrop on.");
                     lastLogMessage = millis();
                 }
-                //pixyTestfunktion();
                 //goParallel();
-                //moveToRightWall(50);
-                /*moveForward(50);
-                delay(1000);
-                moveBackward(50);
-                delay(1000);*/
-                //testVorwaerts();
+                containerAufladen();
+                isRunning = false;
                 break;
             
             // Ladestation verlassen
@@ -72,7 +64,9 @@ void loop() {
 
             // ersten Container aufnehmen
             case 30:
+                moveLeft(50);
                 turnRight(90);
+                moveLeft(50);
                 pickUpContainer();
                 turnLeft(180);
                 currentStep = 40;
@@ -139,7 +133,7 @@ void loop() {
     }
     else {
         currentStep = 0;
-        if(millis() - lastLogMessage > 10000){
+        if(millis() - lastLogMessage > 2000){
         logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
         stopMotors();

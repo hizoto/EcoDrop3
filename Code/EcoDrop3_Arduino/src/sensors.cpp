@@ -11,12 +11,11 @@ Adafruit_VL53L0X loxBack = Adafruit_VL53L0X();    // TOF
 TCA9548A I2CMUX; 
 
 // Multiplexer Channels
-int tofFrontChannel = 0;
-int tofBackChannel = 5;
+int tofFrontChannel = 5;
+int tofBackChannel = 0;
 
 void initSensors(){
   Wire.begin();
-  i2cScan();
   initMux();
   initTofBack();
   initTofFront();
@@ -54,6 +53,7 @@ void initTofBack(){
 
 
 int readTofFront() {
+  const int offset = -19;
   static int filteredDistance = 0;                // letzter geglätteter Wert
   static unsigned long lastRead = 0;
   const float alpha = 0.3;                        // Glättungsfaktor (0.1 = sehr weich, 0.5 = schneller)
@@ -76,10 +76,10 @@ int readTofFront() {
   uint16_t newDistance = measure.RangeMilliMeter;
 
   // Wenn es der erste Durchlauf ist (noch kein Filterwert vorhanden)
-  if (filteredDistance == 0) filteredDistance = newDistance;
+  if (filteredDistance == 0) filteredDistance = newDistance + offset;
 
   // Gleitende Mittelung
-  filteredDistance = (int)(alpha * newDistance + (1.0 - alpha) * filteredDistance);
+  filteredDistance = (int)(alpha * (newDistance + offset) + (1.0 - alpha) * filteredDistance);
 
   lastRead = millis();
 
@@ -93,7 +93,7 @@ int readTofFrontUnfiltered() {
   loxFront.rangingTest(&measure, false);
   I2CMUX.closeAll();
 
-  return measure.RangeMilliMeter;
+  return measure.RangeMilliMeter - 19;
 }
 
 int readTofBackUnfiltered() {

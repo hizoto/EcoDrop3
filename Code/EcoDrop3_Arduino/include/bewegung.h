@@ -36,5 +36,6 @@ void moveOutOfDock();
 void pickUpContainer();
 void abladen();
 void rueckwaertsBisAnschlag();
+void containerAufladen();
 
 

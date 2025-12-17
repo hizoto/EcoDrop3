@@ -1,10 +1,9 @@
 #pragma once
 
 void pixyMoveForward();
-void pixyMoveBackwardUntilObject();
+void pixyMoveForwardUntilObject();
 void pixyMoveMiddle();
 void pixySetup();
-void pixyTestfunktion();
 void pixyErrorObjects();
 void pixyLampeOn();
 void pixyLampeOff();

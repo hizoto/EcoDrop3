@@ -9,33 +9,32 @@ uint16_t pixyHoehe = 208;           // Definierte Höhe der Pixyanzeige
 uint16_t pixyBreite = 316;          // Definierte Breite der Pixyanzeige
 int endschalterVorne = 41;
 
-void pixySetup()
-{  
-  pixy.init();
+void pixySetup(){
+    pinMode(endschalterVorne, INPUT_PULLUP);
+    pixy.init();
 }
 
 
 
-void pixyMoveForward()
-{
+void pixyMoveForward(){
+    bool endschalterVorneGetriggert = digitalRead(endschalterVorne);
     logMessage("Roboter bewegt sich vorwärts");                 // Roboter fährt vorwärts solange der Endschalter nicht betätigt wurde
-    while(!digitalRead(endschalterVorne)){
+    while(!endschalterVorneGetriggert){
         moveForward(1);
-       
+        endschalterVorneGetriggert = digitalRead(endschalterVorne);
     }
     stopMotors();
 }
 
-void pixyMoveBackwardUntilObject()
-{
+void pixyMoveForwardUntilObject(){
 pixy.ccc.getBlocks();                                           // Roboter fährt Rückwärts solange kein Objekt erkannt wurde
     if(!pixy.ccc.numBlocks){
         while (!pixy.ccc.numBlocks)
         {
-        moveBackward(1);
-        logMessage("Roboter bewegt sich rückwärts");
+        moveForward(1);
         pixy.ccc.getBlocks();
         }
+        logMessage("Container erkannt");
         stopMotors();
         
     }
@@ -45,7 +44,7 @@ pixy.ccc.getBlocks();                                           // Roboter fähr
 void pixyMoveMiddle(){
     pixy.ccc.getBlocks();                                           // Roboter fährt nach rechts solange Objekt nicht im Bereich erscheint
     if(pixy.ccc.blocks[0].m_x > 160){
-        while (pixy.ccc.blocks[0].m_x > 160){
+        while (pixy.ccc.blocks[0].m_x > 150){
             moveRight(1);
             logMessage("Roboter fährt nach rechts");
             pixy.ccc.getBlocks();
@@ -53,7 +52,7 @@ void pixyMoveMiddle(){
         stopMotors();
     }
     else{    
-        while (pixy.ccc.blocks[0].m_x < 140){
+        while (pixy.ccc.blocks[0].m_x < 150){
             moveLeft(1);
             logMessage("Roboter fährt nach links");
             pixy.ccc.getBlocks();
@@ -63,22 +62,13 @@ void pixyMoveMiddle(){
 }
 
 
-void pixyErrorObjects()
-{
+void pixyErrorObjects(){
     if(pixy.ccc.numBlocks > 1){                                 // Fehlermeldung falls mehrere Objekte erkannt wurden
     
         pixy.ccc.getBlocks();
         logMessage("Mehrere Objekte erkannt");
     }
 }
-
-void pixyTestfunktion(){
-    
-         pixyErrorObjects();
-         pixyMoveForward();
-         pixyMoveBackwardUntilObject();
-}
-
 
 void pixyLampeOn(){
     pixy.setLamp(1, 0);
