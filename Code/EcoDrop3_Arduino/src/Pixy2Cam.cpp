@@ -41,24 +41,27 @@ pixy.ccc.getBlocks();                                           // Roboter fähr
 
 }
 
-void pixyMoveMiddle(){
-    pixy.ccc.getBlocks();                                           // Roboter fährt nach rechts solange Objekt nicht im Bereich erscheint
-    if(pixy.ccc.blocks[0].m_x > 160){
-        while (pixy.ccc.blocks[0].m_x > 150){
-            moveRight(1);
-            logMessage("Roboter fährt nach rechts");
-            pixy.ccc.getBlocks();
+void pixyMoveMiddle(int ziel){
+    int tolerance = 5;
+    pixy.ccc.getBlocks();
+    do {
+        if(pixy.ccc.blocks[0].m_x > ziel){
+            logMessage("Position nach rechts korrigieren...");
+            while (pixy.ccc.blocks[0].m_x < ziel){
+                moveRight(1);
+                pixy.ccc.getBlocks();
+                stopMotors();
+            }
         }
-        stopMotors();
-    }
-    else{    
-        while (pixy.ccc.blocks[0].m_x < 150){
-            moveLeft(1);
-            logMessage("Roboter fährt nach links");
-            pixy.ccc.getBlocks();
+        else{
+            logMessage("Position nach links korrigieren...");
+            while (pixy.ccc.blocks[0].m_x > ziel){
+                moveLeft(1);
+                pixy.ccc.getBlocks();
+                stopMotors();
+            }
         }
-        stopMotors();
-    }
+    }while(pixy.ccc.blocks[0].m_x > ziel + tolerance || pixy.ccc.blocks[0].m_x < ziel - tolerance);
 }
 
 
@@ -72,6 +75,7 @@ void pixyErrorObjects(){
 
 void pixyLampeOn(){
     pixy.setLamp(1, 0);
+    delay(200);
 }
 
 void pixyLampeOff(){

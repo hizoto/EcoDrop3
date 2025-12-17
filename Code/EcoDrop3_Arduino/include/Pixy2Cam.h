@@ -2,7 +2,7 @@
 
 void pixyMoveForward();
 void pixyMoveForwardUntilObject();
-void pixyMoveMiddle();
+void pixyMoveMiddle(int ziel);
 void pixySetup();
 void pixyErrorObjects();
 void pixyLampeOn();
