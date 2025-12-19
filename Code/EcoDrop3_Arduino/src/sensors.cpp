@@ -40,7 +40,7 @@ bool TofMuxSensor::readMeasurement(VL53L0X_RangingMeasurementData_t& out) {
   _lox.rangingTest(&out, false);
   _mux.closeAll();
 
-  // RangeStatus==4: ungültig/out of range (wie in deinem Code)
+  // RangeStatus==4: ungültig/out of range
   return (out.RangeStatus != 4);
 }
 
@@ -98,7 +98,7 @@ int readTofBackRightUnfiltered()  { return tofBackRight.readRaw(); }
 int readTofFrontLeftUnfiltered()  { return tofFrontLeft.readRaw(); }
 int readTofBackLeftUnfiltered()   { return tofBackLeft.readRaw(); }
 
-// ------------------- optional: I2C Scan -------------------
+
 void i2cScan() {
   Serial.println("scan...");
   for (byte addr = 1; addr < 127; addr++) {
