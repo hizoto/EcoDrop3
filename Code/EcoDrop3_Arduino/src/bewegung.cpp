@@ -3,8 +3,8 @@
 #include "Pixy2Cam.h"
 #include <Servo.h>
 
-const int speedFast = 100; // max 255
-const int speedSlow = 75;
+const int speedFast = 150; // max 255
+const int speedSlow = 50;
 // Toleranz Wandabstand
 const int toleranceToWallmm = 5;
 // Toleranz für parallelität
@@ -144,48 +144,24 @@ void moveBackward(int distancemm, int speed){
   delay(timeToDrive);
 }
 
-void turnLeft(float deg){
+void turnLeft(float deg, int speed){
   unsigned long timeToTurn = (deg / 360.0) * timeToTurn360Milliseconds;
-  M1.backward(speedt);
-  M3.backward(speedFast);
-  M2.forward(speedFast);
-  M4.forward(speedFast);
+  M1.backward(speed);
+  M3.backward(speed);
+  M2.forward(speed);
+  M4.forward(speed);
   if (timeToTurn < minMoveTimeMs){
     delay(minMoveTimeMs - timeToTurn);
   }
   delay(timeToTurn);
 }
 
-void turnLeftSlow(float deg){
+void turnRight(float deg, int speed){
   unsigned long timeToTurn = (deg / 360.0) * timeToTurn360Milliseconds;
-  M1.backward(speedSlow);
-  M3.backward(speedSlow);
-  M2.forward(speedSlow);
-  M4.forward(speedSlow);
-  if (timeToTurn < minMoveTimeMs){
-    delay(minMoveTimeMs - timeToTurn);
-  }
-  delay(timeToTurn);
-}
-
-void turnRight(float deg){
-  unsigned long timeToTurn = (deg / 360.0) * timeToTurn360Milliseconds;
-  M2.backward(speedFast);
-  M4.backward(speedFast);
-  M1.forward(speedFast);
-  M3.forward(speedFast);
-  if (timeToTurn < minMoveTimeMs){
-    timeToTurn = minMoveTimeMs;
-  }
-  delay(timeToTurn);
-}
-
-void turnRightSlow(float deg){
-  unsigned long timeToTurn = (deg / 360.0) * timeToTurn360Milliseconds;
-  M2.backward(speedSlow);
-  M4.backward(speedSlow);
-  M1.forward(speedSlow);
-  M3.forward(speedSlow);
+  M2.backward(speed);
+  M4.backward(speed);
+  M1.forward(speed);
+  M3.forward(speed);
   if (timeToTurn < minMoveTimeMs){
     timeToTurn = minMoveTimeMs;
   }
@@ -319,61 +295,17 @@ void moveToLeftWall(uint16_t distanceToWall) {  // nach links bewegen bis in gew
   stopMotors();
 }
 
-
-void moveToLeftWall(uint16_t distanceToWall) {  // nach links bewegen bis in gewünschtem Abstand zur Wand
-  uint16_t distanceFront = tofFL().readRaw();
-  uint16_t distanceBack  = tofBL().readRaw();
-
-  // Falls bereits innerhalb Toleranz: nichts tun
-  if (abs((int)distanceFront - (int)distanceToWall) <= toleranceToWallmm) {
-    String message = "Abstand zur Wand ist OK: " + String(distanceFront) + "mm (Ziel " +
-                     String(distanceToWall) + "mm ±" + String(toleranceToWallmm) + "mm). Überspringe.";
-    logMessage(message.c_str());
-    stopMotors();
-    return;
-  }
-
-  String message = "Abstand zur linken Wand von " + String(distanceToWall) + "mm ±" +
-                   String(toleranceToWallmm) + "mm wird hergestellt.";
-  logMessage(message.c_str());
-
-  // Zu weit weg -> nach rechts (bis innerhalb Toleranz)
-  if (distanceFront > distanceToWall) {
-    while (distanceFront > (distanceToWall + toleranceToWallmm)) {
-      moveRight(1);
-      distanceFront = tofFL().readRaw();
-      distanceBack  = tofBL().readRaw();
-      if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
-        goParallelLeft();
-      }
-    }
-  }
-  // Zu nah -> nach links (bis innerhalb Toleranz)
-  else { // distanceFront < distanceToWall
-    while (distanceFront < (distanceToWall - toleranceToWallmm)) {
-      moveLeft(1);
-      distanceFront = tofFL().readRaw();
-      distanceBack  = tofBL().readRaw();
-      if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
-        goParallelLeft();
-      }
-    }
-  }
-
-  stopMotors();
-}
-
 void goParallelRight(){ 
     logMessage("Parallelität zur rechten Wand wird hergestellt...");
     uint16_t distanceFront = tofFR().readRaw();
     uint16_t distanceBack = tofBR().readRaw();
     while (abs((int)distanceFront - (int)distanceBack) > toleranceWheelsmm){
         if (distanceFront > distanceBack){
-        turnRightSlow(incrementGrad);
+        turnRight(incrementGrad, speedSlow);
         stopMotors();
         }
         else {
-        turnLeftSlow(incrementGrad);
+        turnLeft(incrementGrad, speedSlow);
         stopMotors();
         }
 
@@ -389,11 +321,11 @@ void goParallelLeft(){ // TODO
     uint16_t distanceBack = tofBL().readFiltered();
     while (abs((int)distanceFront - (int)distanceBack) > toleranceWheelsmm){
         if (distanceFront < distanceBack){
-        turnRightSlow(incrementGrad);
+        turnRight(incrementGrad, speedSlow);
         stopMotors();
         }
         else {
-        turnLeftSlow(incrementGrad);
+        turnLeft(incrementGrad, speedSlow);
         stopMotors();
         }
 
