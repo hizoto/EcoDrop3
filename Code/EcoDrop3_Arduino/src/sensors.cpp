@@ -87,18 +87,6 @@ void initSensors() {
   delay(100);
 }
 
-// ------------------- Wrapper -------------------
-int readTofFrontRight() { return tofFrontRight.readFiltered(); }
-int readTofBackRight()  { return tofBackRight.readFiltered(); }
-int readTofFrontLeft()  { return tofFrontLeft.readFiltered(); }
-int readTofBackLeft()   { return tofBackLeft.readFiltered(); }
-
-int readTofFrontRightUnfiltered() { return tofFrontRight.readRaw(); }
-int readTofBackRightUnfiltered()  { return tofBackRight.readRaw(); }
-int readTofFrontLeftUnfiltered()  { return tofFrontLeft.readRaw(); }
-int readTofBackLeftUnfiltered()   { return tofBackLeft.readRaw(); }
-
-
 void i2cScan() {
   Serial.println("scan...");
   for (byte addr = 1; addr < 127; addr++) {

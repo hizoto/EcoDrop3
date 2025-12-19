@@ -34,16 +34,6 @@ private:
 void initSensors();
 void initMux();
 
-// Wrapper, um alten Code nicht anfassen zu müssen
-int readTofFrontRight();
-int readTofBackRight();
-int readTofFrontLeft();
-int readTofBackLeft();
-
-int readTofFrontRightUnfiltered();
-int readTofBackRightUnfiltered();
-int readTofFrontLeftUnfiltered();
-int readTofBackLeftUnfiltered();
 
 // optional
 void i2cScan();
