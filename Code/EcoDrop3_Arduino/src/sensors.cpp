@@ -111,3 +111,8 @@ void i2cScan() {
   }
   Serial.println("done");
 }
+
+TofMuxSensor& tofFR() { return tofFrontRight; }
+TofMuxSensor& tofBR() { return tofBackRight; }
+TofMuxSensor& tofFL() { return tofFrontLeft; }
+TofMuxSensor& tofBL() { return tofBackLeft; }

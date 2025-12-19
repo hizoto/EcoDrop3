@@ -47,3 +47,9 @@ int readTofBackLeftUnfiltered();
 
 // optional
 void i2cScan();
+
+TofMuxSensor& tofFR();
+TofMuxSensor& tofBR();
+TofMuxSensor& tofFL();
+TofMuxSensor& tofBL();
+

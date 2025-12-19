@@ -15,19 +15,19 @@ class DC_Motor{
     void backward(int speed);
 };
 
+constexpr int speedNormal = 100;
+
 void startMotors();
-void moveForward(int distancemm);
-void moveBackward(int distancemm);
+void moveForward(int distancemm, int speed = speedNormal);
+void moveBackward(int distancemm, int speed = speedNormal);
 void turnLeft(float deg);
 void turnRight(float deg);
 void turnLeftSlow(float deg);
 void turnRightSlow(float deg);
-void moveLeft(int distancemm);
-void moveRight(int distancemm);
+void moveLeft(int distancemm, int speed = speedNormal);
+void moveRight(int distancemm, int speed = speedNormal);
 void moveForwardParallelUntilContainer(uint16_t distanceToWall);
 void driveForwardWithWheelCorrection(int baseSpeed, int correction, unsigned long durationMs);
-void rechtsKurve(int distancemm);
-void linksKurve(int distancemm);
 void moveToRightWall(uint16_t distanceToWall);
 void moveToLefttWall(uint16_t distanceToWall);
 void stopMotors();
