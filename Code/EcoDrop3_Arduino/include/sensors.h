@@ -30,7 +30,11 @@ private:
   uint32_t _lastRead;
 };
 
-// ------------------- API -------------------
+
+void setOffsetsRight();
+void setOffsetsLeft();
+
+
 void initSensors();
 void initMux();
 
@@ -42,4 +46,3 @@ TofMuxSensor& tofFR();
 TofMuxSensor& tofBR();
 TofMuxSensor& tofFL();
 TofMuxSensor& tofBL();
-

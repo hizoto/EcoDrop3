@@ -85,6 +85,8 @@ void initSensors() {
   if (!tofFrontLeft.begin())  logMessage("Failed to boot Front Left TOF");
 
   delay(100);
+  setOffsetsRight();
+  setOffsetsLeft();
 }
 
 void i2cScan() {
@@ -104,3 +106,15 @@ TofMuxSensor& tofFR() { return tofFrontRight; }
 TofMuxSensor& tofBR() { return tofBackRight; }
 TofMuxSensor& tofFL() { return tofFrontLeft; }
 TofMuxSensor& tofBL() { return tofBackLeft; }
+
+void setOffsetsRight(){
+  int sollAbstand = (tofBackRight.readRaw() + tofFrontRight.readRaw()) / 2;
+  tofBackRight.setOffset(sollAbstand - tofBackRight.readRaw());
+  tofFrontRight.setOffset(sollAbstand - tofFrontRight.readRaw());
+}
+
+void setOffsetsLeft(){
+  int sollAbstand = (tofBackLeft.readRaw() + tofFrontLeft.readRaw()) / 2;
+  tofBackLeft.setOffset(sollAbstand - tofBackLeft.readRaw());
+  tofFrontLeft.setOffset(sollAbstand - tofFrontLeft.readRaw());
+}
