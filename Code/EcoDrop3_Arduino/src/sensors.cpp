@@ -6,12 +6,12 @@ TCA9548A I2CMUX;
 
 static constexpr uint8_t CH_FRONT_RIGHT = 5;
 static constexpr uint8_t CH_BACK_RIGHT  = 0;
-static constexpr uint8_t CH_FRONT_LEFT  = 1;
-static constexpr uint8_t CH_BACK_LEFT   = 2;
+static constexpr uint8_t CH_FRONT_LEFT  = 2;
+static constexpr uint8_t CH_BACK_LEFT   = 1;
 
 // Offsets
-static constexpr int16_t OFF_FRONT_RIGHT = -46;
-static constexpr int16_t OFF_BACK_RIGHT  = -13;
+static constexpr int16_t OFF_FRONT_RIGHT = 0;
+static constexpr int16_t OFF_BACK_RIGHT  = 0;
 static constexpr int16_t OFF_FRONT_LEFT  = 0;
 static constexpr int16_t OFF_BACK_LEFT   = 0;
 
@@ -36,9 +36,7 @@ void TofMuxSensor::setOffset(int16_t offsetMm) { _offset = offsetMm; }
 int16_t TofMuxSensor::getOffset() const { return _offset; }
 
 bool TofMuxSensor::readMeasurement(VL53L0X_RangingMeasurementData_t& out) {
-  _mux.openChannel(_channel);
   _lox.rangingTest(&out, false);
-  _mux.closeAll();
 
   // RangeStatus==4: ungültig/out of range
   return (out.RangeStatus != 4);
@@ -46,15 +44,18 @@ bool TofMuxSensor::readMeasurement(VL53L0X_RangingMeasurementData_t& out) {
 
 int TofMuxSensor::readRaw() {
   VL53L0X_RangingMeasurementData_t m;
-  if (!readMeasurement(m)) return _filtered; // fallback
+  _mux.openChannel(_channel);
+  readMeasurement(m);
+  _mux.closeAll();
   return (int)m.RangeMilliMeter + _offset;
 }
 
 int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
+  _mux.openChannel(_channel);
   if (millis() - _lastRead > resetAfterMs) _filtered = 0;
 
   VL53L0X_RangingMeasurementData_t m;
-  if (!readMeasurement(m)) return _filtered; // ungültig -> alten Wert
+  readMeasurement(m);
 
   int newVal = (int)m.RangeMilliMeter + _offset;
 
@@ -62,6 +63,7 @@ int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
   _filtered = (int)(alpha * newVal + (1.0f - alpha) * _filtered);
 
   _lastRead = millis();
+  _mux.closeAll();
   return _filtered;
 }
 
@@ -85,8 +87,6 @@ void initSensors() {
   if (!tofFrontLeft.begin())  logMessage("Failed to boot Front Left TOF");
 
   delay(100);
-  setOffsetsRight();
-  setOffsetsLeft();
 }
 
 void i2cScan() {
@@ -107,14 +107,23 @@ TofMuxSensor& tofBR() { return tofBackRight; }
 TofMuxSensor& tofFL() { return tofFrontLeft; }
 TofMuxSensor& tofBL() { return tofBackLeft; }
 
-void setOffsetsRight(){
-  int sollAbstand = (tofBackRight.readRaw() + tofFrontRight.readRaw()) / 2;
-  tofBackRight.setOffset(sollAbstand - tofBackRight.readRaw());
-  tofFrontRight.setOffset(sollAbstand - tofFrontRight.readRaw());
+void setOffsetsRight() {
+  int br = tofBackRight.readRaw();
+  int fr = tofFrontRight.readRaw();
+  if (br < 0 || fr < 0) return;
+
+  int soll = (br + fr) / 2;
+  tofBackRight.setOffset(soll - br);
+  tofFrontRight.setOffset(soll - fr);
 }
 
+
 void setOffsetsLeft(){
-  int sollAbstand = (tofBackLeft.readRaw() + tofFrontLeft.readRaw()) / 2;
-  tofBackLeft.setOffset(sollAbstand - tofBackLeft.readRaw());
-  tofFrontLeft.setOffset(sollAbstand - tofFrontLeft.readRaw());
+  int bl = tofBackLeft.readRaw();
+  int fl = tofFrontLeft.readRaw();
+  if (bl < 0 || fl < 0) return;
+
+  int soll = (bl + fl) / 2;
+  tofBackLeft.setOffset(soll - bl);
+  tofFrontLeft.setOffset(soll - fl);
 }

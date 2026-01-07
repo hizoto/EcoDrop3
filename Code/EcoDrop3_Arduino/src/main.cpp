@@ -9,8 +9,8 @@
 
 // Konfigurationsvariablen
 uint16_t wandabstand = 150;
-uint16_t wandabstandLadezone = 60;
-uint16_t abladeZoneWandabstand = 850;
+uint16_t wandabstandLadezone = 90;
+uint16_t abladeZoneWandabstand = 50;
 int roboterbreite = 250; 
 int sicherheitsmarge = 50;
 
@@ -51,6 +51,16 @@ void loop() {
             
             // Ladestation verlassen
             case 10:
+                setOffsetsRight();
+                setOffsetsLeft();
+                /*String abstandFL = "TOF FL: " + String(tofFL().readRaw());
+                String abstandFR = "TOF FR: " + String(tofFR().readRaw());
+                String abstandBL = "TOF BL: " + String(tofBL().readRaw());
+                String abstandBR = "TOF BR: " + String(tofBR().readRaw());
+                logMessage(abstandFL.c_str());
+                logMessage(abstandFR.c_str());
+                logMessage(abstandBL.c_str());
+                logMessage(abstandBR.c_str());*/
                 moveOutOfDock();
                 currentStep = 20;
                 break;
@@ -63,10 +73,10 @@ void loop() {
 
             // ersten Container aufnehmen
             case 30:
-                goParallelRight();
+                //goParallelRight();
                 moveLeft(50);
                 turnRight(90);
-                // goParallelLeft();
+                goParallelLeft();
                 pickUpContainer();
                 turnLeft(180);
                 currentStep = 40;
@@ -80,7 +90,7 @@ void loop() {
 
             // zweiten Container aufnehmen
             case 50:
-                goParallelRight();
+                //goParallelRight();
                 moveLeft(50);
                 turnRight(90);
                 goParallelRight();
@@ -94,15 +104,15 @@ void loop() {
             // dritten Container finden
             case 60:
                 turnLeft(90);
-                //goParallel();
-                //moveToRightWall(wandabstand);
+                goParallelRight();
+                moveToRightWall(wandabstand);
                 moveForwardParallelUntilContainer(wandabstand);
                 currentStep = 70;
                 break;
 
             // dritten Container aufnehmen
             case 70:
-                goParallelRight();
+                //goParallelRight();
                 moveLeft(50);
                 turnRight(90);
                 goParallelRight();
@@ -112,7 +122,7 @@ void loop() {
 
             // in Abladezone fahren
             case 80:
-                moveToRightWall(abladeZoneWandabstand); // TODO moveToLeftWall
+                moveToLeftWall(abladeZoneWandabstand);
                 currentStep = 90;
                 break;
 
@@ -126,9 +136,10 @@ void loop() {
 
             // zurück zur Ladestation
             case 100:
-                moveRight(600);
-                moveToRightWall(abladeZoneWandabstand - roboterbreite + sicherheitsmarge);
+                moveToLeftWall(300);
                 turnRight(90);
+                goParallelLeft();
+                moveRight(500);
                 moveToRightWall(wandabstandLadezone);
                 parkieren();
                 currentStep = 0;
