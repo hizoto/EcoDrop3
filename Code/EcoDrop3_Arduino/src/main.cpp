@@ -8,13 +8,14 @@
 // 1 = xxxx
 
 // Konfigurationsvariablen
-uint16_t wandabstand = 50;
-uint16_t wandabstandLadezone = 60;
-uint16_t abladeZoneWandabstand = 850;
+uint16_t wandabstand = 150;
+uint16_t wandabstandLadezone = 90;
+uint16_t abladeZoneWandabstand = 50;
 int roboterbreite = 250; 
 int sicherheitsmarge = 50;
 
 unsigned long lastLogMessage = 0;
+unsigned long lastTofLog = 0;
 
 int currentStep = 0;
 bool firstTry = true;
@@ -23,6 +24,8 @@ void setup() {
     startComm();
     initSensors();
     pixySetup();
+    startMotors();
+    stopMotors();
 }
 
 void loop() {
@@ -33,7 +36,7 @@ void loop() {
         switch(currentStep){
             // idle
             case 0:
-                currentStep = 1;        //Auskommentieren zum testen
+                currentStep = 10;  // 1 -> Testcase  // 10 -> Schrittkette
                 break;
             // Testcase
             case 1:
@@ -41,33 +44,39 @@ void loop() {
                     logMessage("EcoDrop on.");
                     lastLogMessage = millis();
                 }
-                //pixyTestfunktion();
-                //goParallel();
-                //moveToRightWall(50);
-                /*moveForward(50);
-                delay(1000);
-                moveBackward(50);
-                delay(1000);*/
-                //testVorwaerts();
+                goParallelRight();
+                //containerAufladen();
+                isRunning = false;
                 break;
             
             // Ladestation verlassen
             case 10:
+                setOffsetsRight();
+                setOffsetsLeft();
+                /*String abstandFL = "TOF FL: " + String(tofFL().readRaw());
+                String abstandFR = "TOF FR: " + String(tofFR().readRaw());
+                String abstandBL = "TOF BL: " + String(tofBL().readRaw());
+                String abstandBR = "TOF BR: " + String(tofBR().readRaw());
+                logMessage(abstandFL.c_str());
+                logMessage(abstandFR.c_str());
+                logMessage(abstandBL.c_str());
+                logMessage(abstandBR.c_str());*/
                 moveOutOfDock();
                 currentStep = 20;
                 break;
 
             // ersten Container finden
             case 20:
-                goParallel();
-                moveToRightWall(wandabstand);
                 moveForwardParallelUntilContainer(wandabstand);
                 currentStep = 30;
                 break;
 
             // ersten Container aufnehmen
             case 30:
+                //goParallelRight();
+                moveLeft(50);
                 turnRight(90);
+                goParallelLeft();
                 pickUpContainer();
                 turnLeft(180);
                 currentStep = 40;
@@ -75,23 +84,27 @@ void loop() {
 
             // zweiten Container finden
             case 40:
-                goParallel();
-                moveToRightWall(wandabstand);
                 moveForwardParallelUntilContainer(wandabstand);
                 currentStep = 50;
                 break;
 
             // zweiten Container aufnehmen
             case 50:
+                //goParallelRight();
+                moveLeft(50);
                 turnRight(90);
+                goParallelRight();
                 pickUpContainer();
-                turnLeft(180);
+                turnLeft(90);
+                goParallelRight();
+                moveForward(300);
                 currentStep = 60;
                 break;
 
             // dritten Container finden
             case 60:
-                goParallel();
+                turnLeft(90);
+                goParallelRight();
                 moveToRightWall(wandabstand);
                 moveForwardParallelUntilContainer(wandabstand);
                 currentStep = 70;
@@ -99,27 +112,34 @@ void loop() {
 
             // dritten Container aufnehmen
             case 70:
+                //goParallelRight();
+                moveLeft(50);
                 turnRight(90);
+                goParallelRight();
                 pickUpContainer();
                 currentStep = 80;
                 break;
 
             // in Abladezone fahren
             case 80:
-                moveToRightWall(abladeZoneWandabstand);
+                moveToLeftWall(abladeZoneWandabstand);
                 currentStep = 90;
                 break;
 
             // abladen
             case 90:
+                rueckwaertsBisAnschlag();
                 abladen();
                 moveForward(sicherheitsmarge);
                 currentStep = 100;
                 break;
 
+            // zurück zur Ladestation
             case 100:
-                moveToRightWall(abladeZoneWandabstand - roboterbreite + sicherheitsmarge);
+                moveToLeftWall(300);
                 turnRight(90);
+                goParallelLeft();
+                moveRight(500);
                 moveToRightWall(wandabstandLadezone);
                 parkieren();
                 currentStep = 0;
@@ -132,9 +152,10 @@ void loop() {
     }
     else {
         currentStep = 0;
-        if(millis() - lastLogMessage > 10000){
+        if(millis() - lastLogMessage > 2000){
         logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
+        stopMotors();
         }
     }    
 }

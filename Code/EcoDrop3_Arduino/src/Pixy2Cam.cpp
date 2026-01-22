@@ -7,91 +7,68 @@
 Pixy2 pixy;
 uint16_t pixyHoehe = 208;           // Definierte Höhe der Pixyanzeige
 uint16_t pixyBreite = 316;          // Definierte Breite der Pixyanzeige
+int endschalterVorne = 41;
 
-
-void pixySetup()
-{  
-  pixy.init();
+void pixySetup(){
+    pinMode(endschalterVorne, INPUT_PULLUP);
+    pixy.init();
+    pixy.setLamp(0, 0);
 }
 
 
 
-void pixyMoveForward()
-{
-    pixy.ccc.getBlocks();
-    if(pixy.ccc.blocks[0].m_y < pixyHoehe/2){                   // Wenn Endschalter verbaut dann IF Funktion raus und mit While solange Endschalter nicht betätigt
-        while (pixy.ccc.blocks[0].m_y < pixyHoehe/2)
-        {
+void pixyMoveForward(){
+    bool endschalterVorneGetriggert = digitalRead(endschalterVorne);
+    logMessage("Roboter bewegt sich vorwärts");                 // Roboter fährt vorwärts solange der Endschalter nicht betätigt wurde
+    while(!endschalterVorneGetriggert){
         moveForward(1);
-        logMessage("Roboter bewegt sich vorwärts");
-        pixy.ccc.getBlocks();
-        }
-        stopMotors();
-        
-    }
-
-}
-/*void pixyMoveForwardE()
-{
-    while(!endschalterContainer){                               // Funktion wenn Endschaöter verbaut ist
-        moveForward(1);
-        logMessage("Roboter fährt zum Container");
+        endschalterVorneGetriggert = digitalRead(endschalterVorne);
     }
     stopMotors();
-}*/
+}
 
-void pixyMoveBackwardUntilObject()
-{
-pixy.ccc.getBlocks();                                           // Roboter fährt Rückwärts solange kein Objekt erkannt wurde
+void pixyMoveForwardUntilObject(){
+pixy.ccc.getBlocks();    
+    unsigned long startTime = millis();                                       // Roboter fährt Rückwärts solange kein Objekt erkannt wurde
     if(!pixy.ccc.numBlocks){
-        while (!pixy.ccc.numBlocks)
+        while (!pixy.ccc.numBlocks && millis() - startTime < 1000)
         {
-        moveBackward(1);
-        logMessage("Roboter bewegt sich rückwärts");
+        moveForward(1);
         pixy.ccc.getBlocks();
         }
+        logMessage("Container erkannt");
         stopMotors();
         
     }
 
 }
 
-void pixyMoveRight()
-{
-pixy.ccc.getBlocks();                                           // Roboter fährt nach rechts solange Objekt nicht im Bereich erscheint
-    if(pixy.ccc.blocks[0].m_x > 160){
-        while (pixy.ccc.blocks[0].m_x > 160)
-        {
-        moveRight(1);
-        logMessage("Roboter fährt nach rechts");
-        pixy.ccc.getBlocks();
+void pixyMoveMiddle(int ziel){
+    int tolerance = 10;
+    pixy.ccc.getBlocks();
+    do {
+        // Auswerten, in welche Richtung korrigiert werden muss
+        if(pixy.ccc.blocks[0].m_x > ziel){
+            logMessage("Position nach rechts korrigieren...");
+            while (pixy.ccc.blocks[0].m_x > ziel){
+                moveRight(1);
+                pixy.ccc.getBlocks();
+                stopMotors();
+            }
         }
-        stopMotors();
-        
-    }
-
-
+        else{
+            logMessage("Position nach links korrigieren...");
+            while (pixy.ccc.blocks[0].m_x < ziel){
+                moveLeft(1);
+                pixy.ccc.getBlocks();
+                stopMotors();
+            }
+        }
+    }while(pixy.ccc.blocks[0].m_x > ziel + tolerance || pixy.ccc.blocks[0].m_x < ziel - tolerance);
 }
 
-void pixyMoveLeft()
-{
-pixy.ccc.getBlocks();                                           // Roboter fährt nach links solange Objekt nicht im Bereich erscheint
-    if (pixy.ccc.blocks[0].m_x < 140){
-        while (pixy.ccc.blocks[0].m_x < 140)
-        {
-        moveLeft(1);
-        logMessage("Roboter fährt nach links");
-        pixy.ccc.getBlocks();
-        }
-        stopMotors();
-        
-    }
-    
 
-}
-
-void pixyErrorObjects()
-{
+void pixyErrorObjects(){
     if(pixy.ccc.numBlocks > 1){                                 // Fehlermeldung falls mehrere Objekte erkannt wurden
     
         pixy.ccc.getBlocks();
@@ -99,17 +76,11 @@ void pixyErrorObjects()
     }
 }
 
-void pixyTestfunktion(){
-    
-         pixyErrorObjects();
-         pixyMoveForward();
-         pixyMoveBackwardUntilObject();
-         pixyMoveLeft();
-         pixyMoveRight();
-    
-   
-    
-
+void pixyLampeOn(){
+    pixy.setLamp(1, 0);
+    delay(200);
 }
 
-
+void pixyLampeOff(){
+    pixy.setLamp(0, 0);
+}

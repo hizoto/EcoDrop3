@@ -1,104 +1,129 @@
-#include <Arduino.h>
-#include <Wire.h>
 #include "sensors.h"
-#include <Adafruit_VL53L0X.h>
-#include <TCA9548A-SOLDERED.h>
-#include "communication.h"
+#include "communication.h"   // logMessage()
 
-TCA9548A I2CMUX;                                  // multiplexer
-Adafruit_VL53L0X loxFront = Adafruit_VL53L0X();   // TOF
-Adafruit_VL53L0X loxBack = Adafruit_VL53L0X();    // TOF
+// ------------------- MUX + Channels -------------------
+TCA9548A I2CMUX;
 
-// Multiplexer Channels
-int tofFrontChannel = 0;
-int tofBackChannel = 1;
+static constexpr uint8_t CH_FRONT_RIGHT = 5;
+static constexpr uint8_t CH_BACK_RIGHT  = 0;
+static constexpr uint8_t CH_FRONT_LEFT  = 2;
+static constexpr uint8_t CH_BACK_LEFT   = 1;
 
-void initSensors(){
+// Offsets
+static constexpr int16_t OFF_FRONT_RIGHT = 0;
+static constexpr int16_t OFF_BACK_RIGHT  = 0;
+static constexpr int16_t OFF_FRONT_LEFT  = 0;
+static constexpr int16_t OFF_BACK_LEFT   = 0;
+
+// Sensor-Instanzen
+static TofMuxSensor tofFrontRight(I2CMUX, CH_FRONT_RIGHT, OFF_FRONT_RIGHT);
+static TofMuxSensor tofBackRight (I2CMUX, CH_BACK_RIGHT,  OFF_BACK_RIGHT);
+static TofMuxSensor tofFrontLeft (I2CMUX, CH_FRONT_LEFT,  OFF_FRONT_LEFT);
+static TofMuxSensor tofBackLeft  (I2CMUX, CH_BACK_LEFT,   OFF_BACK_LEFT);
+
+// ------------------- Klasse: Implementation -------------------
+TofMuxSensor::TofMuxSensor(TCA9548A& mux, uint8_t channel, int16_t offsetMm)
+: _mux(mux), _channel(channel), _offset(offsetMm), _filtered(0), _lastRead(0) {}
+
+bool TofMuxSensor::begin() {
+  _mux.openChannel(_channel);
+  bool ok = _lox.begin();
+  _mux.closeAll();
+  return ok;
+}
+
+void TofMuxSensor::setOffset(int16_t offsetMm) { _offset = offsetMm; }
+int16_t TofMuxSensor::getOffset() const { return _offset; }
+
+bool TofMuxSensor::readMeasurement(VL53L0X_RangingMeasurementData_t& out) {
+  _lox.rangingTest(&out, false);
+
+  // RangeStatus==4: ungültig/out of range
+  return (out.RangeStatus != 4);
+}
+
+int TofMuxSensor::readRaw() {
+  VL53L0X_RangingMeasurementData_t m;
+  _mux.openChannel(_channel);
+  readMeasurement(m);
+  _mux.closeAll();
+  return (int)m.RangeMilliMeter + _offset;
+}
+
+int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
+  _mux.openChannel(_channel);
+  if (millis() - _lastRead > resetAfterMs) _filtered = 0;
+
+  VL53L0X_RangingMeasurementData_t m;
+  readMeasurement(m);
+
+  int newVal = (int)m.RangeMilliMeter + _offset;
+
+  if (_filtered == 0) _filtered = newVal;
+  _filtered = (int)(alpha * newVal + (1.0f - alpha) * _filtered);
+
+  _lastRead = millis();
+  _mux.closeAll();
+  return _filtered;
+}
+
+// ------------------- init -------------------
+void initMux() {
+  Serial.println("mux start");
+  I2CMUX.begin();
+  delay(20);
+  Serial.println("mux begin gut");
+  I2CMUX.closeAll();
+  Serial.println("mux start gut");
+}
+
+void initSensors() {
+  Wire.begin();
   initMux();
-  initTofBack();
-  initTofFront();
+
+  if (!tofBackRight.begin())  logMessage("Failed to boot Back Right TOF");
+  if (!tofFrontRight.begin()) logMessage("Failed to boot Front Right TOF");
+  if (!tofBackLeft.begin())   logMessage("Failed to boot Back Left TOF");
+  if (!tofFrontLeft.begin())  logMessage("Failed to boot Front Left TOF");
+
   delay(100);
 }
 
-void initMux(){
-  I2CMUX.begin();
-  I2CMUX.closeAll();
+void i2cScan() {
+  Serial.println("scan...");
+  for (byte addr = 1; addr < 127; addr++) {
+    Wire.beginTransmission(addr);
+    byte err = Wire.endTransmission();
+    if (err == 0) {
+      Serial.print("found 0x");
+      Serial.println(addr, HEX);
+    }
+  }
+  Serial.println("done");
 }
 
-void initTofFront(){
-  I2CMUX.openChannel(tofFrontChannel);
-  if(!loxFront.begin()){
-    Serial.println("Failed to boot Front TOF");   // TODO
-    return;
-  }
-  I2CMUX.closeAll();
+TofMuxSensor& tofFR() { return tofFrontRight; }
+TofMuxSensor& tofBR() { return tofBackRight; }
+TofMuxSensor& tofFL() { return tofFrontLeft; }
+TofMuxSensor& tofBL() { return tofBackLeft; }
+
+void setOffsetsRight() {
+  int br = tofBackRight.readRaw();
+  int fr = tofFrontRight.readRaw();
+  if (br < 0 || fr < 0) return;
+
+  int soll = (br + fr) / 2;
+  tofBackRight.setOffset(soll - br);
+  tofFrontRight.setOffset(soll - fr);
 }
 
-void initTofBack(){
-  I2CMUX.openChannel(tofBackChannel);
-  if(!loxBack.begin()){
-    Serial.println("Failed to boot Back TOF");    // TODO
-    return;
-  }
-  I2CMUX.closeAll();
-}
 
-int readTofFront() {
-  static int filteredDistance = 0;                // letzter geglätteter Wert
-  static unsigned long lastRead = 0;
-  const float alpha = 0.3;                        // Glättungsfaktor (0.1 = sehr weich, 0.5 = schneller)
-  
-  if(millis() - lastRead > 500){
-    filteredDistance = 0;
-  }
+void setOffsetsLeft(){
+  int bl = tofBackLeft.readRaw();
+  int fl = tofFrontLeft.readRaw();
+  if (bl < 0 || fl < 0) return;
 
-  VL53L0X_RangingMeasurementData_t measure;
-  I2CMUX.openChannel(tofFrontChannel);
-  loxFront.rangingTest(&measure, false);
-  I2CMUX.closeAll();
-
-  if (measure.RangeStatus == 4) {
-    // Ungültige Messung, alten Wert zurückgeben
-    return filteredDistance;
-  }
-
-  uint16_t newDistance = measure.RangeMilliMeter;
-
-  // Wenn es der erste Durchlauf ist (noch kein Filterwert vorhanden)
-  if (filteredDistance == 0) filteredDistance = newDistance;
-
-  // Gleitende Mittelung
-  filteredDistance = (int)(alpha * newDistance + (1.0 - alpha) * filteredDistance);
-
-  return filteredDistance;
-}
-
-int readTofBack() {
-  static int filteredDistance = 0;   // letzter geglätteter Wert (bleibt zwischen Aufrufen erhalten)
-  static unsigned long lastRead = 0;
-  const float alpha = 0.3;           // Glättungsfaktor (0.1 = sehr weich, 0.5 = schneller)
-  
-  if(millis() - lastRead > 500){
-    filteredDistance = 0;
-  }
-
-  VL53L0X_RangingMeasurementData_t measure;
-  I2CMUX.openChannel(tofBackChannel);
-  loxBack.rangingTest(&measure, false);
-  I2CMUX.closeAll();
-
-  if (measure.RangeStatus == 4) {
-    // Ungültige Messung, alten Wert zurückgeben
-    return filteredDistance;
-  }
-
-  uint16_t newDistance = measure.RangeMilliMeter;
-
-  // Wenn es der erste Durchlauf ist (noch kein Filterwert vorhanden)
-  if (filteredDistance == 0) filteredDistance = newDistance;
-
-  // Gleitende Mittelung
-  filteredDistance = (int)(alpha * newDistance + (1.0 - alpha) * filteredDistance);
-
-  return filteredDistance;
+  int soll = (bl + fl) / 2;
+  tofBackLeft.setOffset(soll - bl);
+  tofFrontLeft.setOffset(soll - fl);
 }

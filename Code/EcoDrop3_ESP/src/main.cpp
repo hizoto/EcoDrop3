@@ -8,14 +8,13 @@
 void currentTest();
 
 
-int timeToUpdateSensorData = 5000; // Millisekunden
+int timeToUpdateSensorData = 500; // Millisekunden
 
 // Variablen um Zyklische Prozesse abzuarbeiten
 unsigned long lastSensorDataUpdate = 0;
 unsigned long lastSerialStatusUpdate = 0;
 
 void setup() {
-    Serial.begin(115200);
     startComm();
     startWebinterface();
     current_measure_init();

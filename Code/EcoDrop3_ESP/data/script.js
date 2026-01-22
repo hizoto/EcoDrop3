@@ -50,5 +50,5 @@ async function fetchSensorData() {
 }
 
 // alle 5s aktualisieren
-setInterval(fetchSensorData, 5000);
+setInterval(fetchSensorData, 500);
 fetchSensorData();
