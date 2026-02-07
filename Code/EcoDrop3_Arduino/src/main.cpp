@@ -9,7 +9,7 @@
 
 // Konfigurationsvariablen
 uint16_t wandabstand = 150;
-uint16_t wandabstandLadezone = 90;
+uint16_t wandabstandLadezone = 140;
 uint16_t abladeZoneWandabstand = 50;
 int roboterbreite = 250; 
 int sicherheitsmarge = 50;
@@ -25,7 +25,7 @@ void setup() {
     initSensors();
     pixySetup();
     startMotors();
-    stopMotors();
+    idleMotors();
 }
 
 void loop() {
@@ -36,7 +36,7 @@ void loop() {
         switch(currentStep){
             // idle
             case 0:
-                currentStep = 10;  // 1 -> Testcase  // 10 -> Schrittkette
+                currentStep = 1;  // 1 -> Testcase  // 10 -> Schrittkette
                 break;
             // Testcase
             case 1:
@@ -44,9 +44,9 @@ void loop() {
                     logMessage("EcoDrop on.");
                     lastLogMessage = millis();
                 }
-                goParallelRight();
+                staplerOben();
+                //goParallelRight();
                 //containerAufladen();
-                isRunning = false;
                 break;
             
             // Ladestation verlassen
@@ -93,11 +93,11 @@ void loop() {
                 //goParallelRight();
                 moveLeft(50);
                 turnRight(90);
-                goParallelRight();
+                goParallelLeft();
                 pickUpContainer();
                 turnLeft(90);
                 goParallelRight();
-                moveForward(300);
+                //moveForward(300);
                 currentStep = 60;
                 break;
 
@@ -113,9 +113,10 @@ void loop() {
             // dritten Container aufnehmen
             case 70:
                 //goParallelRight();
-                moveLeft(50);
+                moveLeft(100);
                 turnRight(90);
-                goParallelRight();
+                moveForward(130);
+                goParallelLeft();
                 pickUpContainer();
                 currentStep = 80;
                 break;
@@ -142,6 +143,7 @@ void loop() {
                 moveRight(500);
                 moveToRightWall(wandabstandLadezone);
                 parkieren();
+                isRunning = false;
                 currentStep = 0;
                 break;
 
@@ -152,11 +154,13 @@ void loop() {
     }
     else {
         currentStep = 0;
+        idleMotors();
         if(millis() - lastLogMessage > 2000){
         logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
         stopMotors();
         }
+        staplerUnten();
     }    
 }
 

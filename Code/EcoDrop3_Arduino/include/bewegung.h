@@ -13,6 +13,7 @@ class DC_Motor{
     void brake();
     void forward(int speed);
     void backward(int speed);
+    void idle();
 };
 
 constexpr int speedNormal = 100;
@@ -37,5 +38,7 @@ void pickUpContainer();
 void abladen();
 void rueckwaertsBisAnschlag();
 void containerAufladen();
-
+void staplerOben();
+void staplerUnten();
+void idleMotors();
 

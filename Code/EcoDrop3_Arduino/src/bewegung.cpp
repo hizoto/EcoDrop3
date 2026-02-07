@@ -15,7 +15,7 @@ unsigned long timeToTurn360Milliseconds = 7750;
 unsigned long timeToMove1000mmSidewaysMilliseconds = 10000;   
 unsigned long timeToMove1000mm = 6500;              //TODO 
 unsigned long bewegungsZeitLinear = 7000; // in ms
-int dockLength = 350; // TODO
+int dockLength = 400; 
 int posKlappeOffen = 0; // TODO
 int posKlappeGeschlossen = 90; // TODO
 int zeitEntleeren = 2000;
@@ -102,6 +102,12 @@ void DC_Motor::backward(int speed){
     analogWrite(ENA, speed);
 }
 
+void DC_Motor::idle(){
+    digitalWrite(IN1, HIGH);
+    digitalWrite(IN2, HIGH);
+    analogWrite(ENA, 0);
+}
+
 
 void moveForward(int distancemm, int speed){
   unsigned long timeToDrive = (distancemm / distancePerSecond) * 1000;
@@ -131,6 +137,12 @@ void driveForwardWithWheelCorrection(int baseSpeed, int correction, unsigned lon
   delay(durationMs);
 }
 
+void idleMotors(){
+  M1.idle();
+  M2.idle();
+  M3.idle();
+  M4.idle();
+}
 
 void moveBackward(int distancemm, int speed){
   unsigned long timeToDrive = (distancemm / distancePerSecond) * 1000;
@@ -385,11 +397,12 @@ void pickUpContainer(){
   pixyLampeOn();
   moveLeft(50);
   pixyMoveForwardUntilObject();
-  pixyMoveMiddle(166);
+  pixyMoveMiddle(150); //166
+  delay(500);
   pixyMoveForward();
   pixyLampeOff();
   containerAufladen();
-  moveBackward(150);
+  moveBackward(130);
 }
 
 void abladen(){
@@ -418,4 +431,12 @@ void rueckwaertsBisAnschlag(){
     moveBackward(1);
   }
   stopMotors();
+}
+
+void staplerOben(){
+  LinearAntrieb.forward(speedFast);
+}
+
+void staplerUnten(){
+  LinearAntrieb.backward(speedFast);
 }
