@@ -13,11 +13,11 @@ const int containerDepth = 40;
 
 unsigned long timeToTurn360Milliseconds = 7750;
 unsigned long timeToMove1000mmSidewaysMilliseconds = 10000;   
-unsigned long timeToMove1000mm = 6500;              //TODO 
+unsigned long timeToMove1000mm = 6500;              
 unsigned long bewegungsZeitLinear = 7000; // in ms
 int dockLength = 400; 
-int posKlappeOffen = 0; // TODO
-int posKlappeGeschlossen = 100; // TODO
+int posKlappeOffen = 0; 
+int posKlappeGeschlossen = 100; 
 int zeitEntleeren = 2000;
 
 float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                      
@@ -74,7 +74,7 @@ DC_Motor M4(B2_IN3, B2_IN4, B2_ENB); // hinten rechts
 DC_Motor LinearAntrieb(B3_IN1, B3_IN2, B3_ENA);
 Servo klappe;
 
-DC_Motor::DC_Motor(int _IN1, int _IN2, int _ENA){ // TODO wird ausgeführt wenn deklariert??
+DC_Motor::DC_Motor(int _IN1, int _IN2, int _ENA){ 
     IN1 = _IN1;
     IN2 = _IN2;
     ENA = _ENA;
