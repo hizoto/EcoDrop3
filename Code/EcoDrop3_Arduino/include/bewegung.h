@@ -41,4 +41,6 @@ void containerAufladen();
 void staplerOben();
 void staplerUnten();
 void idleMotors();
+void oeffnen();
+void schliessen();
 

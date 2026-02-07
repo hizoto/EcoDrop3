@@ -17,7 +17,7 @@ unsigned long timeToMove1000mm = 6500;              //TODO
 unsigned long bewegungsZeitLinear = 7000; // in ms
 int dockLength = 400; 
 int posKlappeOffen = 0; // TODO
-int posKlappeGeschlossen = 90; // TODO
+int posKlappeGeschlossen = 100; // TODO
 int zeitEntleeren = 2000;
 
 float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                      
@@ -218,6 +218,7 @@ void startMotors(){
   pinMode(endschalterHinten, INPUT_PULLUP);
   pinMode(endschalterUnten, INPUT_PULLUP);
   klappe.attach(servoPin);
+  klappe.write(posKlappeGeschlossen);
 }
 
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
@@ -320,14 +321,14 @@ void goParallelRight(){
         turnLeft(incrementGrad, speedSlow);
         stopMotors();
         }
-
+      logTofs();
       distanceFront = tofFR().readRaw();
       distanceBack = tofBR().readRaw();
     }
     stopMotors();
 }
 
-void goParallelLeft(){ // TODO 
+void goParallelLeft(){
     logMessage("Parallelität zur linken Wand wird hergestellt...");
     uint16_t distanceFront = tofFL().readFiltered();
     uint16_t distanceBack = tofBL().readFiltered();
@@ -340,7 +341,7 @@ void goParallelLeft(){ // TODO
         turnLeft(incrementGrad, speedSlow);
         stopMotors();
         }
-
+        logTofs();
       distanceFront = tofFL().readFiltered();
       distanceBack = tofBL().readFiltered();
     }
@@ -408,6 +409,14 @@ void pickUpContainer(){
 void abladen(){
   klappe.write(posKlappeOffen);
   delay(zeitEntleeren);
+  klappe.write(posKlappeGeschlossen);
+}
+
+void oeffnen(){
+  klappe.write(posKlappeOffen);
+}
+
+void schliessen(){
   klappe.write(posKlappeGeschlossen);
 }
 

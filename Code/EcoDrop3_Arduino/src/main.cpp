@@ -36,7 +36,7 @@ void loop() {
         switch(currentStep){
             // idle
             case 0:
-                currentStep = 1;  // 1 -> Testcase  // 10 -> Schrittkette
+                currentStep = 10;  // 1 -> Testcase  // 10 -> Schrittkette
                 break;
             // Testcase
             case 1:
@@ -44,23 +44,17 @@ void loop() {
                     logMessage("EcoDrop on.");
                     lastLogMessage = millis();
                 }
-                staplerOben();
+                oeffnen();
+                //staplerOben();
                 //goParallelRight();
                 //containerAufladen();
+
                 break;
             
             // Ladestation verlassen
             case 10:
                 setOffsetsRight();
                 setOffsetsLeft();
-                /*String abstandFL = "TOF FL: " + String(tofFL().readRaw());
-                String abstandFR = "TOF FR: " + String(tofFR().readRaw());
-                String abstandBL = "TOF BL: " + String(tofBL().readRaw());
-                String abstandBR = "TOF BR: " + String(tofBR().readRaw());
-                logMessage(abstandFL.c_str());
-                logMessage(abstandFR.c_str());
-                logMessage(abstandBL.c_str());
-                logMessage(abstandBR.c_str());*/
                 moveOutOfDock();
                 currentStep = 20;
                 break;
@@ -159,8 +153,9 @@ void loop() {
         logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
         stopMotors();
+        //schliessen();
         }
-        staplerUnten();
+        //staplerUnten();
     }    
 }
 
