@@ -131,3 +131,19 @@ void setOffsetsLeft(){
   tofBackLeft.setOffset(soll - bl);
   tofFrontLeft.setOffset(soll - fl);
 }
+
+void logTofs(){
+  static unsigned long lastTofLog = 0;
+
+  if (millis() - lastTofLog > 1000){
+    String abstandFL = "TOF FL: " + String(tofFL().readRaw());
+    String abstandFR = "TOF FR: " + String(tofFR().readRaw());
+    String abstandBL = "TOF BL: " + String(tofBL().readRaw());
+    String abstandBR = "TOF BR: " + String(tofBR().readRaw());
+    logMessage(abstandFL.c_str());
+    logMessage(abstandFR.c_str());
+    logMessage(abstandBL.c_str());
+    logMessage(abstandBR.c_str());
+    lastTofLog = millis();
+  }
+}

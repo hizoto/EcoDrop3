@@ -38,6 +38,7 @@ void setOffsetsLeft();
 void initSensors();
 void initMux();
 
+void logTofs();
 
 // optional
 void i2cScan();

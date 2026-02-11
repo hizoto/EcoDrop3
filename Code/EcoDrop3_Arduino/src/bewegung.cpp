@@ -13,11 +13,11 @@ const int containerDepth = 40;
 
 unsigned long timeToTurn360Milliseconds = 7750;
 unsigned long timeToMove1000mmSidewaysMilliseconds = 10000;   
-unsigned long timeToMove1000mm = 6500;              //TODO 
+unsigned long timeToMove1000mm = 6500;              
 unsigned long bewegungsZeitLinear = 7000; // in ms
-int dockLength = 350; // TODO
-int posKlappeOffen = 0; // TODO
-int posKlappeGeschlossen = 90; // TODO
+int dockLength = 400; 
+int posKlappeOffen = 0; 
+int posKlappeGeschlossen = 100; 
 int zeitEntleeren = 2000;
 
 float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                      
@@ -74,7 +74,7 @@ DC_Motor M4(B2_IN3, B2_IN4, B2_ENB); // hinten rechts
 DC_Motor LinearAntrieb(B3_IN1, B3_IN2, B3_ENA);
 Servo klappe;
 
-DC_Motor::DC_Motor(int _IN1, int _IN2, int _ENA){ // TODO wird ausgeführt wenn deklariert??
+DC_Motor::DC_Motor(int _IN1, int _IN2, int _ENA){ 
     IN1 = _IN1;
     IN2 = _IN2;
     ENA = _ENA;
@@ -100,6 +100,12 @@ void DC_Motor::backward(int speed){
     digitalWrite(IN1, LOW);
     digitalWrite(IN2, HIGH);
     analogWrite(ENA, speed);
+}
+
+void DC_Motor::idle(){
+    digitalWrite(IN1, HIGH);
+    digitalWrite(IN2, HIGH);
+    analogWrite(ENA, 0);
 }
 
 
@@ -131,6 +137,12 @@ void driveForwardWithWheelCorrection(int baseSpeed, int correction, unsigned lon
   delay(durationMs);
 }
 
+void idleMotors(){
+  M1.idle();
+  M2.idle();
+  M3.idle();
+  M4.idle();
+}
 
 void moveBackward(int distancemm, int speed){
   unsigned long timeToDrive = (distancemm / distancePerSecond) * 1000;
@@ -206,6 +218,7 @@ void startMotors(){
   pinMode(endschalterHinten, INPUT_PULLUP);
   pinMode(endschalterUnten, INPUT_PULLUP);
   klappe.attach(servoPin);
+  klappe.write(posKlappeGeschlossen);
 }
 
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
@@ -308,14 +321,14 @@ void goParallelRight(){
         turnLeft(incrementGrad, speedSlow);
         stopMotors();
         }
-
+      logTofs();
       distanceFront = tofFR().readRaw();
       distanceBack = tofBR().readRaw();
     }
     stopMotors();
 }
 
-void goParallelLeft(){ // TODO 
+void goParallelLeft(){
     logMessage("Parallelität zur linken Wand wird hergestellt...");
     uint16_t distanceFront = tofFL().readFiltered();
     uint16_t distanceBack = tofBL().readFiltered();
@@ -328,7 +341,7 @@ void goParallelLeft(){ // TODO
         turnLeft(incrementGrad, speedSlow);
         stopMotors();
         }
-
+        logTofs();
       distanceFront = tofFL().readFiltered();
       distanceBack = tofBL().readFiltered();
     }
@@ -385,16 +398,25 @@ void pickUpContainer(){
   pixyLampeOn();
   moveLeft(50);
   pixyMoveForwardUntilObject();
-  pixyMoveMiddle(166);
+  pixyMoveMiddle(150); //166
+  delay(500);
   pixyMoveForward();
   pixyLampeOff();
   containerAufladen();
-  moveBackward(150);
+  moveBackward(130);
 }
 
 void abladen(){
   klappe.write(posKlappeOffen);
   delay(zeitEntleeren);
+  klappe.write(posKlappeGeschlossen);
+}
+
+void oeffnen(){
+  klappe.write(posKlappeOffen);
+}
+
+void schliessen(){
   klappe.write(posKlappeGeschlossen);
 }
 
@@ -418,4 +440,12 @@ void rueckwaertsBisAnschlag(){
     moveBackward(1);
   }
   stopMotors();
+}
+
+void staplerOben(){
+  LinearAntrieb.forward(speedFast);
+}
+
+void staplerUnten(){
+  LinearAntrieb.backward(speedFast);
 }

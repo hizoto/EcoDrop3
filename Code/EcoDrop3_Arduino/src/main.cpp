@@ -9,7 +9,7 @@
 
 // Konfigurationsvariablen
 uint16_t wandabstand = 150;
-uint16_t wandabstandLadezone = 90;
+uint16_t wandabstandLadezone = 140;
 uint16_t abladeZoneWandabstand = 50;
 int roboterbreite = 250; 
 int sicherheitsmarge = 50;
@@ -25,7 +25,7 @@ void setup() {
     initSensors();
     pixySetup();
     startMotors();
-    stopMotors();
+    idleMotors();
 }
 
 void loop() {
@@ -44,23 +44,17 @@ void loop() {
                     logMessage("EcoDrop on.");
                     lastLogMessage = millis();
                 }
-                goParallelRight();
+                oeffnen();
+                //staplerOben();
+                //goParallelRight();
                 //containerAufladen();
-                isRunning = false;
+
                 break;
             
             // Ladestation verlassen
             case 10:
                 setOffsetsRight();
                 setOffsetsLeft();
-                /*String abstandFL = "TOF FL: " + String(tofFL().readRaw());
-                String abstandFR = "TOF FR: " + String(tofFR().readRaw());
-                String abstandBL = "TOF BL: " + String(tofBL().readRaw());
-                String abstandBR = "TOF BR: " + String(tofBR().readRaw());
-                logMessage(abstandFL.c_str());
-                logMessage(abstandFR.c_str());
-                logMessage(abstandBL.c_str());
-                logMessage(abstandBR.c_str());*/
                 moveOutOfDock();
                 currentStep = 20;
                 break;
@@ -93,11 +87,11 @@ void loop() {
                 //goParallelRight();
                 moveLeft(50);
                 turnRight(90);
-                goParallelRight();
+                goParallelLeft();
                 pickUpContainer();
                 turnLeft(90);
                 goParallelRight();
-                moveForward(300);
+                //moveForward(300);
                 currentStep = 60;
                 break;
 
@@ -113,9 +107,10 @@ void loop() {
             // dritten Container aufnehmen
             case 70:
                 //goParallelRight();
-                moveLeft(50);
+                moveLeft(100);
                 turnRight(90);
-                goParallelRight();
+                moveForward(130);
+                goParallelLeft();
                 pickUpContainer();
                 currentStep = 80;
                 break;
@@ -142,6 +137,7 @@ void loop() {
                 moveRight(500);
                 moveToRightWall(wandabstandLadezone);
                 parkieren();
+                isRunning = false;
                 currentStep = 0;
                 break;
 
@@ -152,11 +148,14 @@ void loop() {
     }
     else {
         currentStep = 0;
+        idleMotors();
         if(millis() - lastLogMessage > 2000){
         logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
         stopMotors();
+        //schliessen();
         }
+        //staplerUnten();
     }    
 }
 
