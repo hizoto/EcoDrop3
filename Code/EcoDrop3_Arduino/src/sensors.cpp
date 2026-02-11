@@ -69,22 +69,26 @@ int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
 
 // ------------------- init -------------------
 void initMux() {
-  Serial.println("mux start");
+  logMessage("mux start");
   I2CMUX.begin();
   delay(20);
-  Serial.println("mux begin gut");
+  logMessage("mux begin gut");
   I2CMUX.closeAll();
-  Serial.println("mux start gut");
+  logMessage("mux close gut");
 }
 
 void initSensors() {
   Wire.begin();
   initMux();
-
+  logMessage("ready to init TOFs");
   if (!tofBackRight.begin())  logMessage("Failed to boot Back Right TOF");
+  else logMessage("TOF BR initiated");
   if (!tofFrontRight.begin()) logMessage("Failed to boot Front Right TOF");
+  else logMessage("TOF FR initiated");
   if (!tofBackLeft.begin())   logMessage("Failed to boot Back Left TOF");
+  else logMessage("TOF BL initiated");
   if (!tofFrontLeft.begin())  logMessage("Failed to boot Front Left TOF");
+  else logMessage("TOF FL initiated");
 
   delay(100);
 }
