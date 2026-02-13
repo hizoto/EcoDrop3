@@ -4,10 +4,10 @@
 // ------------------- MUX + Channels -------------------
 TCA9548A I2CMUX;
 
-static constexpr uint8_t CH_FRONT_RIGHT = 5;
-static constexpr uint8_t CH_BACK_RIGHT  = 0;
-static constexpr uint8_t CH_FRONT_LEFT  = 2;
-static constexpr uint8_t CH_BACK_LEFT   = 1;
+static constexpr uint8_t CH_FRONT_RIGHT = 0;
+static constexpr uint8_t CH_BACK_RIGHT  = 5;
+static constexpr uint8_t CH_FRONT_LEFT  = 1;
+static constexpr uint8_t CH_BACK_LEFT   = 2;
 
 // Offsets
 static constexpr int16_t OFF_FRONT_RIGHT = 0;
