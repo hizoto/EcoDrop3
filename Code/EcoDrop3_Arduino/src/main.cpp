@@ -19,6 +19,7 @@ unsigned long lastTofLog = 0;
 
 int currentStep = 0;
 bool firstTry = true;
+const bool isTestCase = true;
 
 void setup() {
     startComm();
@@ -36,7 +37,12 @@ void loop() {
         switch(currentStep){
             // idle
             case 0:
-                currentStep = 10;  // 1 -> Testcase  // 10 -> Schrittkette
+                if (isTestCase){
+                    currentStep = 1;
+                }
+                else {
+                    currentStep = 10;  // 1 -> Testcase  // 10 -> Schrittkette
+                }
                 break;
             // Testcase
             case 1:
@@ -44,8 +50,8 @@ void loop() {
                     logMessage("EcoDrop on.");
                     lastLogMessage = millis();
                 }
-                oeffnen();
-                //staplerOben();
+                //oeffnen();
+                staplerOben();
                 //goParallelRight();
                 //containerAufladen();
 
@@ -153,9 +159,11 @@ void loop() {
         logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
         stopMotors();
-        //schliessen();
         }
-        //staplerUnten();
+        if (isTestCase){
+            //schliessen();
+            staplerUnten();
+        }
     }    
 }
 

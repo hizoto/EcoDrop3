@@ -17,7 +17,7 @@ unsigned long timeToMove1000mm = 6500;
 unsigned long bewegungsZeitLinear = 7000; // in ms
 int dockLength = 400; 
 int posKlappeOffen = 0; 
-int posKlappeGeschlossen = 100; 
+int posKlappeGeschlossen = 85; 
 int zeitEntleeren = 2000;
 
 float distancePerSecond = 1000 / (timeToMove1000mm / 1000.0);                      
