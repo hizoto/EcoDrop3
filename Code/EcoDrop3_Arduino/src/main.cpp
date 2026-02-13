@@ -19,7 +19,7 @@ unsigned long lastTofLog = 0;
 
 int currentStep = 0;
 bool firstTry = true;
-const bool isTestCase = true;
+const bool isTestCase = false;
 
 void setup() {
     startComm();

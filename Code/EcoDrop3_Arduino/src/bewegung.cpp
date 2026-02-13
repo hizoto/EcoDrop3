@@ -321,7 +321,7 @@ void goParallelRight(){
         turnLeft(incrementGrad, speedSlow);
         stopMotors();
         }
-      logTofs();
+      logTofs(false,true,false,true);
       distanceFront = tofFR().readRaw();
       distanceBack = tofBR().readRaw();
     }
@@ -341,7 +341,7 @@ void goParallelLeft(){
         turnLeft(incrementGrad, speedSlow);
         stopMotors();
         }
-        logTofs();
+        logTofs(true,false,true,false);
       distanceFront = tofFL().readFiltered();
       distanceBack = tofBL().readFiltered();
     }
