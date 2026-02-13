@@ -350,12 +350,7 @@ void goParallelLeft(){
 
 void moveForwardParallelUntilContainer(uint16_t distanceToWall){
   // abstandserfassung
-  uint16_t distanceFront = tofFR().readFiltered();
-  uint16_t distanceBack = tofBR().readFiltered();
 
-  const float kp = 2.0f;
-  const int baseSpeed = speedSlow;
-  const unsigned long baseDurationMs = (incrementDistance / distancePerSecond) * 1000;
   
 
   // INITIAL PARALLELIZATION
@@ -365,17 +360,10 @@ void moveForwardParallelUntilContainer(uint16_t distanceToWall){
   moveToRightWall(distanceToWall);
 
   goParallelRight();
-  distanceFront = tofFR().readFiltered();
-  distanceBack = tofBR().readFiltered();
 
   // Main Logic of the function
   logMessage("Suche Containter...");
   while (abs(tofBR().readRaw() - tofFR().readRaw()) < containerDepth - 3){
-      distanceFront = tofFR().readRaw();
-      distanceBack = tofBR().readRaw();/*
-      int16_t error = static_cast<int16_t>(distanceBack) - static_cast<int16_t>(distanceFront);
-      int correction = static_cast<int>(kp * error);
-      driveForwardWithWheelCorrection(baseSpeed, correction, baseDurationMs);*/
       moveForward(1);
   }
   stopMotors();
@@ -395,10 +383,11 @@ void moveOutOfDock(){
 }
 
 void pickUpContainer(){
+  uint16_t mitte = 150;
   pixyLampeOn();
   moveLeft(50);
   pixyMoveForwardUntilObject();
-  pixyMoveMiddle(150); //166
+  pixyMoveMiddle(mitte); //166
   delay(500);
   pixyMoveForward();
   pixyLampeOff();

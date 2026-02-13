@@ -1,8 +1,9 @@
 #pragma once
+#include <Arduino.h>
 
 void pixyMoveForward();
 void pixyMoveForwardUntilObject();
-void pixyMoveMiddle(int ziel);
+void pixyMoveMiddle(uint16_t ziel);
 void pixySetup();
 void pixyErrorObjects();
 void pixyLampeOn();
