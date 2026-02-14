@@ -31,8 +31,8 @@ private:
 };
 
 
-void setOffsetsRight();
-void setOffsetsLeft();
+bool setOffsetsLeft();
+bool setOffsetsRight();
 
 
 void initSensors();

@@ -111,25 +111,37 @@ TofMuxSensor& tofBR() { return tofBackRight; }
 TofMuxSensor& tofFL() { return tofFrontLeft; }
 TofMuxSensor& tofBL() { return tofBackLeft; }
 
-void setOffsetsRight() {
-  int br = tofBackRight.readRaw();
-  int fr = tofFrontRight.readRaw();
-  if (br < 0 || fr < 0) return;
+bool setOffsetsRight() {
+  int br = -1;
+  int fr = -1;
+  for ( int i = 0; i < 5; i++){
+    br = tofBackRight.readFiltered();
+    fr = tofFrontRight.readFiltered();
+    delay(100);
+  }
+  if (br < 0 || fr < 0) return false;
 
   int soll = (br + fr) / 2;
   tofBackRight.setOffset(soll - br);
   tofFrontRight.setOffset(soll - fr);
+  return true;
 }
 
 
-void setOffsetsLeft(){
-  int bl = tofBackLeft.readRaw();
-  int fl = tofFrontLeft.readRaw();
-  if (bl < 0 || fl < 0) return;
+bool setOffsetsLeft(){
+  int bl = -1;
+  int fl = -1;
+  for ( int i = 0; i < 5; i++){
+    bl = tofBackLeft.readFiltered();
+    fl = tofFrontLeft.readFiltered();
+    delay(100);
+  }
+  if (bl < 0 || fl < 0) return false;
 
   int soll = (bl + fl) / 2;
   tofBackLeft.setOffset(soll - bl);
   tofFrontLeft.setOffset(soll - fl);
+  return true;
 }
 
 void logTofs(bool vl, bool vr, bool hl, bool hr){

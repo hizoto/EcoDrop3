@@ -43,4 +43,5 @@ void staplerUnten();
 void idleMotors();
 void oeffnen();
 void schliessen();
+bool endschalterHinten();
 

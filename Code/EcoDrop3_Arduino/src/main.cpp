@@ -9,7 +9,7 @@
 
 // Konfigurationsvariablen
 uint16_t wandabstand = 150;
-uint16_t wandabstandLadezone = 140;
+uint16_t wandabstandLadezone = 70;
 uint16_t abladeZoneWandabstand = 50;
 int roboterbreite = 250; 
 int sicherheitsmarge = 50;
@@ -46,8 +46,8 @@ void loop() {
                 break;
             // Testcase
             case 1:
-                if (millis() - lastLogMessage > 10000){
-                    logMessage("EcoDrop on.");
+                if (millis() - lastLogMessage > 1000){
+                    // logMessage(endschalterStatusHinten().c_string);
                     lastLogMessage = millis();
                 }
                 //oeffnen();
@@ -59,9 +59,22 @@ void loop() {
             
             // Ladestation verlassen
             case 10:
-                setOffsetsRight();
-                setOffsetsLeft();
+                if(setOffsetsLeft()){
+                    logMessage("Offsets für linke TOF gesetzt. Aktuelle Messwerte: ");
+                    logTofs(true,false,true,false);
+                }
+                else {
+                    logMessage("Fehler beim nullen von TOFs links");
+                }
                 moveOutOfDock();
+                if(setOffsetsRight()){
+                    logMessage("Offsets für rechte TOF gesetzt. Aktuelle Messwerte: ");
+                    logTofs(false, true, false, true);
+                }
+                else {
+                    logMessage("Fehler beim nullen von TOFs rechts");
+                }
+                wandabstandLadezone = tofFR().readRaw();
                 currentStep = 20;
                 break;
 

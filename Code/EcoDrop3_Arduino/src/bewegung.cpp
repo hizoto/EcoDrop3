@@ -28,7 +28,7 @@ const float incrementGrad = 1;
 const int minMoveTimeMs = 50;
 
 // PINS
-int endschalterHinten = 42; 
+int endschalterHintenPin = 42; 
 int endschalterUnten = 40;
 int servoPin = 13;
 
@@ -215,7 +215,7 @@ void stopMotors(){
 }
 
 void startMotors(){
-  pinMode(endschalterHinten, INPUT_PULLUP);
+  pinMode(endschalterHintenPin, INPUT_PULLUP);
   pinMode(endschalterUnten, INPUT_PULLUP);
   klappe.attach(servoPin);
   klappe.write(posKlappeGeschlossen);
@@ -371,7 +371,7 @@ void moveForwardParallelUntilContainer(uint16_t distanceToWall){
 }
 
 void parkieren(){
-  while(!digitalRead(endschalterHinten)){
+  while(!digitalRead(endschalterHintenPin)){
       moveBackward(incrementDistance);
   }
   stopMotors();
@@ -425,7 +425,7 @@ void containerAufladen(){
 }
 
 void rueckwaertsBisAnschlag(){
-  while(!digitalRead(endschalterHinten)){
+  while(!digitalRead(endschalterHintenPin)){
     moveBackward(1);
   }
   stopMotors();
@@ -437,4 +437,10 @@ void staplerOben(){
 
 void staplerUnten(){
   LinearAntrieb.backward(speedFast);
+}
+
+bool endschalterStatusHinten(){
+  bool status = digitalRead(endschalterHintenPin);
+    if(status) return true;
+    else return false;
 }
