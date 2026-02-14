@@ -41,7 +41,7 @@ void loop() {
                     currentStep = 1;
                 }
                 else {
-                currentStep = 10;  // 1 -> Testcase  // 10 -> Schrittkette
+                    currentStep = 10;  // 1 -> Testcase  // 10 -> Schrittkette
                 }
                 break;
             // Testcase
