@@ -44,8 +44,8 @@ void loop() {
                     logMessage("EcoDrop on.");
                     lastLogMessage = millis();
                 }
-                oeffnen();
-                //staplerOben();
+                //oeffnen();
+                staplerOben();
                 //goParallelRight();
                 //containerAufladen();
 
@@ -154,8 +154,8 @@ void loop() {
         lastLogMessage = millis();
         stopMotors();
         //schliessen();
+        staplerUnten();
         }
-        //staplerUnten();
     }    
 }
 
