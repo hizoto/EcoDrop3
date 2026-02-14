@@ -43,7 +43,7 @@ pixy.ccc.getBlocks();
 
 }
 
-void pixyMoveMiddle(int ziel){
+void pixyMoveMiddle(uint16_t ziel){
     int tolerance = 10;
     pixy.ccc.getBlocks();
     do {

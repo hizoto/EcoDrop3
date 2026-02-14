@@ -9,7 +9,7 @@
 
 // Konfigurationsvariablen
 uint16_t wandabstand = 150;
-uint16_t wandabstandLadezone = 140;
+uint16_t wandabstandLadezone = 70;
 uint16_t abladeZoneWandabstand = 50;
 int roboterbreite = 250; 
 int sicherheitsmarge = 50;
@@ -19,6 +19,7 @@ unsigned long lastTofLog = 0;
 
 int currentStep = 0;
 bool firstTry = true;
+const bool isTestCase = false;
 
 void setup() {
     startComm();
@@ -36,12 +37,17 @@ void loop() {
         switch(currentStep){
             // idle
             case 0:
+                if (isTestCase){
+                    currentStep = 1;
+                }
+                else {
                 currentStep = 10;  // 1 -> Testcase  // 10 -> Schrittkette
+                }
                 break;
             // Testcase
             case 1:
-                if (millis() - lastLogMessage > 10000){
-                    logMessage("EcoDrop on.");
+                if (millis() - lastLogMessage > 1000){
+                    // logMessage(endschalterStatusHinten().c_string);
                     lastLogMessage = millis();
                 }
                 //oeffnen();
@@ -53,9 +59,22 @@ void loop() {
             
             // Ladestation verlassen
             case 10:
-                setOffsetsRight();
-                setOffsetsLeft();
+                if(setOffsetsLeft()){
+                    logMessage("Offsets für linke TOF gesetzt. Aktuelle Messwerte: ");
+                    logTofs(true,false,true,false);
+                }
+                else {
+                    logMessage("Fehler beim nullen von TOFs links");
+                }
                 moveOutOfDock();
+                if(setOffsetsRight()){
+                    logMessage("Offsets für rechte TOF gesetzt. Aktuelle Messwerte: ");
+                    logTofs(false, true, false, true);
+                }
+                else {
+                    logMessage("Fehler beim nullen von TOFs rechts");
+                }
+                wandabstandLadezone = tofFR().readRaw();
                 currentStep = 20;
                 break;
 
@@ -153,9 +172,17 @@ void loop() {
         logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
         stopMotors();
+<<<<<<< HEAD
         //schliessen();
         staplerUnten();
         }
+=======
+        }
+        if (isTestCase){
+            //schliessen();
+            staplerUnten();
+        }
+>>>>>>> b6a418797d792d19b4ff9897c68eb39898f97e11
     }    
 }
 

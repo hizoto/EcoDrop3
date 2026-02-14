@@ -31,14 +31,14 @@ private:
 };
 
 
-void setOffsetsRight();
-void setOffsetsLeft();
+bool setOffsetsLeft();
+bool setOffsetsRight();
 
 
 void initSensors();
 void initMux();
 
-void logTofs();
+void logTofs(bool vl, bool vr, bool hl, bool hr);
 
 // optional
 void i2cScan();

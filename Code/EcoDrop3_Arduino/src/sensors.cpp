@@ -4,10 +4,10 @@
 // ------------------- MUX + Channels -------------------
 TCA9548A I2CMUX;
 
-static constexpr uint8_t CH_FRONT_RIGHT = 3;
-static constexpr uint8_t CH_BACK_RIGHT  = 0;
-static constexpr uint8_t CH_FRONT_LEFT  = 2;
-static constexpr uint8_t CH_BACK_LEFT   = 1;
+static constexpr uint8_t CH_FRONT_RIGHT = 0;
+static constexpr uint8_t CH_BACK_RIGHT  = 5;
+static constexpr uint8_t CH_FRONT_LEFT  = 1;
+static constexpr uint8_t CH_BACK_LEFT   = 4;
 
 // Offsets
 static constexpr int16_t OFF_FRONT_RIGHT = 0;
@@ -111,39 +111,51 @@ TofMuxSensor& tofBR() { return tofBackRight; }
 TofMuxSensor& tofFL() { return tofFrontLeft; }
 TofMuxSensor& tofBL() { return tofBackLeft; }
 
-void setOffsetsRight() {
-  int br = tofBackRight.readRaw();
-  int fr = tofFrontRight.readRaw();
-  if (br < 0 || fr < 0) return;
+bool setOffsetsRight() {
+  int br = -1;
+  int fr = -1;
+  for ( int i = 0; i < 5; i++){
+    br = tofBackRight.readFiltered();
+    fr = tofFrontRight.readFiltered();
+    delay(100);
+  }
+  if (br < 0 || fr < 0) return false;
 
   int soll = (br + fr) / 2;
   tofBackRight.setOffset(soll - br);
   tofFrontRight.setOffset(soll - fr);
+  return true;
 }
 
 
-void setOffsetsLeft(){
-  int bl = tofBackLeft.readRaw();
-  int fl = tofFrontLeft.readRaw();
-  if (bl < 0 || fl < 0) return;
+bool setOffsetsLeft(){
+  int bl = -1;
+  int fl = -1;
+  for ( int i = 0; i < 5; i++){
+    bl = tofBackLeft.readFiltered();
+    fl = tofFrontLeft.readFiltered();
+    delay(100);
+  }
+  if (bl < 0 || fl < 0) return false;
 
   int soll = (bl + fl) / 2;
   tofBackLeft.setOffset(soll - bl);
   tofFrontLeft.setOffset(soll - fl);
+  return true;
 }
 
-void logTofs(){
+void logTofs(bool vl, bool vr, bool hl, bool hr){
   static unsigned long lastTofLog = 0;
 
-  if (millis() - lastTofLog > 1000){
+  if (millis() - lastTofLog > 2000){
     String abstandFL = "TOF FL: " + String(tofFL().readRaw());
     String abstandFR = "TOF FR: " + String(tofFR().readRaw());
     String abstandBL = "TOF BL: " + String(tofBL().readRaw());
     String abstandBR = "TOF BR: " + String(tofBR().readRaw());
-    logMessage(abstandFL.c_str());
-    logMessage(abstandFR.c_str());
-    logMessage(abstandBL.c_str());
-    logMessage(abstandBR.c_str());
+    if (vl) logMessage(abstandFL.c_str());
+    if (vr) logMessage(abstandFR.c_str());
+    if (hl) logMessage(abstandBL.c_str());
+    if (hr) logMessage(abstandBR.c_str());
     lastTofLog = millis();
   }
 }
