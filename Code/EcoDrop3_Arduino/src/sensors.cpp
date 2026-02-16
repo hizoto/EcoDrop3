@@ -1,6 +1,16 @@
 #include "sensors.h"
 #include "communication.h"   // logMessage()
 
+// ------------------------------------------------------
+//                     TOF-Parameter
+// ------------------------------------------------------
+
+
+// kontinuierliche Messung
+const bool TofIsContinous = true;
+// Timingbudget erhöht die genauigkeit (auf kosten der Intervallzeit)
+uint32_t timingBudgetms = 100;
+
 // ------------------- MUX + Channels -------------------
 TCA9548A I2CMUX;
 
@@ -23,11 +33,15 @@ static TofMuxSensor tofBackLeft  (I2CMUX, CH_BACK_LEFT,   OFF_BACK_LEFT);
 
 // ------------------- Klasse: Implementation -------------------
 TofMuxSensor::TofMuxSensor(TCA9548A& mux, uint8_t channel, int16_t offsetMm)
-: _mux(mux), _channel(channel), _offset(offsetMm), _filtered(0), _lastRead(0) {}
+: _mux(mux), _channel(channel), _offset(offsetMm), _lastRaw(0), _filtered(0), _lastRead(0) {}
 
 bool TofMuxSensor::begin() {
   _mux.openChannel(_channel);
   bool ok = _lox.begin();
+  _lox.setMeasurementTimingBudgetMicroSeconds(timingBudgetms * 1000);
+  if(TofIsContinous){
+    _lox.startRangeContinuous(0); // backtoback Messungen
+  }
   _mux.closeAll();
   return ok;
 }
@@ -35,39 +49,93 @@ bool TofMuxSensor::begin() {
 void TofMuxSensor::setOffset(int16_t offsetMm) { _offset = offsetMm; }
 int16_t TofMuxSensor::getOffset() const { return _offset; }
 
-bool TofMuxSensor::readMeasurement(VL53L0X_RangingMeasurementData_t& out) {
-  _lox.rangingTest(&out, false);
 
-  // RangeStatus==4: ungültig/out of range
-  return (out.RangeStatus != 4);
-}
 
 int TofMuxSensor::readRaw() {
-  VL53L0X_RangingMeasurementData_t m;
-  _mux.openChannel(_channel);
-  readMeasurement(m);
-  _mux.closeAll();
-  return (int)m.RangeMilliMeter + _offset;
+  if (TofIsContinous){
+    _mux.openChannel(_channel);
+
+    if (!_lox.isRangeComplete()) {
+      _mux.closeAll();
+      return _lastRaw;   // letzten gültigen Wert zurückgeben
+    }
+
+    VL53L0X_RangingMeasurementData_t m;
+    _lox.getRangingMeasurement(&m);
+
+    if (m.RangeStatus != 0) {   // 0 = gültig
+        _mux.closeAll();
+        return _lastRaw;
+    }
+
+    _lastRaw = (int)m.RangeMilliMeter + _offset;
+
+    _mux.closeAll();
+    return _lastRaw;
+  }
+  else {
+    VL53L0X_RangingMeasurementData_t m;
+    _mux.openChannel(_channel);
+    readMeasurement(m);
+    _mux.closeAll();
+    return (int)m.RangeMilliMeter + _offset;
+  }
 }
+
+
 
 int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
-  _mux.openChannel(_channel);
-  if (millis() - _lastRead > resetAfterMs) _filtered = 0;
+  if(TofIsContinous){
+    _mux.openChannel(_channel);
 
-  VL53L0X_RangingMeasurementData_t m;
-  readMeasurement(m);
+    if (millis() - _lastRead > resetAfterMs)
+      _filtered = 0;
 
-  int newVal = (int)m.RangeMilliMeter + _offset;
+    if (_lox.isRangeComplete()) {
 
-  if (_filtered == 0) _filtered = newVal;
-  _filtered = (int)(alpha * newVal + (1.0f - alpha) * _filtered);
+    VL53L0X_RangingMeasurementData_t m;
+    _lox.getRangingMeasurement(&m);
 
-  _lastRead = millis();
+    if (m.RangeStatus != 0) {
+        _mux.closeAll();
+        return _filtered;
+    }
+
+    int newVal = (int)m.RangeMilliMeter + _offset;
+
+    if (_filtered == 0)
+        _filtered = newVal;
+
+    _filtered = (int)(alpha * newVal + (1.0f - alpha) * _filtered);
+    _lastRead = millis();
+    }
   _mux.closeAll();
   return _filtered;
+  }
+  else {
+    _mux.openChannel(_channel);
+    if (millis() - _lastRead > resetAfterMs) _filtered = 0;
+
+    VL53L0X_RangingMeasurementData_t m;
+    readMeasurement(m);
+
+    int newVal = (int)m.RangeMilliMeter + _offset;
+
+    if (_filtered == 0) _filtered = newVal;
+    _filtered = (int)(alpha * newVal + (1.0f - alpha) * _filtered);
+
+    _lastRead = millis();
+    _mux.closeAll();
+    return _filtered;
+  }
 }
 
-// ------------------- init -------------------
+
+
+/*
+
+} */
+
 void initMux() {
   logMessage("mux start");
   I2CMUX.begin();

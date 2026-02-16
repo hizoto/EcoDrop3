@@ -23,6 +23,7 @@ private:
   TCA9548A& _mux;
   uint8_t _channel;
   int16_t _offset;
+  int _lastRaw;
 
   Adafruit_VL53L0X _lox;
 

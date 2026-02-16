@@ -223,8 +223,9 @@ void startMotors(){
 
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
 void moveToRightWall(uint16_t distanceToWall) {  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
-  uint16_t distanceFront = tofFR().readFiltered();
-  uint16_t distanceBack  = tofBR().readFiltered();
+  uint16_t distanceFront = tofFR().readRaw();
+  uint16_t distanceBack  = tofBR().readRaw();
+  int speed = speedNormal;
 
   // Falls bereits innerhalb Toleranz: nichts tun
   if (abs((int)distanceFront - (int)distanceToWall) <= toleranceToWallmm) {
@@ -242,7 +243,10 @@ void moveToRightWall(uint16_t distanceToWall) {  // nach rechts bewegen bis in g
   // Zu weit weg -> nach rechts (bis innerhalb Toleranz)
   if (distanceFront > distanceToWall) {
     while (distanceFront > (distanceToWall + toleranceToWallmm)) {
-      moveRight(1);
+      if (abs(distanceFront - distanceToWall) < 2 * toleranceToWallmm){
+        speed = speedSlow;
+      }
+      moveRight(1, speed);
       distanceFront = tofFR().readRaw();
       distanceBack  = tofBR().readRaw();
       if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
@@ -253,6 +257,9 @@ void moveToRightWall(uint16_t distanceToWall) {  // nach rechts bewegen bis in g
   // Zu nah -> nach links (bis innerhalb Toleranz)
   else { // distanceFront < distanceToWall
     while (distanceFront < (distanceToWall - toleranceToWallmm)) {
+      if (abs(distanceFront - distanceToWall) < 2 * toleranceToWallmm){
+        speed = speedSlow;
+      }
       moveLeft(1);
       distanceFront = tofFR().readRaw();
       distanceBack  = tofBR().readRaw();
@@ -266,8 +273,9 @@ void moveToRightWall(uint16_t distanceToWall) {  // nach rechts bewegen bis in g
 }
 
 void moveToLeftWall(uint16_t distanceToWall) {  // nach links bewegen bis in gewünschtem Abstand zur Wand
-  uint16_t distanceFront = tofFL().readFiltered();
-  uint16_t distanceBack  = tofBL().readFiltered();
+  uint16_t distanceFront = tofFL().readRaw();
+  uint16_t distanceBack  = tofBL().readRaw();
+  int speed = speedNormal;
 
   // Falls bereits innerhalb Toleranz: nichts tun
   if (abs((int)distanceFront - (int)distanceToWall) <= toleranceToWallmm) {
@@ -281,11 +289,14 @@ void moveToLeftWall(uint16_t distanceToWall) {  // nach links bewegen bis in gew
   String message = "Abstand zur linken Wand von " + String(distanceToWall) + "mm ±" +
                    String(toleranceToWallmm) + "mm wird hergestellt.";
   logMessage(message.c_str());
-
+  
   // Zu weit weg -> nach links (bis innerhalb Toleranz)
   if (distanceFront > distanceToWall) {
     while (distanceFront > (distanceToWall + toleranceToWallmm)) {
-      moveLeft(1);
+      if (abs(distanceFront - distanceToWall) < 2 * toleranceToWallmm){
+        speed = speedSlow;
+      }
+      moveLeft(1, speed);
       distanceFront = tofFL().readRaw();
       distanceBack  = tofBL().readRaw();
       if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
@@ -296,7 +307,10 @@ void moveToLeftWall(uint16_t distanceToWall) {  // nach links bewegen bis in gew
   // Zu nah -> nach rechts (bis innerhalb Toleranz)
   else { // distanceFront < distanceToWall
     while (distanceFront < (distanceToWall - toleranceToWallmm)) {
-      moveRight(1);
+      if (abs(distanceFront - distanceToWall) < 2 * toleranceToWallmm){
+        speed = speedSlow;
+      }
+      moveRight(1, speed);
       distanceFront = tofFL().readRaw();
       distanceBack  = tofBL().readRaw();
       if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
