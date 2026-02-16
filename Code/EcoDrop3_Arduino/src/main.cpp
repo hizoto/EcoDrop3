@@ -172,17 +172,9 @@ void loop() {
         logMessage("EcoDrop is idle.");
         lastLogMessage = millis();
         stopMotors();
-<<<<<<< HEAD
         //schliessen();
         staplerUnten();
         }
-=======
-        }
-        if (isTestCase){
-            //schliessen();
-            staplerUnten();
-        }
->>>>>>> b6a418797d792d19b4ff9897c68eb39898f97e11
     }    
 }
 
