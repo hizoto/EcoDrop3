@@ -222,104 +222,83 @@ void startMotors(){
 }
 
 // nach rechts bewegen bis in gewünschtem Abstand zur Wand
-void moveToRightWall(uint16_t distanceToWall) {  // nach rechts bewegen bis in gewünschtem Abstand zur Wand
-  uint16_t distanceFront = tofFR().readRaw();
-  uint16_t distanceBack  = tofBR().readRaw();
-  int speed = speedNormal;
+void moveToRightWall(uint16_t target)
+{
+    int speed;
+    uint16_t distanceFront;
+    uint16_t distanceBack;
 
-  // Falls bereits innerhalb Toleranz: nichts tun
-  if (abs((int)distanceFront - (int)distanceToWall) <= toleranceToWallmm) {
-    String message = "Abstand zur Wand ist OK: " + String(distanceFront) + "mm (Ziel " +
-                     String(distanceToWall) + "mm ±" + String(toleranceToWallmm) + "mm). Überspringe.";
-    logMessage(message.c_str());
+    logMessage("Abstand zur rechten Wand wird hergestellt...");
+
+    while (true)
+    {
+        distanceFront = tofFR().readRaw();
+        distanceBack  = tofBR().readRaw();
+
+        int error = (int)distanceFront - (int)target;
+
+        // Fertig?
+        if (abs(error) <= toleranceToWallmm)
+            break;
+
+        // Geschwindigkeit nahe Ziel reduzieren
+        if (abs(error) < 2 * toleranceToWallmm)
+            speed = speedSlow;
+        else
+            speed = speedNormal;
+
+        // Richtung JEDES MAL neu entscheiden
+        if (error > 0)
+            moveRight(1, speed);
+        else
+            moveLeft(1, speed);
+
+        // Parallelität ggf. nachziehen
+        if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5))
+            goParallelRight();
+    }
+
     stopMotors();
-    return;
-  }
-
-  String message = "Abstand zur rechten Wand von " + String(distanceToWall) + "mm ±" +
-                   String(toleranceToWallmm) + "mm wird hergestellt.";
-  logMessage(message.c_str());
-
-  // Zu weit weg -> nach rechts (bis innerhalb Toleranz)
-  if (distanceFront > distanceToWall) {
-    while (distanceFront > (distanceToWall + toleranceToWallmm)) {
-      if (abs(distanceFront - distanceToWall) < 2 * toleranceToWallmm){
-        speed = speedSlow;
-      }
-      moveRight(1, speed);
-      distanceFront = tofFR().readRaw();
-      distanceBack  = tofBR().readRaw();
-      if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
-        goParallelRight();
-      }
-    }
-  }
-  // Zu nah -> nach links (bis innerhalb Toleranz)
-  else { // distanceFront < distanceToWall
-    while (distanceFront < (distanceToWall - toleranceToWallmm)) {
-      if (abs(distanceFront - distanceToWall) < 2 * toleranceToWallmm){
-        speed = speedSlow;
-      }
-      moveLeft(1);
-      distanceFront = tofFR().readRaw();
-      distanceBack  = tofBR().readRaw();
-      if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
-        goParallelRight();
-      }
-    }
-  }
-
-  stopMotors();
 }
 
-void moveToLeftWall(uint16_t distanceToWall) {  // nach links bewegen bis in gewünschtem Abstand zur Wand
-  uint16_t distanceFront = tofFL().readRaw();
-  uint16_t distanceBack  = tofBL().readRaw();
-  int speed = speedNormal;
 
-  // Falls bereits innerhalb Toleranz: nichts tun
-  if (abs((int)distanceFront - (int)distanceToWall) <= toleranceToWallmm) {
-    String message = "Abstand zur Wand ist OK: " + String(distanceFront) + "mm (Ziel " +
-                     String(distanceToWall) + "mm ±" + String(toleranceToWallmm) + "mm). Überspringe.";
-    logMessage(message.c_str());
+void moveToLeftWall(uint16_t target)
+{
+    int speed;
+    uint16_t distanceFront;
+    uint16_t distanceBack;
+
+    logMessage("Abstand zur linken Wand wird hergestellt...");
+
+    while (true)
+    {
+        distanceFront = tofFL().readRaw();
+        distanceBack  = tofBL().readRaw();
+
+        int error = (int)distanceFront - (int)target;
+
+        // Fertig?
+        if (abs(error) <= toleranceToWallmm)
+            break;
+
+        // Geschwindigkeit nahe Ziel reduzieren
+        if (abs(error) < 2 * toleranceToWallmm)
+            speed = speedSlow;
+        else
+            speed = speedNormal;
+
+        // Richtung JEDES MAL neu entscheiden
+        if (error > 0)
+            moveLeft(1, speed);   // zu weit weg → nach links
+        else
+            moveRight(1, speed);  // zu nah → nach rechts
+
+        // Parallelität ggf. nachziehen
+        if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5))
+            goParallelLeft();
+    }
+
     stopMotors();
-    return;
-  }
-
-  String message = "Abstand zur linken Wand von " + String(distanceToWall) + "mm ±" +
-                   String(toleranceToWallmm) + "mm wird hergestellt.";
-  logMessage(message.c_str());
-  
-  // Zu weit weg -> nach links (bis innerhalb Toleranz)
-  if (distanceFront > distanceToWall) {
-    while (distanceFront > (distanceToWall + toleranceToWallmm)) {
-      if (abs(distanceFront - distanceToWall) < 2 * toleranceToWallmm){
-        speed = speedSlow;
-      }
-      moveLeft(1, speed);
-      distanceFront = tofFL().readRaw();
-      distanceBack  = tofBL().readRaw();
-      if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
-        goParallelLeft();
-      }
-    }
-  }
-  // Zu nah -> nach rechts (bis innerhalb Toleranz)
-  else { // distanceFront < distanceToWall
-    while (distanceFront < (distanceToWall - toleranceToWallmm)) {
-      if (abs(distanceFront - distanceToWall) < 2 * toleranceToWallmm){
-        speed = speedSlow;
-      }
-      moveRight(1, speed);
-      distanceFront = tofFL().readRaw();
-      distanceBack  = tofBL().readRaw();
-      if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5)) {
-        goParallelLeft();
-      }
-    }
-  }
-
-  stopMotors();
 }
 
 void goParallelRight(){ 
