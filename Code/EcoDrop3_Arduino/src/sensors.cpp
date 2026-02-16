@@ -76,7 +76,7 @@ int TofMuxSensor::readRaw() {
     if (newVal <= 0 || newVal > 2000)
         return _lastRaw;
 
-    if (_lastRaw != 0 && abs(newVal - _lastRaw) > 300)
+    if (_lastRaw != 0 && abs(newVal - _lastRaw) > 200)
         return _lastRaw;
 
     _lastRaw = newVal;
@@ -131,7 +131,7 @@ int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
         return _filtered;
     }
 
-    if (_filtered != 0 && abs(newVal - _filtered) > 300){
+    if (_filtered != 0 && abs(newVal - _filtered) > 200){
         _mux.closeAll();
         return _filtered;
     }
