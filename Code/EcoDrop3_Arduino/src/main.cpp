@@ -154,7 +154,7 @@ void loop() {
                 turnRight(90);
                 goParallelLeft();
                 moveRight(500);
-                moveToRightWall(wandabstandLadezone);
+                moveToRightWall(wandabstandLadezone + 20);
                 parkieren();
                 isRunning = false;
                 currentStep = 0;
