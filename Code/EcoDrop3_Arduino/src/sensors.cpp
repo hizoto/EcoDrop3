@@ -49,36 +49,59 @@ bool TofMuxSensor::begin() {
 void TofMuxSensor::setOffset(int16_t offsetMm) { _offset = offsetMm; }
 int16_t TofMuxSensor::getOffset() const { return _offset; }
 
-
+bool TofMuxSensor::readMeasurement(VL53L0X_RangingMeasurementData_t& out){
+    _lox.getRangingMeasurement(&out);
+    return (out.RangeStatus == 0);
+}
 
 int TofMuxSensor::readRaw() {
   if (TofIsContinous){
     _mux.openChannel(_channel);
 
     if (!_lox.isRangeComplete()) {
-      _mux.closeAll();
-      return _lastRaw;   // letzten gültigen Wert zurückgeben
+        _mux.closeAll();
+        return _lastRaw;
     }
 
     VL53L0X_RangingMeasurementData_t m;
     _lox.getRangingMeasurement(&m);
 
-    if (m.RangeStatus != 0) {   // 0 = gültig
-        _mux.closeAll();
-        return _lastRaw;
-    }
-
-    _lastRaw = (int)m.RangeMilliMeter + _offset;
-
     _mux.closeAll();
+
+    if (m.RangeStatus != 0)
+        return _lastRaw;
+
+    int newVal = (int)m.RangeMilliMeter + _offset;
+
+    if (newVal <= 0 || newVal > 2000)
+        return _lastRaw;
+
+    if (_lastRaw != 0 && abs(newVal - _lastRaw) > 300)
+        return _lastRaw;
+
+    _lastRaw = newVal;
     return _lastRaw;
   }
   else {
     VL53L0X_RangingMeasurementData_t m;
-    _mux.openChannel(_channel);
-    readMeasurement(m);
-    _mux.closeAll();
-    return (int)m.RangeMilliMeter + _offset;
+    for (int i = 0; i < 3; i++)  // max 3 Versuche
+    {
+        _mux.openChannel(_channel);
+        if(!readMeasurement(m)){
+          _mux.closeAll();
+          continue;
+        }
+        _mux.closeAll();
+
+        int value = (int)m.RangeMilliMeter + _offset;
+
+        if (value > 0 && value < 2000)
+        {
+            _lastRaw = value;
+            return _lastRaw;
+        }
+    }
+    return _lastRaw;
   }
 }
 
@@ -103,10 +126,22 @@ int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
 
     int newVal = (int)m.RangeMilliMeter + _offset;
 
-    if (_filtered == 0)
+    if (newVal <= 0 || newVal > 2000){
+        _mux.closeAll();
+        return _filtered;
+    }
+
+    if (_filtered != 0 && abs(newVal - _filtered) > 300){
+        _mux.closeAll();
+        return _filtered;
+    }
+
+    if (_filtered == 0){
         _filtered = newVal;
+    }
 
     _filtered = (int)(alpha * newVal + (1.0f - alpha) * _filtered);
+
     _lastRead = millis();
     }
   _mux.closeAll();
@@ -114,14 +149,29 @@ int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
   }
   else {
     _mux.openChannel(_channel);
-    if (millis() - _lastRead > resetAfterMs) _filtered = 0;
 
     VL53L0X_RangingMeasurementData_t m;
-    readMeasurement(m);
+
+    if (!readMeasurement(m)) {
+        _mux.closeAll();
+        return _filtered;
+    }
 
     int newVal = (int)m.RangeMilliMeter + _offset;
 
-    if (_filtered == 0) _filtered = newVal;
+    if (newVal <= 0 || newVal > 2000) {
+        _mux.closeAll();
+        return _filtered;
+    }
+
+    if (_filtered != 0 && abs(newVal - _filtered) > 300) {
+        _mux.closeAll();
+        return _filtered;
+    }
+
+    if (_filtered == 0)
+        _filtered = newVal;
+
     _filtered = (int)(alpha * newVal + (1.0f - alpha) * _filtered);
 
     _lastRead = millis();
@@ -129,12 +179,6 @@ int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
     return _filtered;
   }
 }
-
-
-
-/*
-
-} */
 
 void initMux() {
   logMessage("mux start");

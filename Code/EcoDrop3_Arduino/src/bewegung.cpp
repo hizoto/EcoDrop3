@@ -323,8 +323,8 @@ void goParallelRight(){
 
 void goParallelLeft(){
     logMessage("Parallelität zur linken Wand wird hergestellt...");
-    uint16_t distanceFront = tofFL().readFiltered();
-    uint16_t distanceBack = tofBL().readFiltered();
+    uint16_t distanceFront = tofFL().readRaw();
+    uint16_t distanceBack = tofBL().readRaw();
     while (abs((int)distanceFront - (int)distanceBack) > toleranceWheelsmm){
         if (distanceFront < distanceBack){
         turnRight(incrementGrad, speedSlow);
@@ -335,8 +335,8 @@ void goParallelLeft(){
         stopMotors();
         }
         logTofs(true,false,true,false);
-      distanceFront = tofFL().readFiltered();
-      distanceBack = tofBL().readFiltered();
+      distanceFront = tofFL().readRaw();
+      distanceBack = tofBL().readRaw();
     }
     stopMotors();
 }

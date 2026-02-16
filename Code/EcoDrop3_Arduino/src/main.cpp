@@ -8,6 +8,10 @@
 // 1 = xxxx
 
 // Konfigurationsvariablen
+const bool isTestCase = false;
+const bool useTofOffset = true;
+
+
 uint16_t wandabstand = 150;
 uint16_t wandabstandLadezone = 70;
 uint16_t abladeZoneWandabstand = 50;
@@ -19,7 +23,6 @@ unsigned long lastTofLog = 0;
 
 int currentStep = 0;
 bool firstTry = true;
-const bool isTestCase = false;
 
 void setup() {
     startComm();
@@ -59,21 +62,25 @@ void loop() {
             
             // Ladestation verlassen
             case 10:
-                if(setOffsetsLeft()){
-                    logMessage("Offsets für linke TOF gesetzt. Aktuelle Messwerte: ");
-                    logTofs(true,false,true,false);
-                }
-                else {
-                    logMessage("Fehler beim nullen von TOFs links");
+                if(useTofOffset){
+                    if(setOffsetsLeft()){
+                        logMessage("Offsets für linke TOF gesetzt. Aktuelle Messwerte: ");
+                        logTofs(true,false,true,false);
+                    }
+                    else {
+                        logMessage("Fehler beim nullen von TOFs links");
+                    }
                 }
                 moveOutOfDock();
-                if(setOffsetsRight()){
-                    logMessage("Offsets für rechte TOF gesetzt. Aktuelle Messwerte: ");
-                    logTofs(false, true, false, true);
-                }
-                else {
-                    logMessage("Fehler beim nullen von TOFs rechts");
-                }
+                if(useTofOffset){
+                    if(setOffsetsRight()){
+                        logMessage("Offsets für rechte TOF gesetzt. Aktuelle Messwerte: ");
+                        logTofs(false, true, false, true);
+                    }
+                    else {
+                        logMessage("Fehler beim nullen von TOFs rechts");
+                    }
+                }   
                 wandabstandLadezone = tofFR().readRaw();
                 currentStep = 20;
                 break;
