@@ -81,7 +81,13 @@ void loop() {
                         logMessage("Fehler beim nullen von TOFs rechts");
                     }
                 }   
-                wandabstandLadezone = tofFR().readRaw();
+                int sum = 0;
+                for(int i=0;i<5;i++){
+                    sum += tofFR().readRaw();
+                    delay(50);
+                }
+                wandabstandLadezone = sum / 5;
+
                 currentStep = 20;
                 break;
 
@@ -161,7 +167,7 @@ void loop() {
                 turnRight(90);
                 goParallelLeft();
                 moveRight(500);
-                moveToRightWall(wandabstandLadezone + 20);
+                moveToRightWall(wandabstandLadezone + 5);
                 parkieren();
                 isRunning = false;
                 currentStep = 0;
