@@ -9,7 +9,6 @@
 
 // Konfigurationsvariablen
 const bool isTestCase = true;
-const bool useTofOffset = true;
 
 
 uint16_t wandabstand = 150;
@@ -65,31 +64,8 @@ void loop() {
             
             // Ladestation verlassen
             case 10:
-                if(useTofOffset){
-                    if(setOffsetsLeft()){
-                        logMessage("Offsets für linke TOF gesetzt. Aktuelle Messwerte: ");
-                        logTofs(true,false,true,false);
-                    }
-                    else {
-                        logMessage("Fehler beim nullen von TOFs links");
-                    }
-                }
-                moveOutOfDock();
-                if(useTofOffset){
-                    if(setOffsetsRight()){
-                        logMessage("Offsets für rechte TOF gesetzt. Aktuelle Messwerte: ");
-                        logTofs(false, true, false, true);
-                    }
-                    else {
-                        logMessage("Fehler beim nullen von TOFs rechts");
-                    }
-                }   
-                sum = 0;
-                for(int i=0;i<5;i++){
-                    sum += tofFR().readRaw();
-                    delay(50);
-                }
-                wandabstandLadezone = sum / 5;
+                moveOutOfDock(); 
+                wandabstandLadezone = tofFR().readRaw();
 
                 currentStep = 20;
                 break;

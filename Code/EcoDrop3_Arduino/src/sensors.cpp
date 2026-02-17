@@ -14,26 +14,46 @@ uint32_t timingBudgetms = 200;
 // ------------------- MUX + Channels -------------------
 TCA9548A I2CMUX;
 
-static constexpr uint8_t CH_FRONT_RIGHT = 0;
-static constexpr uint8_t CH_BACK_RIGHT  = 5;
 static constexpr uint8_t CH_FRONT_LEFT  = 1;
+static constexpr uint8_t CH_FRONT_RIGHT = 0;
 static constexpr uint8_t CH_BACK_LEFT   = 4;
+static constexpr uint8_t CH_BACK_RIGHT  = 5;
 
-// Offsets
-static constexpr int16_t OFF_FRONT_RIGHT = 0;
-static constexpr int16_t OFF_BACK_RIGHT  = 0;
-static constexpr int16_t OFF_FRONT_LEFT  = 0;
-static constexpr int16_t OFF_BACK_LEFT   = 0;
+
+// ------------------- OFFSETS TOF ----------------------
+static constexpr float FLscale = 0.0;
+static constexpr float FLbias = 0.0;
+
+static constexpr float FRscale = 0.0;
+static constexpr float FRbias = 0.0;
+
+static constexpr float BLscale = 0.0;
+static constexpr float BLbias = 0.0;
+
+static constexpr float BRscale = 0.0;
+static constexpr float BRbias = 0.0;
+
 
 // Sensor-Instanzen
-static TofMuxSensor tofFrontRight(I2CMUX, CH_FRONT_RIGHT, OFF_FRONT_RIGHT);
-static TofMuxSensor tofBackRight (I2CMUX, CH_BACK_RIGHT,  OFF_BACK_RIGHT);
-static TofMuxSensor tofFrontLeft (I2CMUX, CH_FRONT_LEFT,  OFF_FRONT_LEFT);
-static TofMuxSensor tofBackLeft  (I2CMUX, CH_BACK_LEFT,   OFF_BACK_LEFT);
+static TofMuxSensor tofFrontLeft (I2CMUX, CH_FRONT_LEFT, FLscale, FLbias);
+static TofMuxSensor tofFrontRight(I2CMUX, CH_FRONT_RIGHT, FRscale, FRbias);
+static TofMuxSensor tofBackLeft  (I2CMUX, CH_BACK_LEFT, BLscale, BLbias);
+static TofMuxSensor tofBackRight (I2CMUX, CH_BACK_RIGHT, BRscale, BRbias);
 
 // ------------------- Klasse: Implementation -------------------
-TofMuxSensor::TofMuxSensor(TCA9548A& mux, uint8_t channel, int16_t offsetMm)
-: _mux(mux), _channel(channel), _offset(offsetMm), _lastRaw(0), _filtered(0), _lastRead(0) {}
+TofMuxSensor::TofMuxSensor(TCA9548A& mux,
+                           uint8_t channel,
+                           float scale,
+                           float bias)
+: _mux(mux),
+  _channel(channel),
+  _scale(scale),
+  _bias(bias),
+  _lastRaw(0),
+  _filtered(0),
+  _lastRead(0)
+{}
+
 
 bool TofMuxSensor::begin() {
   _mux.openChannel(_channel);
@@ -45,9 +65,6 @@ bool TofMuxSensor::begin() {
   _mux.closeAll();
   return ok;
 }
-
-void TofMuxSensor::setOffset(int16_t offsetMm) { _offset = offsetMm; }
-int16_t TofMuxSensor::getOffset() const { return _offset; }
 
 bool TofMuxSensor::readMeasurement(VL53L0X_RangingMeasurementData_t& out) {
   _lox.rangingTest(&out, false);
@@ -73,8 +90,9 @@ int TofMuxSensor::readRaw() {
 
     if (m.RangeStatus != 0)
         return _lastRaw;
+    int raw = (int)m.RangeMilliMeter;
+    int newVal = applyCalibration(raw);
 
-    int newVal = (int)m.RangeMilliMeter + _offset;
 
     if (newVal <= 0 || newVal > 2000)
         return _lastRaw;
@@ -97,7 +115,9 @@ int TofMuxSensor::readRaw() {
         }
         _mux.closeAll();
 
-        int value = (int)m.RangeMilliMeter + _offset;
+        int raw = (int)m.RangeMilliMeter;
+        int value = applyCalibration(raw);
+
 
         if (value > 0 && value < 2000)
         {
@@ -129,7 +149,9 @@ int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
         return _filtered;
     }
 
-    int newVal = (int)m.RangeMilliMeter + _offset;
+    int raw = (int)m.RangeMilliMeter;
+    int newVal = applyCalibration(raw);
+
 
     if (newVal <= 0 || newVal > 2000){
         _mux.closeAll();
@@ -163,7 +185,9 @@ int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
         return _filtered;
     }
 
-    int newVal = (int)m.RangeMilliMeter + _offset;
+    int raw = (int)m.RangeMilliMeter;
+    int newVal = applyCalibration(raw);
+
 
     if (newVal <= 0 || newVal > 2000) {
         _mux.closeAll();
@@ -229,38 +253,6 @@ TofMuxSensor& tofBR() { return tofBackRight; }
 TofMuxSensor& tofFL() { return tofFrontLeft; }
 TofMuxSensor& tofBL() { return tofBackLeft; }
 
-bool setOffsetsRight() {
-  int br = -1;
-  int fr = -1;
-  for ( int i = 0; i < 5; i++){
-    br = tofBackRight.readFiltered();
-    fr = tofFrontRight.readFiltered();
-    delay(100);
-  }
-  if (br < 0 || fr < 0) return false;
-
-  int soll = (br + fr) / 2;
-  tofBackRight.setOffset(soll - br);
-  tofFrontRight.setOffset(soll - fr);
-  return true;
-}
-
-
-bool setOffsetsLeft(){
-  int bl = -1;
-  int fl = -1;
-  for ( int i = 0; i < 5; i++){
-    bl = tofBackLeft.readFiltered();
-    fl = tofFrontLeft.readFiltered();
-    delay(100);
-  }
-  if (bl < 0 || fl < 0) return false;
-
-  int soll = (bl + fl) / 2;
-  tofBackLeft.setOffset(soll - bl);
-  tofFrontLeft.setOffset(soll - fl);
-  return true;
-}
 
 void logTofs(bool vl, bool vr, bool hl, bool hr){
   static unsigned long lastTofLog = 0;
@@ -276,4 +268,18 @@ void logTofs(bool vl, bool vr, bool hl, bool hr){
     if (hr) logMessage(abstandBR.c_str());
     lastTofLog = millis();
   }
+}
+
+void TofMuxSensor::setCalibration(float scale, float bias)
+{
+    _scale = scale;
+    _bias = bias;
+}
+
+float TofMuxSensor::getScale() const { return _scale; }
+float TofMuxSensor::getBias() const { return _bias; }
+
+int TofMuxSensor::applyCalibration(int raw)
+{
+    return (int)(_scale * raw + _bias);
 }
