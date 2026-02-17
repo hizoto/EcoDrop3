@@ -7,9 +7,9 @@
 
 
 // kontinuierliche Messung
-const bool TofIsContinous = true;
+const bool TofIsContinous = false;
 // Timingbudget erhöht die genauigkeit (auf kosten der Intervallzeit)
-uint32_t timingBudgetms = 100;
+uint32_t timingBudgetms = 200;
 
 // ------------------- MUX + Channels -------------------
 TCA9548A I2CMUX;
@@ -38,7 +38,7 @@ TofMuxSensor::TofMuxSensor(TCA9548A& mux, uint8_t channel, int16_t offsetMm)
 bool TofMuxSensor::begin() {
   _mux.openChannel(_channel);
   bool ok = _lox.begin();
-  _lox.setMeasurementTimingBudgetMicroSeconds(timingBudgetms * 1000);
+  //_lox.setMeasurementTimingBudgetMicroSeconds(timingBudgetms * 1000);
   if(TofIsContinous){
     _lox.startRangeContinuous(0); // backtoback Messungen
   }
@@ -49,14 +49,17 @@ bool TofMuxSensor::begin() {
 void TofMuxSensor::setOffset(int16_t offsetMm) { _offset = offsetMm; }
 int16_t TofMuxSensor::getOffset() const { return _offset; }
 
-bool TofMuxSensor::readMeasurement(VL53L0X_RangingMeasurementData_t& out){
-    _lox.getRangingMeasurement(&out);
-    return (out.RangeStatus == 0);
+bool TofMuxSensor::readMeasurement(VL53L0X_RangingMeasurementData_t& out) {
+  _lox.rangingTest(&out, false);
+
+  // RangeStatus==4: ungültig/out of range
+  return (out.RangeStatus != 4);
 }
 
 int TofMuxSensor::readRaw() {
   if (TofIsContinous){
     _mux.openChannel(_channel);
+    delay(4);
 
     if (!_lox.isRangeComplete()) {
         _mux.closeAll();
@@ -76,7 +79,7 @@ int TofMuxSensor::readRaw() {
     if (newVal <= 0 || newVal > 2000)
         return _lastRaw;
 
-    if (_lastRaw != 0 && abs(newVal - _lastRaw) > 200)
+    if (_lastRaw != 0 && abs(newVal - _lastRaw) > 200 && _lastRaw != 0)
         return _lastRaw;
 
     _lastRaw = newVal;
@@ -87,6 +90,7 @@ int TofMuxSensor::readRaw() {
     for (int i = 0; i < 3; i++)  // max 3 Versuche
     {
         _mux.openChannel(_channel);
+        delay(4);
         if(!readMeasurement(m)){
           _mux.closeAll();
           continue;
@@ -110,6 +114,7 @@ int TofMuxSensor::readRaw() {
 int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
   if(TofIsContinous){
     _mux.openChannel(_channel);
+    delay(4);
 
     if (millis() - _lastRead > resetAfterMs)
       _filtered = 0;
@@ -149,6 +154,7 @@ int TofMuxSensor::readFiltered(float alpha, uint32_t resetAfterMs) {
   }
   else {
     _mux.openChannel(_channel);
+    delay(4);
 
     VL53L0X_RangingMeasurementData_t m;
 

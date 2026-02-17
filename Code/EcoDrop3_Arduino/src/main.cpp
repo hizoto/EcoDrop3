@@ -8,7 +8,7 @@
 // 1 = xxxx
 
 // Konfigurationsvariablen
-const bool isTestCase = false;
+const bool isTestCase = true;
 const bool useTofOffset = true;
 
 
@@ -23,6 +23,7 @@ unsigned long lastTofLog = 0;
 
 int currentStep = 0;
 bool firstTry = true;
+int sum = 0;
 
 void setup() {
     startComm();
@@ -52,9 +53,11 @@ void loop() {
                 if (millis() - lastLogMessage > 1000){
                     // logMessage(endschalterStatusHinten().c_string);
                     lastLogMessage = millis();
+                    logTofs(0,1,0,1);
+                    logMessage(" ");
                 }
                 //oeffnen();
-                staplerOben();
+                //staplerOben();
                 //goParallelRight();
                 //containerAufladen();
 
@@ -81,7 +84,7 @@ void loop() {
                         logMessage("Fehler beim nullen von TOFs rechts");
                     }
                 }   
-                int sum = 0;
+                sum = 0;
                 for(int i=0;i<5;i++){
                     sum += tofFR().readRaw();
                     delay(50);
@@ -186,7 +189,7 @@ void loop() {
         lastLogMessage = millis();
         stopMotors();
         //schliessen();
-        staplerUnten();
+        //staplerUnten();
         }
     }    
 }

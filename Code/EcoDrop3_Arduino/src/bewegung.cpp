@@ -248,13 +248,20 @@ void moveToRightWall(uint16_t target)
             speed = speedNormal;
 
         // Richtung JEDES MAL neu entscheiden
-        if (error > 0)
+        if (error > 0){
             moveRight(1, speed);
-        else
+            if (error < 20){
+              stopMotors();
+            }
+        }
+        else{
             moveLeft(1, speed);
+            if (error > -20);
+            stopMotors();
+        }
 
         // Parallelität ggf. nachziehen
-        if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5))
+        if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5) && distanceBack < 250)
             goParallelRight();
     }
 
@@ -288,14 +295,23 @@ void moveToLeftWall(uint16_t target)
             speed = speedNormal;
 
         // Richtung JEDES MAL neu entscheiden
-        if (error > 0)
+        if (error > 0){
             moveLeft(1, speed);   // zu weit weg → nach links
-        else
+            if(error < 20){
+              stopMotors();
+            }
+        }
+        else{
             moveRight(1, speed);  // zu nah → nach rechts
+            if (error > -20){
+              stopMotors();
+            }
+        }
 
         // Parallelität ggf. nachziehen
-        if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5))
+        if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5) && distanceBack < 250){
             goParallelLeft();
+        }
     }
 
     stopMotors();
@@ -307,11 +323,11 @@ void goParallelRight(){
     uint16_t distanceBack = tofBR().readRaw();
     while (abs((int)distanceFront - (int)distanceBack) > toleranceWheelsmm){
         if (distanceFront > distanceBack){
-        turnRight(incrementGrad, speedSlow);
+        turnRight(incrementGrad);
         stopMotors();
         }
         else {
-        turnLeft(incrementGrad, speedSlow);
+        turnLeft(incrementGrad);
         stopMotors();
         }
       logTofs(false,true,false,true);
