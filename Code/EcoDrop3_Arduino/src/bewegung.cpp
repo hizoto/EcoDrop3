@@ -261,7 +261,7 @@ void moveToRightWall(uint16_t target)
         }
 
         // Parallelität ggf. nachziehen
-        if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5) && distanceBack < 250)
+        if (abs((int)distanceBack - (int)distanceFront) > (toleranceWheelsmm + 5) && distanceFront < 250)
             goParallelRight();
     }
 
@@ -289,7 +289,7 @@ void moveToLeftWall(uint16_t target)
             break;
 
         // Geschwindigkeit nahe Ziel reduzieren
-        if (abs(error) < 2 * toleranceToWallmm)
+        if (abs(error) < 50)
             speed = speedSlow;
         else
             speed = speedNormal;
@@ -423,14 +423,13 @@ void containerAufladen(){
   LinearAntrieb.forward(speedFast);
   delay(bewegungsZeitLinear);
   LinearAntrieb.backward(speedFast);
-  gabelIstUnten = digitalRead(endschalterUnten);
+  /*gabelIstUnten = digitalRead(endschalterUnten);
   
   while(!gabelIstUnten){
     delay(1);
     gabelIstUnten = digitalRead(endschalterUnten);
   }
-  delay(25);
-  LinearAntrieb.brake();
+  delay(25);*/
 }
 
 void rueckwaertsBisAnschlag(){

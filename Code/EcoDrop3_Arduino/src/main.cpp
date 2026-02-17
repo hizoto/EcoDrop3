@@ -8,13 +8,13 @@
 // 1 = xxxx
 
 // Konfigurationsvariablen
-const bool isTestCase = true;
+const bool isTestCase = false;
 const bool useTofOffset = true;
 
 
 uint16_t wandabstand = 150;
 uint16_t wandabstandLadezone = 70;
-uint16_t abladeZoneWandabstand = 50;
+uint16_t abladeZoneWandabstand = 25;
 int roboterbreite = 250; 
 int sicherheitsmarge = 50;
 
@@ -144,8 +144,11 @@ void loop() {
                 //goParallelRight();
                 moveLeft(100);
                 turnRight(90);
-                moveForward(130);
+                while(tofFL().readRaw() > 200){
+                    moveBackward(1);
+                }
                 goParallelLeft();
+                moveForward(300);
                 pickUpContainer();
                 currentStep = 80;
                 break;
@@ -169,8 +172,9 @@ void loop() {
                 moveToLeftWall(300);
                 turnRight(90);
                 goParallelLeft();
+                moveForward(50);
                 moveRight(500);
-                moveToRightWall(wandabstandLadezone + 5);
+                moveToRightWall(wandabstandLadezone + 15);
                 parkieren();
                 isRunning = false;
                 currentStep = 0;
